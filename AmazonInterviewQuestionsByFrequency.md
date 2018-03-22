@@ -91,13 +91,12 @@ The brackets must close in the correct order, "()" and "()[]{}" are all valid bu
 ```java
 public class Solution {
     public boolean isValid(String s) {
-        LinkedList<Character> stack = new LinkedList<>();
+        //Must use LinkedList instead of List to use addFirst, peakFirst and removeFirst
+        LinkedList<Character> stack = new LinkedList<>(); 
         
-        if (s.length() == 0) {
-            return true;
-        }
+        if (s.length() == 0) return true;
         
-        HashMap<Character, Character> match = new HashMap<Character, Character> () {{ 
+        Map<Character, Character> match = new HashMap<Character, Character>() {{
             put(')','(');
             put(']','[');
             put('}','{');
@@ -105,24 +104,119 @@ public class Solution {
         
         for (int i = 0; i < s.length(); i++) {
             char symbol = s.charAt(i);
-            if (symbol == '(' || symbol == '{' || symbol == '[') {
+            if (symbol == '(' || symbol == '[' || symbol == '{') {
                 stack.addFirst(symbol);
-            } else if (symbol == ')' || symbol == '}' || symbol == ']') {
-                if (stack.peekFirst() != match.get(symbol)) {
-                    return false;
-                } else {
-                    stack.removeFirst();
-                }
+            } else if (symbol == ')' || symbol == ']' || symbol == '}') {
+                if (stack.peekFirst() != match.get(symbol)) return false;
+                else stack.removeFirst();
             } else {
                 continue;
             }
         }
         
-        if (stack.isEmpty()) {
-            return true;
-        } else {
-            return false;
-        }
+        return stack.isEmpty();
     }
 }
 ```
+
+## 200 Number of Islands
+
+Given a 2d grid map of '1's (land) and '0's (water), count the number of islands. An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water.
+
+Example 1:
+```
+11110
+11010
+11000
+00000
+```
+Answer: 1
+
+Example 2:
+```
+11000
+11000
+00100
+00011
+```
+Answer: 3
+
+```java
+//Use DFS
+public class Solution {
+    private int N;
+    private int M;
+    
+    public int numIslands(char[][]grid) {
+        int count = 0;
+        N = grid.length;
+        if (N == 0) return 0;
+        M = grid[0].length;
+        
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < M; j++) {
+                if (grid[i][j] == '1') {
+                    DFSMarking(grid, i, j);
+                    ++count;
+                }
+            }
+        }
+        return count;
+    }
+    
+    private void DFSMarking(char[][] grid, int i, int j) {
+        if (i < 0 || i >= N || j < 0 || j >= M || grid[i][j] != '1') return;
+        grid[i][j] = '0';
+        DFSMarking(grid, i-1, j); //Up
+        DFSMarking(grid, i+1, j); //Down
+        DFSMarking(grid, i, j-1); //Left
+        DFSMarking(grid, i, j+1); //Right
+    }
+}
+```
+
+## 675 Cut Off Trees for Golf Event
+
+You are asked to cut off trees in a forest for a golf event. The forest is represented as a non-negative 2D map, in this map:
+
+0 represents the obstacle can't be reached.
+1 represents the ground can be walked through.
+The place with number bigger than 1 represents a tree can be walked through, and this positive number represents the tree's height.
+You are asked to cut off all the trees in this forest in the order of tree's height - always cut off the tree with lowest height first. And after cutting, the original place has the tree will become a grass (value 1).
+
+You will start from the point (0, 0) and you should output the minimum steps you need to walk to cut off all the trees. If you can't cut off all the trees, output -1 in that situation.
+
+You are guaranteed that no two trees have the same height and there is at least one tree needs to be cut off.
+
+Example 1:
+```
+Input: 
+[
+ [1,2,3],
+ [0,0,4],
+ [7,6,5]
+]
+Output: 6
+```
+Example 2:
+```
+Input: 
+[
+ [1,2,3],
+ [0,0,0],
+ [7,6,5]
+]
+Output: -1
+```
+Example 3:
+```
+Input: 
+[
+ [2,3,4],
+ [0,0,5],
+ [8,7,6]
+]
+Output: 6
+```
+Explanation: You started from the point (0,0) and you can cut off the tree in (0,0) directly without walking.
+Hint: size of the given matrix will not exceed 50x50.
