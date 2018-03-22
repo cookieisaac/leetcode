@@ -1,6 +1,6 @@
 Ordered by frequency as of March 21, 2018
 
-## 739 Partition Labels
+## [763 Partition Labels](https://leetcode.com/problems/partition-labels)
 A string S of lowercase letters is given. We want to partition this string into as many parts as possible so that each letter appears in at most one part, and return a list of integers representing the size of these parts.
 ```
 Example 1:
@@ -48,7 +48,7 @@ class Solution {
 }
 ```
 
-## 1. Two Sum
+## [1. Two Sum](https://leetcode.com/problems/two-sum)
 
 Given an array of integers, return indices of the two numbers such that they add up to a specific target.
 
@@ -82,7 +82,7 @@ public class Solution {
 }
 ```
 
-## 3. Valid Parenthese
+## [3. Valid Parenthese](https://leetcode.com/problems/longest-substring-without-repeating-characters)
 
 Given a string containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
 
@@ -119,7 +119,7 @@ public class Solution {
 }
 ```
 
-## 200 Number of Islands
+## [200 Number of Islands](https://leetcode.com/problems/number-of-islands)
 
 Given a 2d grid map of '1's (land) and '0's (water), count the number of islands. An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water.
 
@@ -175,7 +175,7 @@ public class Solution {
 }
 ```
 
-## 675 Cut Off Trees for Golf Event
+## [675 Cut Off Trees for Golf Event](https://leetcode.com/problems/cut-off-trees-for-golf-event)
 
 You are asked to cut off trees in a forest for a golf event. The forest is represented as a non-negative 2D map, in this map:
 
@@ -550,7 +550,7 @@ public class Codec {
 
         TreeNode root = deserializeNode(parsed[0]);
         queue.offer(root);
-        for (int i = 1; i < parsed.length;) {
+        for (int i = 1; i < parsed.length;) { //NOTE: no i++ here at for loop. Increment only happens after node is deserialized
             TreeNode parent = queue.poll();
             if (parent != null) {
                 parent.left = deserializeNode(parsed[i]);
@@ -570,4 +570,131 @@ public class Codec {
 // Your Codec object will be instantiated and called as such:
 // Codec codec = new Codec();
 // codec.deserialize(codec.serialize(root));
+```
+
+## [438 Find all anagrams in a string](https://leetcode.com/problems/find-all-anagrams-in-a-string/description/)
+
+Given a string s and a non-empty string p, find all the start indices of p's anagrams in s.
+
+Strings consists of lowercase English letters only and the length of both strings s and p will not be larger than 20,100.
+
+The order of output does not matter.
+
+Example 1:
+```
+Input:
+s: "cbaebabacd" p: "abc"
+
+Output:
+[0, 6]
+
+Explanation:
+The substring with start index = 0 is "cba", which is an anagram of "abc".
+The substring with start index = 6 is "bac", which is an anagram of "abc".
+```
+
+Example 2:
+```
+Input:
+s: "abab" p: "ab"
+
+Output:
+[0, 1, 2]
+
+Explanation:
+The substring with start index = 0 is "ab", which is an anagram of "ab".
+The substring with start index = 1 is "ba", which is an anagram of "ab".
+The substring with start index = 2 is "ab", which is an anagram of "ab".
+```
+
+Sliding Window
+```
+public class Solution {
+    public List<Integer> findAnagrams(String s, String p) {
+        int[] map = new int[128];
+        for (char c: p.toCharArray()) {
+            map[c]++;
+        }
+        
+        int begin=0, end=0, diff=p.length();
+        List<Integer> result = new LinkedList<Integer>();
+        while(end < s.length()) {
+			//move right everytime, if the character exists in p's hash, decrease the diff
+			//current hash value >= 1 means the character exists in p
+            if (map[s.charAt(end++)]-- >= 1) diff--;
+            
+			//when the diff is down to 0, means we found the right anagram
+			//then add window's left to result list
+            if (diff == 0) result.add(begin);
+            
+			//if we find the window's size equals to p, then we have to move left (narrow the window) to find the new match window
+			//++ to reset the hash because we kicked out the left
+			//only increase the diff if the character is in p
+			//the diff >= 0 indicate it was original in the hash, cuz it won't go below 0
+            if (end - begin == p.length() && map[s.charAt(begin++)]++ >= 0) diff++;
+        }
+        return result;
+    }
+}
+```
+
+## [138 Copy List with Random Pointer](https://leetcode.com/problems/copy-list-with-random-pointer/description/)
+
+A linked list is given such that each node contains an additional random pointer which could point to any node in the list or null.
+
+Return a deep copy of the list.
+
+```java
+/**
+ * Definition for singly-linked list with a random pointer.
+ * class RandomListNode {
+ *     int label;
+ *     RandomListNode next, random;
+ *     RandomListNode(int x) { this.label = x; }
+ * };
+ */
+public class Solution {
+    public RandomListNode copyRandomList(RandomListNode head) {
+        if (head == null) return null;
+        
+        RandomListNode oldRunner = head;    //Runner for original list
+        RandomListNode newRunner;           //Runner for new list
+        
+        //Pass One: Build all nodes in new list with value, use next pointer to interleave
+        while (oldRunner != null) {
+            newRunner = new RandomListNode(oldRunner.label);
+            //Store oldRunner next
+            newRunner.next = oldRunner.next;
+            //Store current newRunner
+            oldRunner.next = newRunner;
+            //Advance oldRunner to its original next
+            oldRunner = newRunner.next;
+        }
+        
+        //Pass Two: Construct Random Pointer for new List
+        RandomListNode newHead = head.next;
+        newRunner = newHead;
+        oldRunner = head;
+        while (oldRunner != null) {
+            //Construct newRunner random
+            newRunner.random = oldRunner.random == null? null : oldRunner.random.next;
+            //Advance oldRunner and newRunner
+            oldRunner = newRunner.next;
+            newRunner = oldRunner == null ? null : oldRunner.next;
+        }
+        
+        //Rass Three: Restore next pointer for all lists
+        newRunner = newHead;
+        oldRunner = head;
+        while (oldRunner != null) {
+            //Restore newRunner/oldRunner next pointer
+            oldRunner.next = newRunner.next;
+            newRunner.next = oldRunner.next == null? null: oldRunner.next.next;
+            //Advance newRunner and oldRunner
+            oldRunner = oldRunner.next;
+            newRunner = newRunner.next;   
+        }
+        return newHead;
+    }
+}
 ```
