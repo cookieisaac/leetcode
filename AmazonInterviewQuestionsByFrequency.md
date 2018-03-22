@@ -220,3 +220,71 @@ Output: 6
 ```
 Explanation: You started from the point (0,0) and you can cut off the tree in (0,0) directly without walking.
 Hint: size of the given matrix will not exceed 50x50.
+
+```java
+class Solution {
+    public int cutOffTree(List<List<Integer>> forest) {
+        //Scan the forest, store and sort all height
+        List<int[]> trees = new ArrayList<>();
+        for (int row = 0; row < forest.size(); row++) {
+            for (int col = 0; col < forest.get(0).size(); col++) {
+                int height = forest.get(row).get(col);
+                if (height > 1) {
+                    trees.add(new int[]{height, row, col});
+                }
+            }   
+        }
+        Collections.sort(trees, (a, b) -> Integer.compare(a[0], b[0])); //Sort by height
+    
+        //Go through trees ordered by height
+        int answer = 0;
+        int sourceRow = 0, sourceCol = 0; //Start from (0, 0)
+        for (int[] tree: trees) {
+            //Calculate th distance from previous height to current height
+            int destinationRow = tree[1], destinationCol = tree[2];
+            int distance = distance(forest, sourceRow, sourceCol, destinationRow, destinationCol);
+            //If no path, then can't be reached
+            if (distance < 0) return -1;
+            //Otherwise update total distance, and current tree become the source
+            answer += distance;
+            sourceRow = tree[1];
+            sourceCol = tree[2];
+        }
+    
+        return answer;
+    }
+    
+    //Use BFS
+    public int distance(List<List<Integer>> forest, int sourceRow, int sourceCol, int destinationRow, int destinationCol) {
+        Queue<int[]> queue = new LinkedList<>(); //{row, col, distance} tuple
+        int R = forest.size(), C = forest.get(0).size();
+        boolean [][] marked = new boolean[R][C];
+        
+        queue.add(new int[]{sourceRow, sourceCol, 0});
+        marked[sourceRow][sourceCol] = true;
+        
+        //Up, Down, Left, Right ==> four neighbors in total for a node in matrix
+        int[] neighborRowDiff = new int[]{-1, 1, 0, 0};
+        int[] neighborColDiff = new int[]{0, 0, -1, 1};
+        
+        while (!queue.isEmpty()) {
+            int[] current = queue.poll();
+            if (current[0] == destinationRow && current[1] == destinationCol) return current[2];
+            //For all unmarked neighbor, mark it and put in queue
+            for (int i = 0; i < 4; i++) { 
+                int neighborRow = current[0] + neighborRowDiff[i];
+                int neighborCol = current[1] + neighborColDiff[i];
+                if (neighborRow >= 0 && neighborRow < R && neighborCol >= 0 && neighborCol < C //Valid neighbor index
+                   && !marked[neighborRow][neighborCol] //Not visited
+                   && forest.get(neighborRow).get(neighborCol) > 0) { //And is not a obscable
+                    //mark and enqueue
+                    marked[neighborRow][neighborCol] = true;
+                    queue.add(new int[]{neighborRow, neighborCol, current[2]+1});
+                }
+                    
+            }
+        }
+        return -1;     
+    }
+}
+```
