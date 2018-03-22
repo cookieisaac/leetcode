@@ -288,3 +288,286 @@ class Solution {
     }
 }
 ```
+
+## [146 LRU Cache](https://leetcode.com/problems/lru-cache)
+
+Design and implement a data structure for Least Recently Used (LRU) cache. It should support the following operations: get and put.
+
+get(key) - Get the value (will always be positive) of the key if the key exists in the cache, otherwise return -1.
+put(key, value) - Set or insert the value if the key is not already present. When the cache reached its capacity, it should invalidate the least recently used item before inserting a new item.
+
+Follow up:
+Could you do both operations in O(1) time complexity?
+
+Example:
+```
+LRUCache cache = new LRUCache( 2 /* capacity */ );
+
+cache.put(1, 1);
+cache.put(2, 2);
+cache.get(1);       // returns 1
+cache.put(3, 3);    // evicts key 2
+cache.get(2);       // returns -1 (not found)
+cache.put(4, 4);    // evicts key 1
+cache.get(1);       // returns -1 (not found)
+cache.get(3);       // returns 3
+cache.get(4);       // returns 4
+```
+
+```java
+public class LRUCache {
+    //Double Linked List + Map to lookup Node in List
+    Map<Integer, DNode> cache;
+    DList list;
+    final int capacity;
+   
+    private class DNode {
+       int key;
+       int value;
+       DNode prev;
+       DNode next;
+       
+       public DNode(int k, int v) {
+           key = k;
+           value = v;
+           prev = null;
+           next = null;
+       }
+    }
+    
+    private class DList {
+        DNode head;
+        DNode tail;
+        
+        public DList() {
+            head = new DNode(0,0);
+            tail = new DNode(0,0);
+            head.next = tail;
+            tail.prev = head;
+        }
+        
+        public void addToHead(DNode node) {
+            node.prev = head;
+            node.next = head.next;
+            head.next.prev = node;
+            head.next = node;
+        }
+        
+        //Note we return the Node here to later remove it from hashmap as well
+        public DNode removeTail() {
+            DNode last = tail.prev;
+            last.prev.next = tail;
+            tail.prev = last.prev;
+            return last;
+        }
+        
+        public void moveToHead(DNode node) {
+            node.prev.next = node.next;
+            node.next.prev = node.prev;
+            addToHead(node);
+        }
+    }
+    
+    public LRUCache(int capacity) {
+        this.capacity = capacity;
+        list = new DList();
+        cache = new HashMap<>();
+    }
+    
+    public int get(int key) {
+        if (!cache.containsKey(key)) return -1;
+        DNode valueNode = cache.get(key);
+        list.moveToHead(valueNode);
+        return valueNode.value;
+    }
+    
+    public void put(int key, int value) {
+        if (capacity == 0) return;
+        if (cache.containsKey(key)) {
+            DNode valueNode = cache.get(key);
+            list.moveToHead(valueNode);
+            valueNode.value = value;
+        } else {
+            if (cache.size() == capacity) {
+                DNode removedNode = list.removeTail();
+                cache.remove(removedNode.key);
+            }
+            DNode valueNode = new DNode(key, value);
+            list.addToHead(valueNode);
+            cache.put(key, valueNode);
+        }
+    }
+}
+```
+
+## [48 Rotate Image](https://leetcode.com/problems/rotate-image)
+
+You are given an n x n 2D matrix representing an image.
+
+Rotate the image by 90 degrees (clockwise).
+
+Note:
+You have to rotate the image in-place, which means you have to modify the input 2D matrix directly. DO NOT allocate another 2D matrix and do the rotation.
+
+```
+Example 1:
+
+Given input matrix = 
+[
+  [1,2,3],
+  [4,5,6],
+  [7,8,9]
+],
+
+rotate the input matrix in-place such that it becomes:
+[
+  [7,4,1],
+  [8,5,2],
+  [9,6,3]
+]
+Example 2:
+
+Given input matrix =
+[
+  [ 5, 1, 9,11],
+  [ 2, 4, 8,10],
+  [13, 3, 6, 7],
+  [15,14,12,16]
+], 
+
+rotate the input matrix in-place such that it becomes:
+[
+  [15,13, 2, 5],
+  [14, 3, 4, 1],
+  [12, 6, 8, 9],
+  [16, 7,10,11]
+]
+```
+
+```java
+public class Solution {
+    public void rotate(int[][] matrix) {
+        if (matrix.length == 0 || matrix[0].length == 1) {
+            return;
+        }
+ 
+        int N = matrix.length;
+
+        //Up down flip then symmetric swap => clockwise
+        //Left right flip then symmetric swap => anti-clockwise
+        for (int i = 0; i < N/2; i++) {
+            for (int j = 0; j < N; j++) {
+                int temp = matrix[i][j];
+                matrix[i][j] = matrix[N-i-1][j];
+                matrix[N-i-1][j] = temp;
+            }
+        }
+        
+        for (int i = 0; i < N; i++) {
+            for (int j = i+1; j < N; j++) {
+                int temp = matrix[i][j];
+                matrix[i][j] = matrix[j][i];
+                matrix[j][i] = temp;
+            }
+        }
+        
+    }
+}
+```
+
+## [297 Serialize and Deserialize Binary Tree](https://leetcode.com/problems/serialize-and-deserialize-binary-tree)
+
+Serialization is the process of converting a data structure or object into a sequence of bits so that it can be stored in a file or memory buffer, or transmitted across a network connection link to be reconstructed later in the same or another computer environment.
+
+Design an algorithm to serialize and deserialize a binary tree. There is no restriction on how your serialization/deserialization algorithm should work. You just need to ensure that a binary tree can be serialized to a string and this string can be deserialized to the original tree structure.
+
+For example, you may serialize the following tree
+```
+    1
+   / \
+  2   3
+     / \
+    4   5
+```
+as "[1,2,3,null,null,4,5]", just the same as how LeetCode OJ serializes a binary tree. You do not necessarily need to follow this format, so please be creative and come up with different approaches yourself.
+
+Note: Do not use class member/global/static variables to store states. Your serialize and deserialize algorithms should be stateless.
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+public class Codec {
+
+    // Encodes a tree to a single string.
+    public String serialize(TreeNode root) {
+        if (root == null) return "";
+        
+        StringBuilder sb = new StringBuilder();
+        Queue<TreeNode> queue = new LinkedList<>();
+        
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            TreeNode node = queue.poll();
+            sb.append(serializeNode(node));
+            if (node != null) {
+                queue.offer(node.left);
+                queue.offer(node.right);
+            }
+        }
+        return sb.toString();
+    }
+    
+    private String serializeNode(TreeNode node) {
+        if (node == null) {
+            return "null"+" ";
+        } else {
+            return Integer.toString(node.val) +" ";
+        }
+    }
+
+    private TreeNode deserializeNode(String data) {
+        if (data.equals("null") || data.equals("")) {
+            return null;
+        } else {
+            return new TreeNode(Integer.parseInt(data));
+        }
+    }
+    
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        
+        String[] parsed = data.split("\\s+");
+        if (parsed.length == 0) return null;
+        
+        Queue<TreeNode> queue = new LinkedList<>();
+
+        TreeNode root = deserializeNode(parsed[0]);
+        queue.offer(root);
+        for (int i = 1; i < parsed.length;) {
+            TreeNode parent = queue.poll();
+            if (parent != null) {
+                parent.left = deserializeNode(parsed[i]);
+                i++;
+                queue.offer(parent.left);
+                if (i < parsed.length) {
+                    parent.right = deserializeNode(parsed[i]);
+                    i++;
+                    queue.offer(parent.right);
+                }
+            }
+        }
+        return root;
+    }
+}
+
+// Your Codec object will be instantiated and called as such:
+// Codec codec = new Codec();
+// codec.deserialize(codec.serialize(root));
+```
