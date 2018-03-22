@@ -13,8 +13,23 @@ Representation of the graph and the processing of the graph should be separated
     * BFS Path - Single Source Shortest Path
   * SymbolGraph
 * DiGraph - Directed Unweighted
+  * DirectedDFS 
+  * Topological Sort - Reverse Post DFS Order on a DAG
+    * DirectedCycle
+    * DepthFirstOrder
+  * Strong Connected Digragh - Kosaraju's SCC - DFS of DG in reverse post order of the DG reverse
+  * All Pair Reachability - TransitiveClosure - Run DirectedDFS on all vertex
 * EdgeWeightedGraph - Undirected Weighted
+  * Minimum Spanning Trees
+    * Prim's algorithm: keep one connected piece, till all nodes reached
+    * Kruskal's algorithm: keep adding small edges, till all nodes reached
 * EdgeWeightedDigraph - Directed Digraph
+  * Shortest Path
+    * Dijkstra's algorithm: inviting the closest person among all club members into the club
+  * General Shortest Path Algorithm
+    * Bellman-Ford
+  * Network Flow
+    * Ford Fulkerson shortest-augmenting path maxflow algorithm
 
 ## Graph - Undirected Unweighted
 
@@ -64,8 +79,8 @@ DFS is mainly used to check connectivity
 
 * To search a graph, invoke a recursive method that visits vertices
 * To visit a vertex
-    ** Mark it as having been visited
-    ** Visit (recursively) all the vertices that are adjacent to it **and that have not yet been marked**
+  * Mark it as having been visited
+  * Visit (recursively) all the vertices that are adjacent to it **and that have not yet been marked**
     
 ```java
 public class DepthFirstSearch {
