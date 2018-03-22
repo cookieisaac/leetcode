@@ -1,3 +1,849 @@
+
+# Graph Review 
+Four major types of graph
+Representation of the graph and the processing of the graph should be separated
+
+* Graph - Undirected Unweighted 
+  * DFS - Connectivity 
+    * DFS Path - Single Source Path
+    * CC - Connected Components
+    * Cycle Detection - acyclic
+    * Two Colorability - bipartite
+  * BFS - Shortest
+    * BFS Path - Single Source Shortest Path
+  * SymbolGraph
+* DiGraph - Directed Unweighted
+* EdgeWeightedGraph - Undirected Weighted
+* EdgeWeightedDigraph - Directed Digraph
+
+## Graph - Undirected Unweighted
+
+### Representation
+```java
+public class Graph {
+    private final int V;        //number of vertices, note the final
+    private int E;              //number of edges
+    private Bag<Integer>[] adj; //adjacency lists
+    
+    public Graph(int V) {
+        this.V = V; this.E = 0;
+        adj = (Bag<Integer>[]) new Bag[V];
+        for (int v = 0; v < V; v++) {
+            adj[v] = new Bag<Integer>();
+        }
+    }
+    
+    public Graph(In in) {
+        this(in.readInt());     //Read V and construct this graph
+        int E = in.readInt();   //Read E
+        for (int i = 0; i < E; i++) {
+            int v = in.readInt();   //Read one vertex
+            int w = in.readInt();   //Read another vertex
+            addEdge(v, w);          //Add edge connecting them
+        }
+    }
+    
+    public int V() { return V;}
+    public int E() { return E;}
+    
+    public void addEdge(int v, int w) {
+        adj[v].add(w);          //Add w to v's adjacency list
+        adj[w].add(v);          //Add v to w's adjacency list
+        E++;                    //Update Edge count
+    }
+    
+    public Iterable<Integer> adj(int v) {
+        return adj[v];
+    }
+}
+```
+
+### DFS
+
+DFS is mainly used to check connectivity
+
+* To search a graph, invoke a recursive method that visits vertices
+* To visit a vertex
+    ** Mark it as having been visited
+    ** Visit (recursively) all the vertices that are adjacent to it **and that have not yet been marked**
+    
+```java
+public class DepthFirstSearch {
+    private boolean[] marked;
+    private int count;
+    
+    public DepthFirstSearch(Graph G, int s) {
+        marked = new boolean[G.V()];
+        dfs(G, s);
+    }
+    
+    private void dfs(Graph G, int v) {
+        marked[v] = true;
+        count++;
+        for (int w: G.adj(v)) {
+            if (!marked[w]) {
+                dfs(w);
+            }
+        }
+    } 
+    
+    public boolean marked(int w) {
+        return marked[w];
+    }
+    
+    public int count() {
+        return count;
+    }
+}
+```
+
+#### DFS Path
+```java
+public class DepthFirstPaths {
+    private boolean[] marked;   //Has dfs been called for this vertex
+    private int[] edgeTo;       //Last known vertext reaching this vertex
+    private final int s;        //Source vertex
+    
+    public DepthFirstPaths(Graph G, int s) {
+        marked = new boolean[G.V()];
+        edgeTo = new int[G.V()];
+        this.s = s;
+        dfs(G, s);
+    }
+    
+    private dfs(Graph G, int s) {
+        marked[s] = true;
+        for (int w: G.adj(v)) {
+            if (!marked[w]) {
+                edgeTo[w] = v;      //Only difference from standard dfs
+                dfs(G, w);
+            }
+        }
+    }
+    
+    public boolean hasPathTo(int v) {
+        return marked[v];
+    }
+    
+    public Iterable<Integer> pathTo(int v) {
+        if (!hasPathTo(v)) return null;
+        Stack<Integer> path = new Stack<Integer>();
+        for (int x = v; x != s; x = edgeTo[x]) {
+            path.push(x);
+        }
+        path.push(s);
+        return path;
+    }
+}
+```
+
+#### Connectd Components
+Find the connected components of a graph.
+a.k.a: Divide vertices into equivalence class
+
+```java
+public class CC {
+    private boolean[] marked;
+    private int[] id;
+    private int count;
+    
+    public CC(Graph G) {
+        marked = new boolean[G.V()];
+        id = new id[G.V()];
+        for (int s = 0; s < G.V(); s++) {
+            if (!marked[s]) {
+                dfs(G, s);
+                count++;
+            }
+        }
+    }
+    
+    private void dfs(Graph G, int v) {
+        marked[v] = true;
+        id[v] = count;
+        for (int w: G.adg(v)) {
+            if (!marked(w)) {
+                dfs(G, w);
+            }
+        }
+    }
+    
+    public boolean connected(int v, int w) {
+        return id[v] == id[w];
+    }
+    
+    public int id(int v) {
+        return id[v];
+    }
+    
+    public int count() {
+        return count;
+    }
+}
+```
+
+#### Cycle
+Is G acyclic? (assumes no self-loops or parallel edges) 
+
+```java
+public class Cycle {
+    private boolean[] marked;
+    private boolean hasCycle;
+    
+    public Cylce(Graph G) {
+        marked = new boolean[G.V()];
+        hasCycle = false;
+        for (int s = 0; s < G.V(); s++) {
+            if (!marked[s]) {
+                dfs(G, s, s);
+            }
+        }
+    }
+    
+    //v is the vertext to run dfs on
+    //u is the source vertext leading to v
+    private void dfs(Graph G, int v, int u) {
+        marked[v] = true;
+        for (int w: G.adj(v)) {
+            if (!marked[w]) {
+                dfs(G, w, v);
+            } else if (w != u) {
+                hasCycle = true; 
+            }
+        }
+    }
+}
+```
+
+#### Two-Colorability
+Is G bi-partite? 
+Can the vertices of a given graph be assigned in such a way that no edge connects vertices of the same color?
+
+```java
+public class TwoColor {
+    private boolean[] marked;
+    private boolean[] color;
+    private boolean isTwoColorable = true;
+    
+    public TwoColor(Graph G) {
+        marked = new boolean[G.V()];
+        color = new boolean[G.V()];
+        for (int s = 0; s < G.V(); s++) {
+            if (!marked[s]) {
+                dfs(G, s);
+            }
+        }
+    }
+    
+    private void dfs(Graph G, int v) {
+        marked[v] = true;
+        for (int w: G.adj(v)) {
+            if (!marked[w]) {
+                color[w] = !color[v];
+                dfs(G, w);
+            } else if (color[w] == color[v]){
+                isTwoColorable = false;
+            }
+        }
+    }
+    
+    public boolean isBipartite() {
+        return isTwoColorable;
+    }
+}
+```
+
+### BFS
+* **Idea** 
+    Maitainig a queue of all vertices that are *marked* but whose *adjacency lists haven not been checked*
+        => Mark first, then put in the queue
+* **Algorithm**
+  * Put the source vertext on the queue, then perform the following step until queue is empty
+    * Take the next vertext v from teh queue and mark it
+    * Put onto the queue all unmarked vertices that are adjacent to v
+
+#### BFS Path - Single Source Shortest Path
+
+```java
+public class BreathFirstPaths {
+    private boolean[] marked;    //Is a **shortest** path to this vertext known
+    private int[] edgeTo;
+    private final int s;
+    
+    public BreathFirstPaths(Graph G, int s) {
+        marked = new boolean[G.V()];
+        edgeTo = new int[G.V()];
+        this.s = s;
+        bfs(G, s);
+    }
+    
+    private void bfs(Graph G, int s) {
+        Queue<Integer> queue = new Queue<>();
+        marked[s] = true;
+        queue.enqueue(s);
+        while (!queue.isEmpty()) {
+            int v = queue.dequeue();
+            for (int w: G.adj(v)) {
+                if (!marked[w]) {
+                    edgeTo[w] = v;
+                    marked[w] = true;
+                    queue.enqueue(w);
+                }
+            }
+        }
+    }
+    
+    public boolean hasPathTo(int v) {
+        return marked[v];
+    }
+    
+    public Iterable<Integer> pathTo(int v) {
+        //Same as DFS Path
+    }
+}
+```
+
+### SymbolGraph
+
+```java
+public class SymbolGraph {
+    private Map<String, Integer> indexLookup;   //String -> Index
+    private String[] nameLookup;              //Index -> String
+    private Graph G;
+    
+    public SymbolGraph(String stream, String delimiter) {
+        indexLookup = new HashMap<String, Integer>();
+        In in = new In(stream);
+        //--First Pass--
+        //Builds index by reading strings to associate each distinct string with an index
+        while(in.hasNextLine()) {
+            String[] words = in.readLine().split(delimiter);
+            for (int i = 0; i < word.length; i++) {
+                if (!indexLookup.contains[a[i]]) {
+                    indexLookup(words[i], indexLookup.size());
+                }
+            }
+        }
+        //Builds inverted index
+        nameLookup = new String[indexLookup.size()];
+        for (String name: indexLookup.keys()) {
+            nameLookup[indexLookup.get(name)] = name;
+        } 
+        
+        //--Second Path--
+        //Builds the graph by connecting the first vertex on each line to all the others
+        G = new Graph(indexLookup.size()) 
+        in = new In(stream);
+        while (in.hasNextLine()) {
+            String[] words = in.readLine().split(delimiter);
+            int v = st.get(words[0]);
+            for (int i = 1; i < words.length; i++) {
+                G.addEdge(v, indexLookup.get(words[i]));
+            }
+        }
+    }
+    
+    public boolean contains(String s)   { return indexLookup.containsKey(s); }
+    public int index(String s)          { return indexLookup.get(s); }
+    public String name(int v)           { return nameLookup[v]; }
+    public Graph G()                    { return G; }
+}
+```
+
+You can construct a SymbolGraph from a data source (say dictionary: word will be vertices, and character difference by one will be edges), then run regular Graph algorithm on the return result of SymbolGraph.G(). For example: Word Ladder
+
+### LeetCode Examples
+#### DFS
+##### [200 Number of Islands](https://leetcode.com/problems/number-of-islands)
+Given a 2d grid map of '1's (land) and '0's (water), count the number of islands. An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water.
+
+Example 1:
+```
+11110
+11010
+11000
+00000
+```
+Answer: 1
+
+Example 2:
+```
+11000
+11000
+00100
+00011
+```
+Answer: 3
+
+```java
+public class Solution {
+    private int N;
+    private int M;
+    
+    public int numIslands(char[][]grid) {
+        int count = 0;
+        N = grid.length;
+        if (N == 0) return 0;
+        M = grid[0].length;
+        
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < M; j++) {
+                if (grid[i][j] == '1') {
+                    DFSMarking(grid, i, j);
+                    ++count;
+                }
+            }
+        }
+        return count;
+    }
+    
+    private void DFSMarking(char[][] grid, int i, int j) {
+        if (i < 0 || i >= N || j < 0 || j >= M || grid[i][j] != '1') return;
+        grid[i][j] = '0';
+        DFSMarking(grid, i-1, j); //Up
+        DFSMarking(grid, i+1, j); //Down
+        DFSMarking(grid, i, j-1); //Left
+        DFSMarking(grid, i, j+1); //Right
+    }
+}
+```
+#### BFS
+##### [127 WordLadder](https://leetcode.com/problems/word-ladder/) 
+Given two words (beginWord and endWord), and a dictionary's word list, find the length of shortest transformation sequence from beginWord to endWord, such that:
+
+Only one letter can be changed at a time.
+Each transformed word must exist in the word list. Note that beginWord is not a transformed word.
+For example,
+
+Given:
+beginWord = "hit"
+endWord = "cog"
+wordList = ["hot","dot","dog","lot","log","cog"]
+As one shortest transformation is "hit" -> "hot" -> "dot" -> "dog" -> "cog",
+return its length 5.
+
+Note:
+* Return 0 if there is no such transformation sequence.
+* All words have the same length.
+* All words contain only lowercase alphabetic characters.
+* You may assume no duplicates in the word list.
+* You may assume beginWord and endWord are non-empty and are not the same.
+
+```java
+public class Solution {
+    private class Graph {
+        final private int V;
+        private int E;
+        private LinkedList<Integer>[] adj;
+        
+        public Graph(int V) {
+            this.V = V;
+            this.E = 0;
+            adj = new LinkedList[V];
+            for (int v = 0; v < V; v++) {
+                adj[v] = new LinkedList<>();
+            }
+        }
+        
+        public int V() {return V;}
+        public int E() {return E;}
+        public List<Integer> adj(int v) {return adj[v];}
+        public void addEdge(int v, int w) {
+            adj[v].add(w);
+            adj[w].add(v);
+            E++;
+        }
+    }
+    
+    private boolean isNeighbor(String word1, String word2) {
+        if (word1.length() !=  word2.length()) return false;
+        
+        int diff = 0;
+        for (int i = 0; i < word1.length(); i++) {
+            if (word1.charAt(i) != word2.charAt(i)) diff++;
+            if (diff > 1) return false;
+        }
+        return diff == 1;
+    }
+    
+    private class SymbolGraph {
+        private Graph G;
+        private HashMap<String, Integer> st; //symbol -> index
+        private String[] keys;
+        
+        public SymbolGraph(List<String> wordList) {
+            st = new HashMap<>();
+            for (String word: wordList) {
+                if (!st.containsKey(word)) {
+                    st.put(word, st.size());
+                }
+            }
+            
+            keys = new String[st.size()];
+            for (String key: st.keySet()) {
+                keys[st.get(key)] = key;
+            }
+            
+            G = new Graph(st.size());
+            for (int i = 0; i < st.size(); i++) {
+                String word1 =  wordList.get(i);
+                for (int j = i+1; j < st.size(); j++) {
+                    String word2 = wordList.get(j);
+                    if (isNeighbor(word1, word2)) {
+                        G.addEdge(st.get(word1), st.get(word2));
+                    }
+                }
+            }
+        }
+        
+        public Graph G() {return G;}
+        public int getIndex(String s) {return st.get(s);}
+        public String getKey(int k) {return keys[k];}
+    }
+    
+    private class BFPath {
+        private boolean[] marked;
+        private int[] edgeTo;
+        private final int s;
+        
+        public BFPath(Graph G, int s) {
+            marked = new boolean[G.V()];
+            edgeTo = new int[G.V()];
+            this.s = s;
+            
+            LinkedList<Integer> queue = new LinkedList<>();
+            queue.addLast(s);
+            while (!queue.isEmpty()) {
+                int v = queue.removeFirst();
+                marked[v] = true;
+                for (int w: G.adj(v)) {
+                    if (!marked[w]) {
+                        edgeTo[w] = v;
+                        marked[w] = true;
+                        queue.addLast(w);
+                    }
+                }
+            }
+        }
+        
+        public boolean hasPathTo(int w) {
+            return marked[w];
+        }
+        
+        public int pathLength(int w) {
+            if (!hasPathTo(w)) return 0;
+            int count = 0;
+            for (int v = w; v != s; v = edgeTo[v]) {
+                count++;
+            }
+            return count+1;
+        }
+        
+        public List<Integer> path(int w) {
+            List<Integer> path = new LinkedList<>();
+            if (!hasPathTo(w)) return path;
+            for (int v = w; v != s; v = edgeTo[v]) {
+                path.add(v);
+            }
+            path.add(s);
+            return path;
+        }
+        
+    }
+    
+    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+        if (!wordList.contains(endWord)) return 0;
+        if (!wordList.contains(beginWord)) wordList.add(beginWord);
+        SymbolGraph sg = new SymbolGraph(wordList);
+        BFPath path = new BFPath(sg.G(), sg.getIndex(beginWord));
+        
+        List<Integer> aPath = path.path(sg.getIndex(endWord));
+        
+        /*LinkedList<String> transform = new LinkedList<>();
+        for (int index: aPath) {
+            transform.addFirst(sg.getKey(index));
+        }
+        System.out.println(transform);
+        */
+        return path.pathLength(sg.getIndex(endWord));
+    }
+}
+```
+
+##### 126 Word Ladder II
+Given two words (beginWord and endWord), and a dictionary's word list, find all shortest transformation sequence(s) from beginWord to endWord, such that:
+
+Only one letter can be changed at a time
+Each transformed word must exist in the word list. Note that beginWord is not a transformed word.
+For example,
+
+Given:
+beginWord = "hit"
+endWord = "cog"
+wordList = ["hot","dot","dog","lot","log","cog"]
+Return
+  [
+    ["hit","hot","dot","dog","cog"],
+    ["hit","hot","lot","log","cog"]
+  ]
+  
+Note:
+* Return an empty list if there is no such transformation sequence.
+* All words have the same length.
+* All words contain only lowercase alphabetic characters.
+* You may assume no duplicates in the word list.
+* You may assume beginWord and endWord are non-empty and are not the same.
+
+```java
+public class Solution {
+    private class Graph {
+        final private int V;
+        private int E;
+        private List<Integer>[] adj;
+        
+        public Graph(int V) {
+            this.V = V;
+            this.E = 0;
+            adj = new LinkedList[this.V];
+            for (int v=0; v < V; v++) {
+                adj[v] = new LinkedList<>(); 
+            }
+        }
+        
+        public int V() {return V;}
+        public int E() {return E;}
+        public void addEdge(int v, int w) {
+            adj[v].add(w);
+            adj[w].add(v);
+            E++;
+        } 
+        public Iterable<Integer> adj(int v) {
+            return adj[v];
+        }
+    }
+    
+    private boolean isNeighbor(String a, String b) {
+        if (a.length() != b.length() ) {
+            return false;
+        }
+        
+        int diff = 0;
+        for (int i = 0; i < a.length(); i++ ) {
+            if (a.charAt(i) != b.charAt(i)) {
+                diff++;
+            }
+            
+            if (diff > 1) {
+                return false;
+            }
+        }
+        
+        return diff == 1;
+    }
+    
+    public class SymbolGraph {
+        private Map<String, Integer> st; //String -> index
+        private String[] keys; //index -> String
+        private Graph G;
+        
+        public SymbolGraph(List<String> wordList) {
+            st = new HashMap<String, Integer>();
+            for (String s: wordList) {
+                if (!st.containsKey(s)) {
+                    st.put(s, st.size());
+                }
+            }
+            
+            keys = new String[st.size()];
+            for (String name: st.keySet()) {
+                keys[st.get(name)] = name;
+            }
+            
+            G = new Graph(st.size());
+            for (int i = 0; i < wordList.size(); i++) {
+                String s = wordList.get(i);
+                for (int j = i+1; j < wordList.size(); j++) {
+                    String s2 = wordList.get(j);
+                    if (isNeighbor(s, s2)) {
+                        G.addEdge(st.get(s), st.get(s2));
+                    }
+                }
+            }
+        }
+        
+        public Graph G() {return G;}
+        public int getIndex(String s) {return st.get(s);}
+        public String getString(int i) {return keys[i];}
+    }
+    
+    public class DepthFirstAllPaths {
+        private boolean[] onPath; //vertices is on current path;
+        private LinkedList<Integer> path; //current path as a stack;
+        private List<List<Integer>> paths;
+        
+        public DepthFirstAllPaths(Graph G, int s, int t) {
+            onPath = new boolean[G.V()];
+            path = new LinkedList<>();
+            paths = new LinkedList<>();
+            dfs(G, s, t);
+        }
+        
+        private void dfs(Graph G, int v, int t) {
+            path.addFirst(v);
+            onPath[v] = true;
+            if (v == t) {
+                addTo(paths, path); //add a new path to current paths;
+            } else {
+                for (int w: G.adj(v)) {
+                    if (!onPath[w])
+                        dfs(G, w, t);
+                }
+            }
+            path.removeFirst();
+            onPath[v] = false;
+        }
+        
+        private void addTo(List<List<Integer>>paths, List<Integer> path) {
+            LinkedList<Integer> snapshot = new LinkedList<Integer>();
+            for (int v: path) {
+                snapshot.addFirst(v);
+            }
+            
+            paths.add(snapshot);
+        }
+        
+        public List<List<Integer>> getPaths() {
+            return paths;
+        }
+        
+        public boolean hasPaths() {
+            return paths.size() != 0;
+        }
+        
+    }
+    
+    
+    
+    public class BreadthFirstPaths {
+        private boolean[] onPath;
+        private LinkedList<Integer> path;
+        private List<List<Integer>> paths;
+        
+        public BreadthFirstPaths(Graph G, int s, int t) {
+            onPath = new boolean[G.V()];
+            path = new LinkedList<Integer>();
+            paths = new LinkedList<>();
+            
+            bfs(G, s, t);
+        }
+        
+        private LinkedList<Integer> copyAndAppend(LinkedList<Integer> path, int vertex) {
+            LinkedList<Integer> newPath = new LinkedList<Integer>();
+            for (int v: path) {
+                newPath.add(v);
+            }
+            newPath.add(vertex);
+            return newPath;
+        }
+        
+        private void bfs(Graph G, int s, int t) {
+            LinkedList<LinkedList<Integer>> queue = new LinkedList<>();
+            LinkedList<Integer>tempPath = new LinkedList<>();
+            int minLegitPath = G.V();
+            tempPath.add(s);
+            
+            queue.add(tempPath);
+            while (!queue.isEmpty()) {
+                LinkedList<Integer> aPath = queue.removeFirst();
+                if (aPath.size() > minLegitPath) {
+                    continue; //Cannot be minimum path
+                } else {
+                    boolean[] marked = new boolean[G.V()];
+                    for (int v: aPath) {
+                        marked[v] = true;
+                    }
+                    for (int v: G.adj(aPath.get(aPath.size()-1))) {
+                        if (!marked[v]) {
+                            LinkedList<Integer> newPath = copyAndAppend(aPath, v);
+                            if (v == t) {
+                                if (minLegitPath > newPath.size())
+                                    minLegitPath = newPath.size();
+                                addTo(paths, newPath);
+                            } else {
+                                queue.addLast(newPath);
+                            }
+                        }
+                    }
+                    
+                }
+                
+            }
+        }
+        
+        public void addTo(List<List<Integer>> paths, List<Integer> path) {
+            LinkedList<Integer> snapshot = new LinkedList<>();
+            for (int v: path) {
+                snapshot.addLast(v);
+            }
+            paths.add(snapshot);
+        }
+        public boolean hasPaths() {
+            return paths.size() != 0;
+        }
+        
+        public List<List<Integer>> getPaths() {
+            //prune out all duplicate and long paths
+            Set<List<Integer>> solutions = new HashSet<>();
+            int min = Integer.MAX_VALUE;
+            for (List<Integer> path: paths) {
+                if (path.size() < min) {
+                    min = path.size();
+                }
+            }
+            
+            for (List<Integer> path: paths) {
+                if (path.size() == min) {
+                    solutions.add(path);
+                }
+            }
+            
+            return new ArrayList(solutions);
+        }
+    }
+    
+    
+    public List<List<String>> findLadders(String beginWord, String endWord, List<String> wordList) {
+        List<List<String>> solutions = new ArrayList<>();
+        
+        if (!wordList.contains(endWord)) {
+            return solutions;
+        }
+        
+        wordList.add(beginWord);
+        //wordList.add(endWord);
+        SymbolGraph sg = new SymbolGraph(wordList);
+        BreadthFirstPaths bfp = new BreadthFirstPaths(sg.G(), sg.getIndex(beginWord), sg.getIndex(endWord));
+        //DepthFirstAllPaths dfps = new DepthFirstAllPaths(sg.G(), sg.getIndex(beginWord), sg.getIndex(endWord));
+        
+        
+        if (!bfp.hasPaths()) {
+            return solutions;
+        }
+        
+        for (List<Integer> path: bfp.getPaths()) {
+            //List<Integer> path = bfp.pathTo(sg.getIndex(endWord));
+            List<String> solution = new ArrayList<>();
+            for (int i = 0; i < path.size(); i++) {
+                solution.add(sg.getString(path.get(i)));
+            }
+            solutions.add(solution);
+        }
+        
+        return solutions;
+    }
+}
+```
+
 # LeetCode Summary
 
 ## Sliding Window
