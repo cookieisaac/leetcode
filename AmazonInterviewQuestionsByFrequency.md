@@ -700,6 +700,21 @@ public class Solution {
 ```
 
 ## [236 Lowest Common Ancestorof a Tree](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/description/)
+Given a binary tree, find the lowest common ancestor (LCA) of two given nodes in the tree.
+
+According to the definition of LCA on Wikipedia: “The lowest common ancestor is defined between two nodes v and w as the lowest node in T that has both v and w as descendants (where we allow a node to be a descendant of itself).”
+```
+        _______3______
+       /              \
+    ___5__          ___1__
+   /      \        /      \
+   6      _2       0       8
+         /  \
+         7   4
+```
+
+For example, the lowest common ancestor (LCA) of nodes 5 and 1 is 3. Another example is LCA of nodes 5 and 4 is 5, since a node can be a descendant of itself according to the LCA definition.
+
 ```java
 /**
  * Definition for a binary tree node.
@@ -722,6 +737,129 @@ class Solution {
         else if (right == null) return left;
         else return root;
         */
+    }
+}
+```
+
+## [5 Longest Panlindrome Substring](https://leetcode.com/problems/longest-palindromic-substring/description/)
+Given a string s, find the longest palindromic substring in s. You may assume that the maximum length of s is 1000.
+
+Example:
+```
+Input: "babad"
+
+Output: "bab"
+```
+Note: "aba" is also a valid answer.
+ 
+
+Example:
+```
+Input: "cbbd"
+
+Output: "bb"
+```
+
+```
+class Solution {
+    //Algorithm: O(N^2), Space: O(1)
+    public String longestPalindrome(String s) {
+        int start = 0, end = 0;
+        for (int i = 0; i < s.length(); i++) {
+            //If the panlindrome is of odd characters
+            int length1 = expandAroundCenter(s, i, i);
+            //If the panlindrome is of even characters
+            int length2 = expandAroundCenter(s, i, i+1);
+            int length = Math.max(length1, length2);
+            if (length > end - start) {
+                start = i - (length - 1) / 2;
+                end = i + length / 2;
+            }
+        }
+        return s.substring(start, end+1);
+    }
+    
+    private int expandAroundCenter(String s, int left, int right) {
+        while (left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
+            left--;
+            right++;
+        }
+        return right - left - 1;
+    }
+}
+```
+
+## [121 Best Time to Buy and Sell Stocks](https://leetcode.com/problems/best-time-to-buy-and-sell-stock/description/)
+
+Say you have an array for which the ith element is the price of a given stock on day i.
+
+If you were only permitted to complete at most one transaction (ie, buy one and sell one share of the stock), design an algorithm to find the maximum profit.
+
+Example 1:
+Input: [7, 1, 5, 3, 6, 4]
+Output: 5
+
+max. difference = 6-1 = 5 (not 7-1 = 6, as selling price needs to be larger than buying price)
+Example 2:
+Input: [7, 6, 4, 3, 1]
+Output: 0
+
+In this case, no transaction is done, i.e. max profit = 0.
+
+```java
+class Solution {
+    public int maxProfit(int[] prices) {
+        if (prices.length < 1) return 0;
+        
+        //Compute Day to Day price changes
+        int[] diff = new int[prices.length - 1];
+        for (int i = 0; i < prices.length - 1; i++) {
+            diff[i] = prices[i+1] - prices[i];
+        }
+        
+        //Find the largest sum of continuous diff
+        int max = 0; //Max Profit
+        int profit = 0; //Current Profit
+        for (int i = 0; i < diff.length; i++) {
+            profit += diff[i];
+            if (profit < 0) profit = 0;
+            if (profit > max) max = profit;
+        } 
+        return max;
+    }
+}
+```
+
+## [238 Product of Array Except Self](https://leetcode.com/problems/product-of-array-except-self/description/)
+
+Given an array of n integers where n > 1, nums, return an array output such that output[i] is equal to the product of all the elements of nums except nums[i].
+
+Solve it without division and in O(n).
+
+For example, given [1,2,3,4], return [24,12,8,6].
+
+Follow up:
+Could you solve it with constant space complexity? (Note: The output array does not count as extra space for the purpose of space complexity analysis.)
+
+```java
+class Solution {
+    public int[] productExceptSelf(int[] nums) {
+        if (nums.length < 2) return nums;
+        
+        int[] result = new int[nums.length];
+        result[0] = 1;
+        //First Pass: multiply everything to the left
+        for (int i = 1; i < nums.length; i++) {
+            result[i] = result[i-1]*nums[i-1];
+        }
+        
+        //Second Pass: multiply everything to the right;
+        int right = 1;
+        for (int j = nums.length - 1; j >= 0; j--) {
+            result[j] = result[j] * right;
+            right = nums[j] * right;
+        }
+        return result;
     }
 }
 ```
