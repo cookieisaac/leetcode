@@ -1114,3 +1114,151 @@ public class Solution {
     }
 }
 ```
+
+## [23 Merge K Sorted Lists](https://leetcode.com/problems/merge-k-sorted-lists/description/)
+
+Merge k sorted linked lists and return it as one sorted list. Analyze and describe its complexity.
+Time complexity of my implementation is `O(N log k)`
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    
+    //Keep the head from each list in a priority queue
+    //Select the smallest node of the heap
+    //Put the next node of this smallest node back to the heap
+    //Iterate till heap is empty
+    public ListNode mergeKLists(ListNode[] lists) {
+        if (lists == null || lists.length == 0) return null;
+        if (lists.length == 1) return lists[0];
+        
+        //Keep the head from each list in a priority queue
+        PriorityQueue<ListNode> heap = new PriorityQueue<>((x, y) -> Integer.compare(x.val, y.val));
+        for (int i = 0; i < lists.length; i++) {
+            if (lists[i] != null) {
+                heap.offer(lists[i]);
+            }
+        }
+        
+        ListNode pseudoHead = new ListNode(-1); //A pseudo head
+        ListNode runner = pseudoHead;
+        while (!heap.isEmpty()) {
+            //Select the smallest node of the heap
+            ListNode next = heap.poll();
+            
+            //Put the next node of this smallest node back to the heap
+            if (next != null && next.next != null) {
+                heap.offer(next.next);
+            }
+            
+            //Construct merged list
+            runner.next = next;
+            
+            //Advance runner
+            runner = next;
+        }
+        return pseudoHead.next;
+    }
+}
+```
+
+## [460 LFU Cache](https://leetcode.com/problems/lfu-cache/description/)
+
+Design and implement a data structure for Least Frequently Used (LFU) cache. It should support the following operations: get and put.
+
+get(key) - Get the value (will always be positive) of the key if the key exists in the cache, otherwise return -1.
+put(key, value) - Set or insert the value if the key is not already present. When the cache reaches its capacity, it should invalidate the least frequently used item before inserting a new item. For the purpose of this problem, when there is a tie (i.e., two or more keys that have the same frequency), the least recently used key would be evicted.
+
+Follow up:
+Could you do both operations in O(1) time complexity?
+
+Example:
+```
+LFUCache cache = new LFUCache( 2 /* capacity */ );
+
+cache.put(1, 1);
+cache.put(2, 2);
+cache.get(1);       // returns 1
+cache.put(3, 3);    // evicts key 2
+cache.get(2);       // returns -1 (not found)
+cache.get(3);       // returns 3.
+cache.put(4, 4);    // evicts key 1.
+cache.get(1);       // returns -1 (not found)
+cache.get(3);       // returns 3
+cache.get(4);       // returns 4
+```
+
+```java
+//Use LinkedHashSet to store keys as it preserves the order of insertion. 
+//The time complexity of basic methods is O(1).
+public class LFUCache {
+    private HashMap<Integer, Integer> vals; //key -> value
+    private HashMap<Integer, Integer> keyToFreq; //key -> freq
+    private HashMap<Integer, LinkedHashSet<Integer>> freqToKeys; // freq -> list of keys
+    
+    private final int capacity;
+    private int min = 1; //Current min frequency count
+    
+    public LFUCache(int capacity) {
+        this.capacity = capacity;
+        vals = new HashMap<>();
+        keyToFreq = new HashMap<>();
+        freqToKeys = new HashMap<>();
+        freqToKeys.put(1, new LinkedHashSet<>());
+    }
+    
+    public int get(int key) {
+        //Cache miss: return -1
+        if(!vals.containsKey(key))
+            return -1;
+        
+        //Cache hit: add frequency by 1
+        //Update keyToFreq, freqToKeys, and potentially global min freq
+        int freq = keyToFreq.get(key);
+        keyToFreq.put(key, freq+1);
+        freqToKeys.get(freq).remove(key);
+        if(freq == min && freqToKeys.get(freq).size()==0)
+            min++;
+        if(!freqToKeys.containsKey(freq+1))
+            freqToKeys.put(freq+1, new LinkedHashSet<>());
+        freqToKeys.get(freq+1).add(key);
+        return vals.get(key);
+    }
+    
+    public void put(int key, int value) {
+        if(capacity <= 0) return;
+        
+        //Cache hit: update value and do a get to trigger internal update
+        if(vals.containsKey(key)) {
+            vals.put(key, value);
+            get(key);
+            return;
+        } 
+        
+        //Cache miss: evict a least frequently used item, then add new entry
+        if(vals.size() >= capacity) {
+            int evict = freqToKeys.get(min).iterator().next();
+            freqToKeys.get(min).remove(evict);
+            vals.remove(evict);
+        }
+        //Since this is a cache miss, current element only been used once, hence the lowest frequency is 1 now
+        min = 1; 
+        vals.put(key, value);
+        keyToFreq.put(key, 1);
+        freqToKeys.get(1).add(key);
+    }
+}
+/**
+ * Your LFUCache object will be instantiated and called as such:
+ * LFUCache obj = new LFUCache(capacity);
+ * int param_1 = obj.get(key);
+ * obj.put(key,value);
+ */
+```
