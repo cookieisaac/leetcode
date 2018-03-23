@@ -1262,3 +1262,49 @@ public class LFUCache {
  * obj.put(key,value);
  */
 ```
+
+## [17 Letter Combinations of a Phone Number](https://leetcode.com/problems/letter-combinations-of-a-phone-number/description/)
+
+Given a digit string, return all possible letter combinations that the number could represent.
+
+A mapping of digit to letters (just like on the telephone buttons) is given below.
+![alt text](http://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Telephone-keypad2.svg/200px-Telephone-keypad2.svg.png)
+Input:Digit string "23"
+Output: ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"].
+Note:
+Although the above answer is in lexicographical order, your answer could be in any order you want.
+
+```java
+public class Solution {
+    private final Map<Character, String> translate = new HashMap<Character, String>() {{
+        put('2', "abc");
+        put('3', "def");
+        put('4', "ghi");
+        put('5', "jkl");
+        put('6', "mno");
+        put('7', "pqrs");
+        put('8', "tuv");
+        put('9', "wxyz");
+    }};
+    
+    public List<String> letterCombinations(String digits) {
+        if (digits.length() == 0) return new LinkedList<String>();
+        
+        List<String> solutions = new ArrayList<>();
+        backtrack(solutions, "", digits);
+        return solutions;
+    }
+    
+    private void backtrack(List<String> solutions, String prefix, String digits) {
+        if (prefix.length() == digits.length()) { //Emit Solution
+            solutions.add(prefix);
+        } else { //Otherwise, iterate all ways to make next steps
+            for (char c: translate.get(digits.charAt(prefix.length())).toCharArray()) {
+                prefix += c; //Take a step: append one letter
+                backtrack(solutions, prefix, digits); //Backtrack
+                prefix = prefix.substring(0, prefix.length()-1); //Reverse the step: remove that letter
+            }
+        }       
+    }
+}
+```
