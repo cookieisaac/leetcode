@@ -1365,5 +1365,137 @@ UPDATE (2017/1/20):
 The wordList parameter had been changed to a list of strings (instead of a set of strings). Please reload the code definition to get the latest changes.
 
 ```java
+public class Solution {
+    private class Graph {
+        final private int V;
+        private int E;
+        private LinkedList<Integer>[] adj;
+        
+        public Graph(int V) {
+            this.V = V;
+            this.E = 0;
+            adj = new LinkedList[V];
+            for (int v = 0; v < V; v++) {
+                adj[v] = new LinkedList<>();
+            }
+        }
+        
+        public int V() {return V;}
+        public int E() {return E;}
+        public List<Integer> adj(int v) {return adj[v];}
+        public void addEdge(int v, int w) {
+            adj[v].add(w);
+            adj[w].add(v);
+            E++;
+        }
+    }
+    
+    private boolean isNeighbor(String word1, String word2) {
+        if (word1.length() !=  word2.length()) return false;
+        
+        int diff = 0;
+        for (int i = 0; i < word1.length(); i++) {
+            if (word1.charAt(i) != word2.charAt(i)) diff++;
+            if (diff > 1) return false;
+        }
+        return diff == 1;
+    }
+    
+    private class SymbolGraph {
+        private Graph G;
+        private HashMap<String, Integer> st; //symbol -> index
+        private String[] keys;
+        
+        public SymbolGraph(List<String> wordList) {
+            st = new HashMap<>();
+            for (String word: wordList) {
+                if (!st.containsKey(word)) {
+                    st.put(word, st.size());
+                }
+            }
+            
+            keys = new String[st.size()];
+            for (String key: st.keySet()) {
+                keys[st.get(key)] = key;
+            }
+            
+            G = new Graph(st.size());
+            for (int i = 0; i < st.size(); i++) {
+                String word1 =  wordList.get(i);
+                for (int j = i+1; j < st.size(); j++) {
+                    String word2 = wordList.get(j);
+                    if (isNeighbor(word1, word2)) {
+                        G.addEdge(st.get(word1), st.get(word2));
+                    }
+                }
+            }
+        }
+        
+        public Graph G() {return G;}
+        public int getIndex(String s) {return st.get(s);}
+        public String getKey(int k) {return keys[k];}
+    }
+    
+    private class BFPath {
+        private boolean[] marked;
+        private int[] edgeTo;
+        private final int s;
+        
+        public BFPath(Graph G, int s) {
+            marked = new boolean[G.V()];
+            edgeTo = new int[G.V()];
+            this.s = s;
+            
+            LinkedList<Integer> queue = new LinkedList<>();
+            queue.addLast(s);
+            while (!queue.isEmpty()) {
+                int v = queue.removeFirst();
+                marked[v] = true;
+                for (int w: G.adj(v)) {
+                    if (!marked[w]) {
+                        edgeTo[w] = v;
+                        marked[w] = true;
+                        queue.addLast(w);
+                    }
+                }
+            }
+        }
+        
+        public boolean hasPathTo(int w) {
+            return marked[w];
+        }
+        
+        public int pathLength(int w) {
+            if (!hasPathTo(w)) return 0;
+            int count = 0;
+            for (int v = w; v != s; v = edgeTo[v]) {
+                count++;
+            }
+            return count+1;
+        }
+        
+        public List<Integer> path(int w) {
+            List<Integer> path = new LinkedList<>();
+            if (!hasPathTo(w)) return path;
+            for (int v = w; v != s; v = edgeTo[v]) {
+                path.add(v);
+            }
+            path.add(s);
+            return path;
+        }
+        
+    }
+    
+    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+        if (!wordList.contains(endWord)) return 0;
+        if (!wordList.contains(beginWord)) wordList.add(beginWord);
+        SymbolGraph sg = new SymbolGraph(wordList);
+        BFPath path = new BFPath(sg.G(), sg.getIndex(beginWord));
+        
+        List<Integer> aPath = path.path(sg.getIndex(endWord));
+	
+        return path.pathLength(sg.getIndex(endWord));
+    }
+}
 
 ```
