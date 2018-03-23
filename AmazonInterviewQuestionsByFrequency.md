@@ -909,4 +909,208 @@ are considered same island shapes. Because if we flip the first array in the up/
 Note: The length of each dimension in the given grid does not exceed 50.
 
 ```java
+class Solution {
+    //Get adjacent neighbor of a given coordinate
+    int[][] neighbors={{-1,0}, {1,0}, {0,-1}, {0,1}};
+    //Generate 8 different transformations of a given coordinate
+    //(X,Y), (X,-Y), (-X,Y), (-X,-Y)
+    //(Y,X), (Y,-X), (-Y,X), (-Y,-X)
+    int[][] transforms = {{1,1}, {1, -1}, {-1, 1}, {-1, -1}};
+    
+    public int numDistinctIslands2(int[][] grid) {
+        if (grid == null || grid.length == 0 || grid[0].length == 0) return 0;
+        int M = grid.length, N = grid[0].length;
+        Set<String> islands = new HashSet<>();
+        for (int i = 0; i < M; i++) {
+            for (int j = 0; j < N; j++) {
+                if (grid[i][j] == 1) {
+                    List<int[]> island = new ArrayList<>(); //A list of all coordinates
+                    dfs(grid, i, j, island);
+                    //printIsland(island);
+                    String islandKey = normalize(island);
+                    islands.add(islandKey);
+                }
+            }
+        }
+        return islands.size();
+    }
+            
+    private void dfs(int[][] grid, int i, int j, List<int[]> island) {
+        island.add(new int[]{i, j});
+        grid[i][j] = -1; //Mark as visited
+        
+        for (int[] neighbor: neighbors) {
+            int x = i + neighbor[0];
+            int y = j + neighbor[1];
+            if (x >= 0 && x < grid.length && y >= 0 && y < grid[0].length && grid[x][y] == 1) {
+                dfs(grid, x, y, island);
+            }
+        }
+    }
+    
+    private void printIsland(List<int[]> island) {
+        System.out.println("===Island===");
+        for (int[] coordinate: island) {
+            System.out.println(coordinate[0]+","+coordinate[1]);
+        }
+    }
+    
+    private String normalize(List<int[]> island) {
+        List<String> forms = new ArrayList<>();
+        //Generate 8 different transformations
+        //List1: (x, y), (x, -y), (-x, y), (-x, -y)
+        //List2: (y, x), (-y, x), (y, -x), (-y, -x)
+        for (int[] transform: transforms) {
+            List<int[]> list1 = new ArrayList<>();
+            List<int[]> list2 = new ArrayList<>();
+            for (int[] coordinate: island) {
+                list1.add(new int[]{coordinate[0]*transform[0], coordinate[1]*transform[1]});
+                list2.add(new int[]{coordinate[1]*transform[1], coordinate[0]*transform[0]});
+            }
+            forms.add(getKey(list1));
+            forms.add(getKey(list2));
+        }
+        
+        //Sort the keys: take the first one as the representative key
+        Collections.sort(forms);
+        return forms.get(0);
+    }
+            
+    private String getKey(List<int[]> island) {
+        //sort the cells before generate the key
+        Collections.sort(island, (a, b) -> {
+            return a[0]!=b[0] ? a[0]-b[0] : a[1]-b[1];
+        });
+        
+        StringBuilder sb = new StringBuilder();
+        //Get the first coordinate of sorted island coordinates
+        int x=island.get(0)[0], y = island.get(0)[1];
+        for (int[] coordinate: island) {
+            sb.append((coordinate[0]-x)+":"+(coordinate[1]-y)+":");
+        }
+        return sb.toString();
+    }
+}
+```
+
+## [239 Sliding Window Maximum](https://leetcode.com/problems/sliding-window-maximum/description/)
+
+Given an array nums, there is a sliding window of size k which is moving from the very left of the array to the very right. You can only see the k numbers in the window. Each time the sliding window moves right by one position.
+
+For example,
+Given nums = [1,3,-1,-3,5,3,6,7], and k = 3.
+```
+Window position                Max
+---------------               -----
+[1  3  -1] -3  5  3  6  7       3
+ 1 [3  -1  -3] 5  3  6  7       3
+ 1  3 [-1  -3  5] 3  6  7       5
+ 1  3  -1 [-3  5  3] 6  7       5
+ 1  3  -1  -3 [5  3  6] 7       6
+ 1  3  -1  -3  5 [3  6  7]      7
+ ```
+Therefore, return the max sliding window as [3,3,5,5,6,7].
+
+Note: 
+You may assume k is always valid, ie: 1 ≤ k ≤ input array's size for non-empty array.
+
+Follow up:
+Could you solve it in linear time?
+
+```java
+public class Solution {
+    public void inspect(int i, Deque<Integer> queue, String str, int[] nums) {
+        System.out.print("nums[" + i + "]="+nums[i]+", " + str+ ", [");
+        for (int num: queue) {
+            System.out.print(nums[num]+" ");
+        }
+        System.out.print("], indexes are: [");
+        for (int num: queue) {
+            System.out.print(num+" ");
+        }
+        System.out.println("]");
+    }
+    
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        if (nums == null || k <= 0) {
+            return new int[0];
+        }
+		
+		int[] results = new int[nums.length - k + 1];
+		//iterator index for results
+        int ri = 0;
+		
+        //Deque is double ended queue
+        //API looks like follow: peek/poll <= [a0, a1, a2, ... aNew] <= offer/peekLast/pollLast
+        //Use a deque to store the index of potential largest number in window
+        //INVARIANT: The underlying value indexed by deque should be decreasing
+        //[5, -3, -1], and if 4 comes along, then if should be [5, 4]
+		Deque<Integer> q = new ArrayDeque<>();
+        
+		for (int i = 0; i < nums.length; i++) {
+            //System.out.println("===========Current i: "+i+"============");
+		    //Step1: Clear out of range index from front
+            //current index to last index is greater than window: a.k.a: i - q.peek() + 1 > k
+		    while (!q.isEmpty() && i - q.peek() + 1 > k ) { 
+                //remove older indexes since they are out of range k from current index i
+		        q.poll();
+		        //inspect(i, q, "index out of range, POLL", nums);
+		    }
+		    
+            //Step2: Clear out useless value from back, maintain decreasing invariant
+            //Between the oldest index to current index i, 
+            //if recent number is smaller than current number
+		    //remove this smaller numbers as they are useless
+            //since the largest would be at least larger than current num
+		    while(!q.isEmpty() && nums[q.peekLast()] < nums[i]) {
+		        q.pollLast();
+		        //inspect(i, q, "last less than current, POLL_LAST", nums);
+		    }
+		    
+            //Step3: Add to deque
+		    //q contains index of the potential maximum value, not the value itself
+		    q.offer(i);
+		    //inspect(i, q, "add new i,OFFER", nums);
+		    
+            //Step4: Form result based on deque front
+            //A valid window size has been formed
+            if (i >= k - 1) {
+		        //inspect(i, q, "window size reached, update results PEEK", nums);
+		        results[ri] = nums[q.peek()];
+		        ri++;
+		    }
+		}
+		return results;
+    }
+}
+```
+
+## [42 Trapping Rain Water]()
+Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it is able to trap after raining.
+
+For example, 
+Given [0,1,0,2,1,0,1,3,2,1,2,1], return 6.
+
+![alt text](https://leetcode.com/static/images/problemset/rainwatertrap.png)
+
+The above elevation map is represented by array [0,1,0,2,1,0,1,3,2,1,2,1]. In this case, 6 units of rain water (blue section) are being trapped. 
+
+```java
+public class Solution {
+    public void inspect(int i, int j, int[] height, int plank, int result) {
+        System.out.println("i=" + i +", j=" + j +", height[i]=" + height[i] +",height[j]=" + height[j] + ", plank=" + plank +", result="+result);
+    }
+    
+    //If both height of left and right boundary are greater than current plank, then plank is the smaller of the boundary
+    //The boundary with smaller height contributes to the result will move closer to the center
+    public int trap(int[] height) {
+        int i = 0, j = height.length - 1, result = 0, plank = 0;
+        while (i <= j) {
+            //inspect(i,j, height, plank, result);
+            plank = Math.min(height[i], height[j]) > plank ? Math.min(height[i], height[j]): plank;
+            result = height[i] >= height[j]? result + (plank - height[j--]):result + (plank - height[i++]);
+        }
+        return result;
+    }
+}
 ```
