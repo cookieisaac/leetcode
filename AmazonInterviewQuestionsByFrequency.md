@@ -2822,3 +2822,137 @@ public class Solution {
     }
 }
 ```
+
+## [167. Two Sum II - Input array is sorted](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/description/)
+
+Given an array of integers that is already sorted in ascending order, find two numbers such that they add up to a specific target number.
+
+The function twoSum should return indices of the two numbers such that they add up to the target, where index1 must be less than index2. Please note that your returned answers (both index1 and index2) are not zero-based.
+
+You may assume that each input would have exactly one solution and you may not use the same element twice.
+```
+Input: numbers={2, 7, 11, 15}, target=9
+Output: index1=1, index2=2
+```
+
+```java
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        int[] result = new int[]{0,0};
+        for (int i = 0, j = nums.length - 1; i < j; ) {
+            if (nums[i] + nums[j] == target) return new int[]{i+1, j+1};
+            else if (nums[i] + nums[j] > target) j--;
+            else i++;
+        } 
+        return result;
+    }
+}
+```
+
+## [692. Top K Frequent Words](https://leetcode.com/problems/top-k-frequent-words/description/)
+
+Given a non-empty list of words, return the k most frequent elements.
+
+Your answer should be sorted by frequency from highest to lowest. If two words have the same frequency, then the word with the lower alphabetical order comes first.
+
+Example 1:
+```
+Input: ["i", "love", "leetcode", "i", "love", "coding"], k = 2
+Output: ["i", "love"]
+Explanation: "i" and "love" are the two most frequent words.
+    Note that "i" comes before "love" due to a lower alphabetical order.
+```
+
+Example 2:
+```
+Input: ["the", "day", "is", "sunny", "the", "the", "the", "sunny", "is", "is"], k = 4
+Output: ["the", "is", "sunny", "day"]
+Explanation: "the", "is", "sunny" and "day" are the four most frequent words,
+    with the number of occurrence being 4, 3, 2 and 1 respectively.
+```
+
+Note:
+You may assume k is always valid, 1 ≤ k ≤ number of unique elements.
+Input words contain only lowercase letters.
+
+Follow up:
+Try to solve it in O(n log k) time and O(n) extra space.
+
+```java
+class Solution {
+    ArrayList<TreeSet<String>> freqToWords = new ArrayList<>();
+    HashMap<String, Integer> wordToFreq = new HashMap<>();
+    int maxFreq = 0;
+    
+    public List<String> topKFrequent(String[] words, int k) {
+        //Build Frequency Lookup Table
+        for (String word: words) {
+            if (!wordToFreq.containsKey(word)) 
+                wordToFreq.put(word, 0);
+            wordToFreq.put(word, 1+wordToFreq.get(word));
+            maxFreq = Math.max(maxFreq, wordToFreq.get(word));
+        }
+        
+        //Build Frequency to Words Table.
+        for (int i = 0; i <= maxFreq; i++) { //freqToWords[0] will not be used
+            freqToWords.add(new TreeSet<String>());
+        }
+        for (String word: words) {
+            freqToWords.get(wordToFreq.get(word)).add(word);
+        }
+           
+        //Build Result;
+        List<String> result = new ArrayList<>();
+        int count = 0;
+        for (int freq = maxFreq; freq > 0; freq--) {
+            TreeSet<String> candidates = freqToWords.get(freq);
+            
+            for (Iterator<String> it = candidates.iterator(); it.hasNext();) {
+                result.add(it.next());
+                count++;
+                if (count == k) return result;
+            }
+        }
+        return result;
+    }
+}
+```
+## [78. Subsets](https://leetcode.com/problems/subsets/description/)
+
+Given a set of distinct integers, nums, return all possible subsets (the power set).
+
+Note: The solution set must not contain duplicate subsets.
+
+For example,
+If nums = [1,2,3], a solution is:
+```
+[
+  [3],
+  [1],
+  [2],
+  [1,2,3],
+  [1,3],
+  [2,3],
+  [1,2],
+  []
+]
+```
+
+```java
+class Solution {
+    public List<List<Integer>> subsets(int[] nums) {
+        List<List<Integer>> results = new LinkedList<>();        
+        backtrack(nums, 0, new ArrayList<>(), results);     
+        return results;
+    }
+    
+    private void backtrack(int[] nums, int start, List<Integer> prefix, List<List<Integer>> results) {
+        results.add(new ArrayList<>(prefix));
+        for (int i = start; i < nums.length; i++) {
+            prefix.add(nums[i]);
+            backtrack(nums, i+1, prefix,results);
+            prefix.remove(prefix.size()-1);
+        }
+    }
+}
+```
