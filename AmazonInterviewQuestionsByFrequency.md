@@ -2266,3 +2266,259 @@ class Solution {
     }
 }
 ```
+
+## [3. Longest Substring Without Repeating Characters](https://leetcode.com/problems/longest-substring-without-repeating-characters/description/)
+
+Given a string, find the length of the longest substring without repeating characters.
+
+Examples:
+
+Given "abcabcbb", the answer is "abc", which the length is 3.
+
+Given "bbbbb", the answer is "b", with the length of 1.
+
+Given "pwwkew", the answer is "wke", with the length of 3. Note that the answer must be a substring, "pwke" is a subsequence and not a substring.
+
+```java
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        int head = 0, length = 0;   //Maximum String so far
+        int begin = 0, end = 0;     //Window
+        int[] map = new int[128];   //Feature Map
+        int diff = 0;               //Feature
+        
+        while (end  < s.length()) {
+            //Move end till the window is invalid 
+            //(Before increase, if map[c] == 1 means c is in the window now)
+            if (map[s.charAt(end++)]++ == 1) diff++;
+            //Move begin to make window valid 
+            //(After decrease, it should be map[c] == 1, which means c is in the window only once now)
+            while (diff > 0) {
+                if (map[s.charAt(begin++)]-- == 2) diff--;
+            }
+            //Record this window if it's larger
+            if (end - begin > length) length = end - (head = begin);
+        }
+        return length;
+    }
+}
+```
+
+## [139. Word Break](https://leetcode.com/problems/word-break/description/)
+
+Given a non-empty string s and a dictionary wordDict containing a list of non-empty words, determine if s can be segmented into a space-separated sequence of one or more dictionary words. You may assume the dictionary does not contain duplicate words.
+
+For example, given
+s = "leetcode",
+dict = ["leet", "code"].
+
+Return true because "leetcode" can be segmented as "leet code".
+
+UPDATE (2017/1/4):
+The wordDict parameter had been changed to a list of strings (instead of a set of strings). Please reload the code definition to get the latest changes.
+
+
+```java
+class Solution {
+    public boolean wordBreak(String s, List<String> wordDict) {
+        boolean[] breakable = new boolean[s.length()];
+        for (int i = 0; i < s.length(); i++) {
+            for (String word: wordDict) {
+                if (s.substring(i).startsWith(word) && (i == 0 || breakable[i-1] == true)) {
+                    breakable[i+word.length()-1] = true;
+                }
+            }
+        }
+        return breakable[s.length()-1];
+    }
+}
+```
+
+## [160. Intersection of Two Linked Lists](https://leetcode.com/problems/intersection-of-two-linked-lists/description/)
+Write a program to find the node at which the intersection of two singly linked lists begins.
+
+
+For example, the following two linked lists:
+
+A:          a1 → a2
+                   ↘
+                     c1 → c2 → c3
+                   ↗            
+B:     b1 → b2 → b3
+begin to intersect at node c1.
+
+
+Notes:
+
+If the two linked lists have no intersection at all, return null.
+The linked lists must retain their original structure after the function returns.
+You may assume there are no cycles anywhere in the entire linked structure.
+Your code should preferably run in O(n) time and use only O(1) memory.
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) {
+ *         val = x;
+ *         next = null;
+ *     }
+ * }
+ */
+public class Solution {
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        //Let Runner1 traverse A+B, whereas Runner2 traverse B+A, then they will at least at last null
+        //A would traverse a1, a2, c1, c2, c3, b1, b2, b3, c1, c2, c3
+        //B woudl traverse b1, b2, b3, c1, c2, c3, a1, a2, c1, c2, c3
+        if (headA == null || headB == null) return null;
+        ListNode runner1 = headA, runner2 =  headB;
+        while (runner1 != runner2 ) {
+            runner1 = runner1==null? headB : runner1.next; //traverse B after A
+            runner2 = runner2==null? headA : runner2.next; //traverse A after B
+        }
+        return runner1;
+    }
+}
+```
+
+## [126. Word Ladder II](https://leetcode.com/problems/word-ladder-ii/description/)
+Given two words (beginWord and endWord), and a dictionary's word list, find all shortest transformation sequence(s) from beginWord to endWord, such that:
+
+Only one letter can be changed at a time
+Each transformed word must exist in the word list. Note that beginWord is not a transformed word.
+For example,
+
+Given:
+beginWord = "hit"
+endWord = "cog"
+wordList = ["hot","dot","dog","lot","log","cog"]
+Return
+  [
+    ["hit","hot","dot","dog","cog"],
+    ["hit","hot","lot","log","cog"]
+  ]
+Note:
+Return an empty list if there is no such transformation sequence.
+All words have the same length.
+All words contain only lowercase alphabetic characters.
+You may assume no duplicates in the word list.
+You may assume beginWord and endWord are non-empty and are not the same.
+
+UPDATE (2017/1/20):
+The wordList parameter had been changed to a list of strings (instead of a set of strings). Please reload the code definition to get the latest changes.
+
+```java
+public class Solution {
+    //A copy of dictionary, INPUT
+    private Set<String> dict;
+    
+    //Adjacency Map of SymbolGraph, INPUT by dict, OUTPUT to bfs, dfs
+    private HashMap<String, ArrayList<String>> nodeNeighbors = new HashMap<>();
+    
+    //Path Length from begin word to ALL word in dict, INPUT by bfs, output to dfs
+    private HashMap<String, Integer> distance;
+    
+    public List<List<String>> findLadders(String start, String end, List<String> wordList) {
+        //Step 1: Init all necessary auxiliary information
+        this.dict = new HashSet<String>(wordList);
+        dict.add(start);  
+        
+        this.nodeNeighbors = new HashMap<>();
+        for (String word : dict) this.nodeNeighbors.put(word, new ArrayList<String>());
+        
+        this.distance = new HashMap<>();
+        
+        //Step 2: BFS to Build node adjacency list AND distance lookup        
+        bfs(start, end);  
+        
+        //Step 3: Backtrack on all possible path
+        List<List<String>> result = new ArrayList<List<String>>();
+        ArrayList<String> pathPrefix = new ArrayList<String>();
+        dfs(start, end, pathPrefix, result);
+        
+        return result;
+    }
+    
+    // BFS: Trace every node's distance from the start node (level by level).
+    private void bfs(String start, String end) {
+        Queue<String> queue = new LinkedList<String>();
+        queue.offer(start);
+        distance.put(start, 0); //Serve as the marked[] to see if nodes are already visited
+
+        
+        while (!queue.isEmpty()) {
+            int level = queue.size(); //NOTE: Used to explore node level by level
+            boolean foundEnd = false;
+            
+            //NOTE: MUST explore all nodes of the level where end word is in.
+            for (int i = 0; i < level; i++) { 
+                //Get a word
+                String currentWord = queue.poll();
+
+                //Update relevant information: distance & neighbor
+                int currentDistance = distance.get(currentWord);
+                nodeNeighbors.put(currentWord, getNeighbors(currentWord));
+
+                //Enqueue unvisited neighbor
+                for (String neighbor: nodeNeighbors.get(currentWord)) {
+                    //nodeNeighbors.get(currentWord).add(neighbor);
+                    if (!distance.containsKey(neighbor)) { 
+                        distance.put(neighbor, currentDistance + 1);
+                        queue.offer(neighbor);
+                        //DON'T BREAK HERE RIGHT AWAY. WAIT TILL YOU FINISH ALL NODES AT THIS LEVEL
+                        if (neighbor.equals(end)) foundEnd = true; 
+                    }
+                }
+            }
+            
+            if (foundEnd) break;
+        }
+    }
+    
+    // Find all next level nodes.    
+    private ArrayList<String> getNeighbors(String node) {
+        ArrayList<String> result = new ArrayList<String>();
+        char chs[] = node.toCharArray();
+
+        //Compute all different variations of the word, and see if it's in the dictionary
+        for (char ch ='a'; ch <= 'z'; ch++) {
+            for (int i = 0; i < chs.length; i++) {
+                if (chs[i] == ch) continue;
+            
+                char old_ch = chs[i];
+                chs[i] = ch;
+                if (dict.contains(String.valueOf(chs))) {
+                    result.add(String.valueOf(chs));
+                }
+                chs[i] = old_ch;
+            }
+        }
+        return result;
+    }
+    
+    // DFS: output all paths with the shortest distance using backtracking
+    private void dfs(String currentWord, String endWord, ArrayList<String> pathPrefix, List<List<String>> result) {
+        //Step 1: Take a step with currentWord
+        pathPrefix.add(currentWord);
+
+        //Step 2: Explore on all possible next steps
+        if (endWord.equals(currentWord)) {
+            //Step 2.1: If already reached end, no need to explore next stap
+            result.add(new ArrayList<String>(pathPrefix));
+        } else {
+            //Step 2.2: Otherwise, the next step should be the neighbor AND one step larger from current node to end
+            for (String nextWord : nodeNeighbors.get(currentWord)) {            
+                if (distance.get(nextWord) == distance.get(currentWord) + 1) {
+                    dfs(nextWord, endWord, pathPrefix, result);
+                }
+            }
+        }
+
+        //Step 3: Take the step back
+        pathPrefix.remove(pathPrefix.size() - 1);
+    }
+}
+```
+
