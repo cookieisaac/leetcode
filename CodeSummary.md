@@ -1,4 +1,14 @@
 
+# Tree Review
+
+TODO 1: Put this section after Graph Secion
+TODO 2: 
+Summarize this: 
+https://leetcode.com/problems/validate-binary-search-tree/discuss/32112/Learn-one-iterative-inorder-traversal-apply-it-to-multiple-tree-questions-(Java-Solution)
+TODO 3:
+Review Algorithm: 
+Recursion version + Iterative version for pre-order, in-order, post-order traversal
+
 # Graph Review 
 Four major types of graph
 Representation of the graph and the processing of the graph should be separated
