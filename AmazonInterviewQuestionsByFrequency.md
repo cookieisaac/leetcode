@@ -1969,3 +1969,300 @@ class Solution {
     }
 }
 ```
+
+## [380 Insert Delete GetRandom O(1)](https://leetcode.com/problems/insert-delete-getrandom-o1/description/)
+
+Design a data structure that supports all following operations in average O(1) time.
+
+insert(val): Inserts an item val to the set if not already present.
+remove(val): Removes an item val from the set if present.
+getRandom: Returns a random element from current set of elements. Each element must have the same probability of being returned.
+Example:
+```
+// Init an empty set.
+RandomizedSet randomSet = new RandomizedSet();
+
+// Inserts 1 to the set. Returns true as 1 was inserted successfully.
+randomSet.insert(1);
+
+// Returns false as 2 does not exist in the set.
+randomSet.remove(2);
+
+// Inserts 2 to the set, returns true. Set now contains [1,2].
+randomSet.insert(2);
+
+// getRandom should return either 1 or 2 randomly.
+randomSet.getRandom();
+
+// Removes 1 from the set, returns true. Set now contains [2].
+randomSet.remove(1);
+
+// 2 was already in the set, so return false.
+randomSet.insert(2);
+
+// Since 2 is the only number in the set, getRandom always return 2.
+randomSet.getRandom();
+```
+
+```java
+class RandomizedSet {
+    ArrayList<Integer> values; //Serve as an array of values
+    HashMap<Integer, Integer> indexes; //value -> (index in array list)
+    Random random = new Random();
+    
+    /** Initialize your data structure here. */
+    public RandomizedSet() {
+        values = new ArrayList<>();
+        indexes = new HashMap<>();
+    }
+    
+    /** Inserts a value to the set. Returns true if the set did not already contain the specified element. */
+    public boolean insert(int val) {
+        if (indexes.containsKey(val)) return false;
+        indexes.put(val, values.size());
+        values.add(val);
+        return true;
+    }
+    
+    /** Removes a value from the set. Returns true if the set contained the specified element. */
+    public boolean remove(int val) {
+        if (!indexes.containsKey(val)) return false;
+        //NOTE: cannot use `values.remove(indexes.get(val))` as this will be O(N)
+        //IDEA: swap the one to be deleted to the last, then remove last
+        int last = values.get(values.size()-1);
+        int toDeleteIndex = indexes.get(val);
+        //1. Overwrite toDelete with Last
+        values.set(toDeleteIndex, last);
+        indexes.put(last, toDeleteIndex);
+        //2. Remove last
+        values.remove(values.size() - 1); //This operation is O(1);
+        indexes.remove(val);
+        
+        return true;
+    }
+    
+    /** Get a random element from the set. */
+    public int getRandom() {
+        return values.get(random.nextInt(values.size()));
+    }
+}
+
+/**
+ * Your RandomizedSet object will be instantiated and called as such:
+ * RandomizedSet obj = new RandomizedSet();
+ * boolean param_1 = obj.insert(val);
+ * boolean param_2 = obj.remove(val);
+ * int param_3 = obj.getRandom();
+ */
+```
+
+## [98 Validate Binary Search Tree](https://leetcode.com/problems/validate-binary-search-tree/description/)
+
+Given a binary tree, determine if it is a valid binary search tree (BST).
+
+Assume a BST is defined as follows:
+
+The left subtree of a node contains only nodes with keys less than the node's key.
+The right subtree of a node contains only nodes with keys greater than the node's key.
+Both the left and right subtrees must also be binary search trees.
+
+Example 1:
+```
+    2
+   / \
+  1   3
+```
+Binary tree [2,1,3], return true.
+
+Example 2:
+```
+    1
+   / \
+  2   3
+```
+Binary tree [1,2,3], return false.
+
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+public class Solution {   
+    //NOTE: Root value must be greater/less than ALL the value of its descendants, not just its children.
+    public boolean isValidBST(TreeNode root) {
+        return isValidBST(root, Long.MIN_VALUE, Long.MAX_VALUE);
+    }
+    
+    public boolean isValidBST(TreeNode root, long minVal, long maxVal) {
+        if (root == null) return true;
+        if (root.val >= maxVal || root.val <= minVal) return false;
+        return isValidBST(root.left, minVal, root.val) && isValidBST(root.right, root.val, maxVal);
+    }
+}
+```
+
+## [545 Boundary of Binary Tree](https://leetcode.com/problems/boundary-of-binary-tree/description/)
+
+Given a binary tree, return the values of its boundary in anti-clockwise direction starting from root. Boundary includes left boundary, leaves, and right boundary in order without duplicate nodes.
+
+Left boundary is defined as the path from root to the left-most node. Right boundary is defined as the path from root to the right-most node. If the root doesn't have left subtree or right subtree, then the root itself is left boundary or right boundary. Note this definition only applies to the input binary tree, and not applies to any subtrees.
+
+The left-most node is defined as a leaf node you could reach when you always firstly travel to the left subtree if exists. If not, travel to the right subtree. Repeat until you reach a leaf node.
+
+The right-most node is also defined by the same way with left and right exchanged.
+
+Example 1
+```
+Input:
+  1
+   \
+    2
+   / \
+  3   4
+```
+Ouput:
+[1, 3, 4, 2]
+
+Explanation:
+The root doesn't have left subtree, so the root itself is left boundary.
+The leaves are node 3 and 4.
+The right boundary are node 1,2,4. Note the anti-clockwise direction means you should output reversed right boundary.
+So order them in anti-clockwise without duplicates and we have [1,3,4,2].
+Example 2
+Input:
+```
+    ____1_____
+   /          \
+  2            3
+ / \          / 
+4   5        6   
+   / \      / \
+  7   8    9  10  
+       
+```
+Ouput:
+[1,2,4,7,8,9,10,6,3]
+
+Explanation:
+The left boundary are node 1,2,4. (4 is the left-most node according to definition)
+The leaves are node 4,7,8,9,10.
+The right boundary are node 1,3,6,10. (10 is the right-most node).
+So order them in anti-clockwise without duplicate nodes we have [1,2,4,7,8,9,10,6,3].
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+ 
+
+// IDEA: 1 Pass PreOrder PostOrder Hybrid
+// As a node, my left child will inherit my leftness, but might lose my rightness if I have a right child.
+// As a node, my right child will inherit my rightness, but might lose my leftness if I have a left child.
+
+// If I am a left bound, I should appear before my 2 children - preorder
+// If I am a right bound, I should appear after my 2 children - postorder
+// If I am neither left nor right AND I am a leave, then I must be bottom.
+class Solution {
+    public List<Integer> boundaryOfBinaryTree(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+        if (root != null) {
+            result.add(root.val);
+            getBounds(root.left, true, false, result);
+            getBounds(root.right, false, true, result);
+        }
+        return result;
+    }
+    
+    //Three combination for <isLeftBound, isRightBound>: 
+    //  - (true, false): left boundary
+    //  - (false, true): right boundary
+    //  - (false, false): if leaves, then bottom boundary
+    // NOTE: there will never be the case where the combinaiton is (true, true)
+    private void getBounds(TreeNode node, boolean isLeftBound, boolean isRightBound, List<Integer> result) {
+        if (node == null) return;
+        
+        //Step 1: Add Left Bound
+        if (isLeftBound) result.add(node.val);
+        
+        //Step 2: Add Bottom: a.k.a Leaves that are not on the Left/Right Boundary
+        if (!isLeftBound && !isRightBound && node.left == null && node.right == null) result.add(node.val);
+        
+        //Step 3: Recursive on Left and Right Child to complete all of their left, bottom and right
+        //Recursion on Left Child: my left child will not be a right boundary anymore if I have a right child
+        getBounds(node.left, isLeftBound, isRightBound && node.right == null, result);
+        //Recursion on Right: my right child will not be a left bondary anymore if I have a left child
+        getBounds(node.right, isLeftBound && node.left == null, isRightBound, result);
+        
+        //Step 4: Add Right Bound
+        if (isRightBound) result.add(node.val);
+    }
+}
+```
+
+## [21 Merge Two Sorted Lists](https://leetcode.com/problems/merge-two-sorted-lists/description/)
+
+Merge two sorted linked lists and return it as a new list. The new list should be made by splicing together the nodes of the first two lists.
+
+Example:
+```
+Input: 1->2->4, 1->3->4
+Output: 1->1->2->3->4->4
+```
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {  
+        ListNode dummyHead = new ListNode(0);
+        ListNode runner = dummyHead;
+        
+        //Merge L1 and L2
+        while (l1 != null && l2 != null) {
+            if (l1.val < l2.val ) {
+                runner.next = new ListNode(l1.val);
+                l1 = l1.next;
+                runner = runner.next;
+            } else {
+                runner.next = new ListNode(l2.val);
+                l2 = l2.next;
+                runner = runner.next;
+            }
+        }
+        
+        //Finish L1 leftover
+        while (l1 != null) {
+            runner.next = new ListNode(l1.val);
+            l1 = l1.next;
+            runner = runner.next;
+        }
+        
+        //Finish L2 leftover
+        while (l2 != null) {
+            runner.next = new ListNode(l2.val);
+            l2 = l2.next;
+            runner = runner.next;
+        }
+        
+        return dummyHead.next;
+    }
+}
+```
