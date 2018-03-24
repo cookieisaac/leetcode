@@ -1793,3 +1793,179 @@ class Solution {
     }
 }
 ```
+## [449 Serialize and Deserialize BST](https://leetcode.com/problems/serialize-and-deserialize-bst/description/)
+
+Serialization is the process of converting a data structure or object into a sequence of bits so that it can be stored in a file or memory buffer, or transmitted across a network connection link to be reconstructed later in the same or another computer environment.
+
+Design an algorithm to serialize and deserialize a binary search tree. There is no restriction on how your serialization/deserialization algorithm should work. You just need to ensure that a binary search tree can be serialized to a string and this string can be deserialized to the original tree structure.
+
+The encoded string should be as compact as possible.
+
+Note: Do not use class member/global/static variables to store states. Your serialize and deserialize algorithms should be stateless.
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+public class Codec {
+
+    private String serializeNode(TreeNode node) {
+        if (node == null) return "null"+" ";
+        else return Integer.toString(node.val) + " ";    
+    }
+    
+    private TreeNode deserializeNode(String data) {
+        if (data.equals("") || data.equals("null")) return null;
+        else return new TreeNode(Integer.parseInt(data));
+    }
+    
+    // Encodes a tree to a single string.
+    public String serialize(TreeNode root) {
+        Queue<TreeNode> queue = new LinkedList<>();
+        StringBuilder sb = new StringBuilder();
+        
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            TreeNode parent = queue.poll();
+            if (parent != null) {
+                queue.offer(parent.left);
+                queue.offer(parent.right);
+            }
+            sb.append(serializeNode(parent));
+        }
+        return sb.toString();
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        String[] parsed = data.split("\\s+");
+        if (parsed.length == 0) return null;
+        
+        Queue<TreeNode> queue = new LinkedList<>();
+        
+        TreeNode root = deserializeNode(parsed[0]);
+        queue.offer(root);
+        for (int i = 1; i < parsed.length; ) {
+            TreeNode parent = queue.poll();
+            if (parent != null ) {
+                parent.left = deserializeNode(parsed[i]);
+                i++;
+                queue.offer(parent.left);
+                if (i < parsed.length) {
+                    parent.right = deserializeNode(parsed[i]);
+                    i++;
+                    queue.offer(parent.right);
+                }
+            }
+        }
+        return root;
+    }
+}
+
+// Your Codec object will be instantiated and called as such:
+// Codec codec = new Codec();
+// codec.deserialize(codec.serialize(root));
+```
+
+## [49 Group Anagrams](https://leetcode.com/problems/group-anagrams/description/)
+
+Given an array of strings, group anagrams together.
+
+For example, given: ["eat", "tea", "tan", "ate", "nat", "bat"], 
+Return:
+```
+[
+  ["ate", "eat","tea"],
+  ["nat","tan"],
+  ["bat"]
+]
+```
+Note: All inputs will be in lower-case.
+
+```java
+class Solution {
+    private String getKey(String str) {
+        char[] temp = str.toCharArray();
+        Arrays.sort(temp);
+        return Arrays.toString(temp);
+    }
+    
+    public List<List<String>> groupAnagrams(String[] strs) {
+        Map<String, List<String>> map = new HashMap<>();
+        for (String str: strs) {
+            String key = getKey(str);
+            if (!map.containsKey(key)) map.put(key, new ArrayList<String>());
+            map.get(key).add(str);
+        }
+        return new ArrayList<>(map.values());
+    }
+}
+```
+
+## [234 Palindrome Linked List](https://leetcode.com/problems/palindrome-linked-list/description/)
+
+Given a singly linked list, determine if it is a palindrome.
+
+Follow up:
+Could you do it in O(n) time and O(1) space?
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    
+    //Use fast runner/slow runner to find the middle point
+    //Flip the direction from the middle point to the end
+    //Use two pointer to run from head and tail at the same time towards the center
+    public boolean isPalindrome(ListNode head) {
+        if (head == null || head.next == null) return true;
+        
+        //Step 1: Find the middle point
+        ListNode walker = head, runner = head;
+        while(runner != null && runner.next != null) {
+            walker = walker.next;
+            runner = runner.next.next;
+        }
+        
+        //Step 2: Flip the second half of the list 
+        ListNode reverseHead;
+        if (runner == null) 
+            reverseHead = reverse(walker); //[0 -> 1 -> 2 -> 3 -> 4 -> 5], walker will be at 3, the beginning of second half
+        else  //runner != null && runner.next == null
+            reverseHead = reverse(walker.next); //[0 -> 1 -> 2 -> 3 -> 4], walker will be at 2, the exact middle point
+        
+        //Step 3: compare by palindrome definition
+        ListNode runnerFront = head;
+        ListNode runnerBack = reverseHead; 
+        while (runnerBack != null && runnerFront != null) {
+            if (runnerBack.val != runnerFront.val) return false;
+            runnerBack = runnerBack.next;
+            runnerFront = runnerFront.next;
+        }
+        return true;
+    }
+    
+    private ListNode reverse(ListNode head) {
+        ListNode node = null;
+        while (head != null) {
+            ListNode next = head.next;
+            head.next = node;
+            node = head;
+            head = next;
+        }
+        return node;
+    }
+}
+```
