@@ -2,12 +2,23 @@
 # Tree Review
 
 TODO 1: Put this section after Graph Secion
+
 TODO 2: 
 Summarize this: 
 https://leetcode.com/problems/validate-binary-search-tree/discuss/32112/Learn-one-iterative-inorder-traversal-apply-it-to-multiple-tree-questions-(Java-Solution)
+
 TODO 3:
 Review Algorithm: 
 Recursion version + Iterative version for pre-order, in-order, post-order traversal
+
+TODO 4:
+Review QuickSort, QuickSelect, MergeSort
+
+TODO 5:
+Review PriorityQueue add and remove algorithm
+
+TODO 6:
+Review how to implement a HashMap: Hash Function + Address Conflict Resolution
 
 # Graph Review 
 Four major types of graph
