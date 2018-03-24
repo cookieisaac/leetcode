@@ -2956,3 +2956,81 @@ class Solution {
     }
 }
 ```
+
+## [15. 3Sum](https://leetcode.com/problems/3sum/description/)
+
+Given an array S of n integers, are there elements a, b, c in S such that a + b + c = 0? Find all unique triplets in the array which gives the sum of zero.
+
+Note: The solution set must not contain duplicate triplets.
+
+For example, given array S = [-1, 0, 1, 2, -1, -4],
+
+A solution set is:
+[
+  [-1, 0, 1],
+  [-1, -1, 2]
+]
+
+```java
+public class Solution {
+    //O(N ^ 2)
+    public List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        if (nums.length < 3) return result;
+        
+        //A solution looks like [num[i], num[j], num[k]] 
+        Arrays.sort(nums); //O(N log N)
+        for(int i = 0; i < nums.length - 2;) { 
+            //i: the smallest index must be less than 0 for the sum to be zero
+            if (nums[i] > 0) break;
+            
+            //j: starts from i+1, and k starts from back
+            int j = i + 1;
+            int k = nums.length - 1;
+            while(j < k) {
+                int sum = nums[i] + nums[j] + nums[k];
+                if (sum == 0) result.add(Arrays.asList(nums[i], nums[j], nums[k]));
+                if (sum <= 0) while(nums[j]==nums[++j] && j < k); //skip equal nums[j] values
+                if (sum >= 0) while(nums[k--] == nums[k] && j < k); //skip equal nums[k] values
+            }
+            while(nums[i]==nums[++i] && i < nums.length - 2); //skip equal nums[i] values
+        }
+        return result;
+    }
+}
+```
+
+## [535. Encode and Decode TinyURL](https://leetcode.com/problems/encode-and-decode-tinyurl/description/)
+
+Note: This is a companion problem to the [System Design](https://leetcode.com/problemset/system-design/) problem: [Design TinyURL](https://leetcode.com/problems/design-tinyurl/).
+
+TinyURL is a URL shortening service where you enter a URL such as https://leetcode.com/problems/design-tinyurl and it returns a short URL such as http://tinyurl.com/4e9iAk.
+
+Design the encode and decode methods for the TinyURL service. There is no restriction on how your encode/decode algorithm should work. You just need to ensure that a URL can be encoded to a tiny URL and the tiny URL can be decoded to the original URL.
+```
+public class Codec {
+    private static int timer = 0;
+    private static String generateTinyUrl() {
+        return Integer.toString(timer++);
+    }
+    private HashMap<String, String> short2long = new HashMap<>();
+    private HashMap<String, String> long2short = new HashMap<>();
+    
+    // Encodes a URL to a shortened URL.
+    public String encode(String longUrl) {
+        String shortUrl = generateTinyUrl();
+        short2long.put(shortUrl, longUrl);
+        long2short.put(longUrl, shortUrl);
+        return shortUrl;
+    }
+
+    // Decodes a shortened URL to its original URL.
+    public String decode(String shortUrl) {
+        return short2long.get(shortUrl);
+    }
+}
+
+// Your Codec object will be instantiated and called as such:
+// Codec codec = new Codec();
+// codec.decode(codec.encode(url));
+```
