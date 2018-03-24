@@ -2521,4 +2521,304 @@ public class Solution {
     }
 }
 ```
+## [215. Kth Largest Element in an Array](https://leetcode.com/problems/kth-largest-element-in-an-array/description/)
+Find the kth largest element in an unsorted array. Note that it is the kth largest element in the sorted order, not the kth distinct element.
+For example,
+Given [3,2,1,5,6,4] and k = 2, return 5.
 
+Note: 
+You may assume k is always valid, 1 ≤ k ≤ array's length.
+
+
+```java
+//O(N*lgN)
+class Solution {
+    public int findKthLargest(int[] nums, int k) {
+        //A MIN heap of all the large numbers in nums
+        PriorityQueue<Integer> heap = new PriorityQueue<>(k);
+        heap.offer(nums[0]);
+        for (int i = 1; i < nums.length; i++) {
+            if (heap.size() < k || nums[i] > heap.peek()) {
+                if (heap.size() == k) heap.poll();
+                heap.offer(nums[i]);
+            }
+        }
+        
+        return heap.peek();
+    }
+}
+```
+
+```java
+public class Solution {
+    public int findKthLargest(int[] nums, int k) {
+        return quickselect(nums, nums.length-k);
+    }
+    
+    public static void quicksort(int[]nums) {
+        sort(nums, 0, nums.length-1);
+    }
+    
+    public static void sort(int[]nums, int lo, int hi) {
+        if (lo >= hi) return; //no action if only one element
+        int j = partition(nums, lo, hi);
+        sort(nums, lo, j-1);
+        sort(nums, j+1, hi); 
+    }
+    
+    public static int quickselect(int[]nums, int k) {
+        int lo = 0, hi = nums.length-1;
+        while (hi > lo) {
+            int j = partition(nums, lo, hi);
+            if (j < k) lo = j + 1;
+            else if (j > k) hi = j - 1;
+            else break;
+        }
+        return nums[k];
+    }
+    
+    public static void shuffle(int[]nums) {
+        Random rand = new Random();
+        for (int i = 1; i < nums.length; i++) {
+            int r = rand.nextInt(i+1);
+            exch(nums, i, r);
+        }
+    }
+    
+    public static int partition(int[]nums, int lo, int hi) {
+        int i=lo, j=hi+1;
+        int v=nums[lo];
+        while (true) {
+            while(nums[++i] < v) if (i == hi) break;
+            while(nums[--j] > v) if (j == lo) break;
+            if (i >= j) break;
+            exch(nums, i, j);
+        }
+        exch(nums, lo, j);
+        return j;
+    }
+    
+    public static void exch(int[] nums, int i, int j) {
+        int swap = nums[i];
+        nums[i] = nums[j];
+        nums[j] = swap;
+    }
+    
+    public void inspect(int[] nums) {
+        System.out.print("nums: [ ");
+        for (int num: nums) {
+            System.out.print(num+" ");
+        }
+        System.out.println("]");
+    }
+}
+```
+
+## [517. Super Washing Machines](https://leetcode.com/problems/super-washing-machines/description/)
+
+You have n super washing machines on a line. Initially, each washing machine has some dresses or is empty.
+
+For each move, you could choose any m (1 ≤ m ≤ n) washing machines, and pass one dress of each washing machine to one of its adjacent washing machines at the same time .
+
+Given an integer array representing the number of dresses in each washing machine from left to right on the line, you should find the minimum number of moves to make all the washing machines have the same number of dresses. If it is not possible to do it, return -1.
+
+Example1
+```
+Input: [1,0,5]
+
+Output: 3
+
+Explanation: 
+1st move:    1     0 <-- 5    =>    1     1     4
+2nd move:    1 <-- 1 <-- 4    =>    2     1     3    
+3rd move:    2     1 <-- 3    =>    2     2     2   
+```
+
+Example2
+```
+Input: [0,3,0]
+
+Output: 2
+
+Explanation: 
+1st move:    0 <-- 3     0    =>    1     2     0    
+2nd move:    1     2 --> 0    =>    1     1     1     
+```
+
+Example3
+```
+Input: [0,2,0]
+
+Output: -1
+
+Explanation: 
+It's impossible to make all the three washing machines have the same number of dresses. 
+```
+
+Note:
+The range of n is [1, 10000].
+The range of dresses number in a super washing machine is [0, 1e5].
+
+```java
+public class Solution {
+    /*
+    Let me use an example to briefly explain this. For example, your machines[] is [0,0,11,5]. 
+    So your total is 16 and the target value for each machine is 4. 
+    Convert the machines array to a kind of gain/lose array, we get: [-4,-4,7,1]. 
+    Now what we want to do is go from the first one and try to make all of them 0.
+    
+    To make the 1st machines 0, you need to give all its “load” to the 2nd machines.
+    So we get: [0,-8,7,1]
+    then: [0,0,-1,1]
+    lastly: [0,0,0,0], done.
+    
+    You don’t have to worry about the details about how these machines give load to each other. 
+    In this process, the least steps we need to eventually finish this process is determined by 
+        - the peak of abs(cnt) and 
+        - the max of “gain/lose” array. 
+    In this case, the peak of abs(cnt) is 8 and the max of gain/lose array is 7. So the result is 8.
+
+    Some other example:
+    machines: [0,3,0]; gain/lose array: [-1,2,-1]; max = 2, cnt = 0, -1, 1, 0, its abs peak is 1. So result is 2.
+    machines: [1,0,5]; gain/lose array: [-1,-2,3]; max = 3, cnt = 0, -1, -3, 0, its abs peak is 3. So result is 3.
+    */
+    public int findMinMoves(int[] machines) {
+        //If the total clothes cannot be equally divided, then no solution
+        int total = 0; 
+        for(int i: machines) total += i;
+        if( total % machines.length != 0) return -1;
+
+        int avg = total/machines.length;
+        int cnt = 0; //Net Gain/Lose so far, ie: sum of gain/lose from the machines ahead of me
+        int max = 0; //Maximum of Peak of abs(cnt) and Value of "gain/lose" array so far
+        for(int load: machines){
+            cnt += load-avg; //load-avg is "gain/lose"
+            max = maxOf3(max, Math.abs(cnt), load-avg);
+        }
+        return max;
+    }
+    
+    private int maxOf3(int a, int b, int c) {
+        return Math.max(a, Math.max(b, c));
+    }
+}
+```
+
+## [242. Valid Anagram](https://leetcode.com/problems/valid-anagram/)
+
+Given two strings s and t, write a function to determine if t is an anagram of s.
+
+For example,
+s = "anagram", t = "nagaram", return true.
+s = "rat", t = "car", return false.
+
+Note:
+You may assume the string contains only lowercase alphabets.
+
+Follow up:
+What if the inputs contain unicode characters? How would you adapt your solution to such case?
+
+```java
+class Solution {
+    public boolean isAnagram(String s, String t) {
+        char[] sc = s.toCharArray();
+        char[] tc = t.toCharArray();
+        
+        Arrays.sort(sc);
+        Arrays.sort(tc);
+        
+        return Arrays.toString(sc).equals(Arrays.toString(tc));
+    }
+}
+```
+
+## [102. Binary Tree Level Order Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal/description/)
+
+Given a binary tree, return the level order traversal of its nodes' values. (ie, from left to right, level by level).
+
+For example:
+Given binary tree [3,9,20,null,null,15,7],
+```
+    3
+   / \
+  9  20
+    /  \
+   15   7
+```
+return its level order traversal as:
+```
+[
+  [3],
+  [9,20],
+  [15,7]
+]
+```
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> result = new LinkedList<>();
+        
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        
+        while (!queue.isEmpty()) {
+            int count = queue.size(); //All the nodes at this level
+            List<Integer> layer = new LinkedList<>();
+            for (int i = 0; i < count; i++) {
+                TreeNode node = queue.poll();
+                if (node != null) {
+                    layer.add(node.val);
+                    queue.offer(node.left);
+                    queue.offer(node.right);
+                }
+            }
+            if (layer.size() > 0) result.add(layer);
+        }
+        
+        return result;
+    }
+}
+```
+
+##  [141. Linked List Cycle](https://leetcode.com/problems/linked-list-cycle/description/)
+
+Given a linked list, determine if it has a cycle in it.
+
+Follow up:
+Can you solve it without using extra space?
+
+```java
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) {
+ *         val = x;
+ *         next = null;
+ *     }
+ * }
+ */
+public class Solution {
+    public boolean hasCycle(ListNode head) {
+        ListNode walker = head;
+        ListNode runner = head;
+        
+        while (runner != null && runner.next != null) {
+            walker = walker.next;
+            runner = runner.next.next;
+            if (walker == runner) return true;
+        }
+        return false;
+    }
+}
+```
