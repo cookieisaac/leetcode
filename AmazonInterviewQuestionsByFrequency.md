@@ -3573,6 +3573,57 @@ public class Solution {
 }
 ```
 
+```
+/*
+Recursion: Running Stack when N = 3
+
+GRAY <N: 3>, <Prefix: >
+    GRAY <N: 2>, <Prefix: 0>
+        GRAY <N: 1>, <Prefix: 00>
+            GRAY <N: 0>, <Prefix: 000>
+            YARG <N: 0>, <Prefix: 001>
+        YARG <N: 1>, <Prefix: 01>
+            GRAY <N: 0>, <Prefix: 011>
+            YARG <N: 0>, <Prefix: 010>
+    YARG <N: 2>, <Prefix: 1>.
+        GRAY <N: 1>, <Prefix: 11>
+            GRAY <N: 0>, <Prefix: 110>
+            YARG <N: 0>, <Prefix: 111>
+        YARG <N: 1>, <Prefix: 10>
+            GRAY <N: 0>, <Prefix: 101>
+            YARG <N: 0>, <Prefix: 100>
+*/
+
+public class Solution {
+    // append reverse of order n gray code to prefix string
+    private static void yarg(String prefix, int n, List<Integer> result) {
+        //System.out.println("YARG <N: " + n +">, <Prefix: " + prefix +">");
+        if (n == 0) result.add(Integer.parseInt(prefix, 2));
+        else {
+            gray(prefix + "1", n - 1, result);
+            yarg(prefix + "0", n - 1, result);
+        }
+    }  
+
+    // append order n gray code to end of prefix string
+    private static void gray(String prefix, int n, List<Integer> result) {
+        //System.out.println("GRAY <N: " + n +">, <Prefix: " + prefix +">");
+        if (n == 0) result.add(Integer.parseInt(prefix, 2));
+        else {
+            gray(prefix + "0", n - 1, result);
+            yarg(prefix + "1", n - 1, result);
+        }
+    }  
+
+    public List<Integer> grayCode(int n) {
+        List<Integer> result = new LinkedList<>();
+        if (n == 0) return result;
+        else gray("", n, result);
+        return result;
+    }
+}
+```
+
 ## [451. Sort Characters By Frequency](https://leetcode.com/problems/sort-characters-by-frequency/description/)
 
 Given a string, sort it in decreasing order based on the frequency of characters.
@@ -3733,5 +3784,429 @@ class Solution {
     }
 }
 ```
+## [204. Count Primes](https://leetcode.com/problems/count-primes/description/)
 
+Description:
 
+Count the number of prime numbers less than a non-negative number, n.
+
+```java
+class Solution {
+    public int countPrimes(int n) {
+        boolean[] notPrime = new boolean[n];
+        int count = 0;
+        for (int i = 2; i < n; i++) {
+            if (notPrime[i] == false) { // Prime Number
+                count++;
+                for (int j = 2; i * j < n; j++) {
+                    notPrime[i*j] = true;
+                }
+            }
+        }
+        return count;
+    }
+}
+```
+
+## 414. Third Maximum Number
+DescriptionHintsSubmissionsDiscussSolution
+Given a non-empty array of integers, return the third maximum number in this array. If it does not exist, return the maximum number. The time complexity must be in O(n).
+
+Example 1:
+```
+Input: [3, 2, 1]
+
+Output: 1
+
+Explanation: The third maximum is 1.
+```
+
+Example 2:
+```
+Input: [1, 2]
+
+Output: 2
+
+Explanation: The third maximum does not exist, so the maximum (2) is returned instead.
+```
+
+Example 3:
+
+```
+Input: [2, 2, 3, 1]
+
+Output: 1
+
+Explanation: Note that the third maximum here means the third maximum distinct number.
+Both numbers with value 2 are both considered as second maximum.
+````
+
+```java
+class Solution {
+    public int thirdMax(int[] nums) {
+        //Primitive type cannot be converted to collections directly, must first box to object
+        Integer[] wrapper = Arrays.stream(nums).boxed().toArray(Integer[]::new); 
+        Set<Integer> numSet = new HashSet<Integer>(Arrays.asList(wrapper));
+        
+        //Return max if less than 3 unique number
+        if (numSet.size() < 3) return Collections.max(numSet);
+        
+        //Otherwise return the third maximum
+        PriorityQueue<Integer> heap = new PriorityQueue<>(3);
+        for (int num: numSet) {
+            if (heap.size() >= 3 && heap.peek() < num) {
+                heap.poll();
+            }
+            
+            if (heap.size() < 3) {
+                heap.offer(num);
+            } 
+        }
+        return heap.peek();
+    }
+}
+```
+## [538. Convert BST to Greater Tree](https://leetcode.com/problems/convert-bst-to-greater-tree/description/)
+
+Given a Binary Search Tree (BST), convert it to a Greater Tree such that every key of the original BST is changed to the original key plus sum of all keys greater than the original key in BST.
+
+Example:
+```
+Input: The root of a Binary Search Tree like this:
+              5
+            /   \
+           2     13
+
+Output: The root of a Greater Tree like this:
+             18
+            /   \
+          20     13
+```
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+//Based on the property of BST, all the right descendant on the right must be greater than the node
+//all the left descendant on the left must be less than the node
+//Therefore: always visti right child first, then root value adds the right child value, then the left child add root value
+public class Solution {
+    int sum = 0;
+    public TreeNode convertBST(TreeNode root) {
+        if (root == null) return root;
+        convertBST(root.right);
+        root.val += sum;
+        sum = root.val;
+        convertBST(root.left);
+        return root;
+    }
+}
+```
+
+## [189 Rotate Array](https://leetcode.com/problems/rotate-array/description/)
+
+Rotate an array of n elements to the right by k steps.
+
+For example, with n = 7 and k = 3, the array [1,2,3,4,5,6,7] is rotated to [5,6,7,1,2,3,4].
+
+Note:
+Try to come up as many solutions as you can, there are at least 3 different ways to solve this problem.
+
+Hint:
+Could you do it in-place with O(1) extra space?
+
+```java
+/*
+This approach is based on the fact that when we rotate the array k times, k elements from the back end of the array come to the front and the rest of the elements from the front shift backwards.
+
+In this approach, we firstly reverse all the elements of the array. Then, reversing the first k elements followed by reversing the rest n-k elements gives us the required result.
+
+Let n=7 and k=3.
+
+Original List                   : 1 2 3 4 5 6 7
+After reversing all numbers     : 7 6 5 4 3 2 1
+After reversing first k numbers : 5 6 7 4 3 2 1
+After revering last n-k numbers : 5 6 7 1 2 3 4 --> Result
+
+*/
+class Solution {
+    public void rotate(int[] nums, int k) {
+        k = k % nums.length;
+        reverse(nums, 0, nums.length - 1);
+        reverse(nums, 0, k - 1);
+        reverse(nums, k , nums.length - 1);
+    }
+    
+    public void reverse(int[] nums, int start, int end) {
+        for (int i = start, j = end; i < j; i++, j--) {
+            int temp = nums[i];
+            nums[i] = nums[j];
+            nums[j] = temp;
+        }
+    }
+}
+```
+## [355. Design Twitter](https://leetcode.com/problems/design-twitter/description/)
+
+Design a simplified version of Twitter where users can post tweets, follow/unfollow another user and is able to see the 10 most recent tweets in the user's news feed. Your design should support the following methods:
+
+1. postTweet(userId, tweetId): Compose a new tweet.
+2. getNewsFeed(userId): Retrieve the 10 most recent tweet ids in the user's news feed. Each item in the news feed must be posted by users who the user followed or by the user herself. Tweets must be ordered from most recent to least recent.
+3. follow(followerId, followeeId): Follower follows a followee.
+4. unfollow(followerId, followeeId): Follower unfollows a followee.
+
+Example:
+```
+Twitter twitter = new Twitter();
+
+// User 1 posts a new tweet (id = 5).
+twitter.postTweet(1, 5);
+
+// User 1's news feed should return a list with 1 tweet id -> [5].
+twitter.getNewsFeed(1);
+
+// User 1 follows user 2.
+twitter.follow(1, 2);
+
+// User 2 posts a new tweet (id = 6).
+twitter.postTweet(2, 6);
+
+// User 1's news feed should return a list with 2 tweet ids -> [6, 5].
+// Tweet id 6 should precede tweet id 5 because it is posted after tweet id 5.
+twitter.getNewsFeed(1);
+
+// User 1 unfollows user 2.
+twitter.unfollow(1, 2);
+
+// User 1's news feed should return a list with 1 tweet id -> [5],
+// since user 1 is no longer following user 2.
+twitter.getNewsFeed(1);
+```
+```java
+public class Twitter {
+
+    private static int TIMESTAMP = 0;
+    private HashMap<Integer, User> uid2User;
+    
+    public class Tweet {
+        private int id;
+        private int timestamp;
+        private Tweet next;
+        
+        public Tweet(int id) {
+            this.id = id;
+            this.timestamp = TIMESTAMP++;
+            this.next = null;
+        }
+        
+        public int id() {
+            return id;
+        }
+        
+        public Tweet next() {
+            return next;
+        }
+        
+        public int timestamp() {
+            return timestamp;
+        }
+        
+    }
+    
+    public class User {
+        private int userId;
+        private Set<Integer> following; //A set of uid current user is following
+        private Tweet tweet_head;
+        
+        public User(int id) {
+            this.userId = id;
+            following = new HashSet<Integer>();
+            following.add(id); //Follows self
+            tweet_head = null;
+        }
+        
+        public void follow(int uid) {
+            following.add(uid);
+        }
+        
+        public void unfollow(int uid) {
+            if (following.contains(uid))
+                following.remove(uid);
+        }
+        
+        public void post(int tid) {
+            Tweet t = new Tweet(tid);
+            t.next = tweet_head;
+            tweet_head = t;
+        }
+        
+        //Return all userId I'm following
+        public Set<Integer> following() {
+            return following;
+        } 
+        
+        //Return the latest tweet
+        public Tweet latest() {
+            return tweet_head;
+        }
+    }
+    
+    /** Initialize your data structure here. */
+    public Twitter() {
+        uid2User = new HashMap<>();
+    }
+    
+    /** Compose a new tweet. */
+    public void postTweet(int userId, int tweetId) {
+        if (!uid2User.containsKey(userId)) {
+            uid2User.put(userId, new User(userId));
+        }
+        uid2User.get(userId).post(tweetId);
+    }
+    
+    /** Retrieve the 10 most recent tweet ids in the user's news feed. Each item in the news feed must be posted by users who the user followed or by the user herself. Tweets must be ordered from most recent to least recent. */
+    public List<Integer> getNewsFeed(int userId) {
+        List<Integer> result = new LinkedList<>();
+        if (!uid2User.containsKey(userId)) return result;
+        
+        Set<Integer> followings = uid2User.get(userId).following(); //The list of UID current user is following
+        PriorityQueue<Tweet> heap = new PriorityQueue<>(followings.size(), (a,b) -> b.timestamp() - a.timestamp()); //MAX heap
+	//Put each following user's latest tweet in the heap
+        for (int uid: followings) {
+            Tweet latest = uid2User.get(uid).latest();
+            if (latest != null) { //Make sure the latest tweet is not null!
+                heap.offer(latest);
+            }
+        }
+        
+        //We will try to get 10 tweets from the heap
+        //Whenever we choose a tweet, we will put the selected user's next tweet into the heap
+        int count = 0;
+        while (!heap.isEmpty() && count < 10) {
+            Tweet latest = heap.poll();
+            result.add(latest.id());
+            count++;
+            if (latest.next() != null) {
+                heap.offer(latest.next());
+            }
+        }
+        return result;
+    }
+    
+    /** Follower follows a followee. If the operation is invalid, it should be a no-op. */
+    public void follow(int followerId, int followeeId) {
+        if (!uid2User.containsKey(followerId)) {
+            uid2User.put(followerId, new User(followerId));
+        }
+        
+        if (!uid2User.containsKey(followeeId)) {
+            uid2User.put(followeeId, new User(followeeId));
+        }
+        uid2User.get(followerId).follow(followeeId);
+    }
+    
+    /** Follower unfollows a followee. If the operation is invalid, it should be a no-op. */
+    public void unfollow(int followerId, int followeeId) {
+        if (!uid2User.containsKey(followerId) || followeeId == followerId) {
+            return;
+        }
+        uid2User.get(followerId).unfollow(followeeId);
+    }
+}
+
+/**
+ * Your Twitter object will be instantiated and called as such:
+ * Twitter obj = new Twitter();
+ * obj.postTweet(userId,tweetId);
+ * List<Integer> param_2 = obj.getNewsFeed(userId);
+ * obj.follow(followerId,followeeId);
+ * obj.unfollow(followerId,followeeId);
+ */
+ ```
+
+## [617. Merge Two Binary Trees](https://leetcode.com/problems/merge-two-binary-trees/description/)
+
+Given two binary trees and imagine that when you put one of them to cover the other, some nodes of the two trees are overlapped while the others are not.
+
+You need to merge them into a new binary tree. The merge rule is that if two nodes overlap, then sum node values up as the new value of the merged node. Otherwise, the NOT null node will be used as the node of new tree.
+
+Example 1:
+```
+Input: 
+	Tree 1                     Tree 2                  
+          1                         2                             
+         / \                       / \                            
+        3   2                     1   3                        
+       /                           \   \                      
+      5                             4   7                  
+Output: 
+Merged tree:
+	     3
+	    / \
+	   4   5
+	  / \   \ 
+	 5   4   7
+```
+Note: The merging process must start from the root nodes of both trees.
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public TreeNode mergeTrees(TreeNode t1, TreeNode t2) {
+        if (t1 == null) return t2;
+        if (t2 == null) return t1;
+        
+        //A exploring queue for tuplet <currentTree, t1 TreeNode, t2 TreeNode>
+        Queue<TreeNode[]> queue = new LinkedList<>(); 
+        
+        TreeNode root = createTreeNode(t1, t2);
+        queue.offer(new TreeNode[]{root, t1, t2});
+        
+        while (!queue.isEmpty()) {
+            TreeNode[] nodes = queue.poll(); //nodes[0]=currentNode, nodes[1]=t1Node, nodes[2]=t2Node
+            TreeNode current = nodes[0], node1 = nodes[1], node2 = nodes[2];
+
+            //Skip null node in current tree
+            if (current == null) continue;
+            
+            //Create Left Child for current node
+            TreeNode left1 = node1 == null ? null : node1.left; //Left child of node in t1
+            TreeNode left2 = node2 == null ? null : node2.left; //Left child of node in t2
+            current.left = createTreeNode(left1, left2);
+            
+            //Create Right Child for current node
+            TreeNode right1 = node1 == null ? null : node1.right; //Right child of node in t1
+            TreeNode right2 = node2 == null ? null : node2.right; //Right child of node in t2
+            current.right = createTreeNode(right1, right2);
+            
+            //Enqueue left and right
+            queue.offer(new TreeNode[]{current.left, left1, left2});
+            queue.offer(new TreeNode[]{current.right, right1, right2});
+        }
+        
+        return root;
+    }
+    
+    private TreeNode createTreeNode(TreeNode t1, TreeNode t2) {
+        if (t1 == null && t2 == null) return null;
+        int val1 = t1 == null ? 0 : t1.val;
+        int val2 = t2 == null ? 0 : t2.val;
+        
+        return new TreeNode(val1 + val2);
+    }
+}
+```
