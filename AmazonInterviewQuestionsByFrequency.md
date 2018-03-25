@@ -3436,3 +3436,302 @@ class Solution {
     }
 }
 ```
+## [199. Binary Tree Right Side View](https://leetcode.com/problems/binary-tree-right-side-view/description/)
+
+Given a binary tree, imagine yourself standing on the right side of it, return the values of the nodes you can see ordered from top to bottom.
+
+For example:
+```
+Given the following binary tree,
+   1            <---
+ /   \
+2     3         <---
+ \     \
+  5     4       <---
+```
+You should return [1, 3, 4].
+
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    //Travel Layer by Layer and record the last node in each layer
+    public List<Integer> rightSideView(TreeNode root) {
+        List<Integer> result = new LinkedList<>();
+        if (root == null) return result;
+        
+        Queue<TreeNode> queue = new LinkedList<>();
+        
+        queue.offer(root);
+        while (!queue.isEmpty()){
+            int count = queue.size(); //Number of nodes at this layer
+            for (int i = 0; i < count; i++) {
+                TreeNode node = queue.poll();
+                if (node.left != null) queue.offer(node.left);
+                if (node.right != null) queue.offer(node.right);
+                if (i == count - 1) result.add(node.val);
+            }
+        }
+        
+        return result;
+    }
+}
+```
+
+## [8. String to Integer (atoi)](https://leetcode.com/problems/string-to-integer-atoi/description/)
+
+Implement atoi to convert a string to an integer.
+
+Hint: Carefully consider all possible input cases. If you want a challenge, please do not see below and ask yourself what are the possible input cases.
+
+Notes: It is intended for this problem to be specified vaguely (ie, no given input specs). You are responsible to gather all the input requirements up front.
+
+ 
+
+Requirements for atoi:
+
+The function first discards as many whitespace characters as necessary until the first non-whitespace character is found. Then, starting from this character, takes an optional initial plus or minus sign followed by as many numerical digits as possible, and interprets them as a numerical value.
+
+The string can contain additional characters after those that form the integral number, which are ignored and have no effect on the behavior of this function.
+
+If the first sequence of non-whitespace characters in str is not a valid integral number, or if no such sequence exists because either str is empty or it contains only whitespace characters, no conversion is performed.
+
+If no valid conversion could be performed, a zero value is returned. If the correct value is out of the range of representable values, INT_MAX (2147483647) or INT_MIN (-2147483648) is returned.
+
+```java
+//Use double to store result temporarily to prevent overflow/underflow
+class Solution {
+    public int myAtoi(String str) {
+        if (str.length() == 0) return 0;
+        
+        double result = 0;
+        int i = 0;
+        boolean negativeFlag = false;
+        
+        //Skip whitespace "   123"
+        while (i < str.length() && str.charAt(i) == ' ') {
+            i++;
+        }
+        
+        //Read sign: consider "++---+++123"
+       if (str.charAt(i) == '-' || str.charAt(i) == '+') {
+            negativeFlag = str.charAt(i) == '-' ? !negativeFlag : negativeFlag;
+            i++;
+        }
+        
+        //Parse number
+        while (i < str.length() && str.charAt(i) >= '0' && str.charAt(i) <= '9') {
+            result = result * 10 + str.charAt(i) - '0';
+            i++;
+        }
+        
+        //Form the result in double and return MAX_INT/MIN_INT if over boundary
+        result *= negativeFlag ? -1 : 1;
+        if (result <= Integer.MIN_VALUE) return Integer.MIN_VALUE;
+        if (result >= Integer.MAX_VALUE) return Integer.MAX_VALUE;
+        return (int)result;
+    }
+}
+```
+
+##  [89. Gray Code](https://leetcode.com/problems/gray-code/description/)
+
+The gray code is a binary numeral system where two successive values differ in only one bit.
+
+Given a non-negative integer n representing the total number of bits in the code, print the sequence of gray code. A gray code sequence must begin with 0.
+
+For example, given n = 2, return [0,1,3,2]. Its gray code sequence is:
+```
+00 - 0
+01 - 1
+11 - 3
+10 - 2
+```
+Note:
+
+For a given n, a gray code sequence is not uniquely defined.
+
+For example, [0,2,3,1] is also a valid gray code sequence according to the above definition.
+
+```java
+public class Solution {
+    // i XOR (i/2)
+    public List<Integer> grayCode(int n) {
+        List<Integer> result = new LinkedList<>();
+        for (int i = 0; i < 1<<n; i++) result.add(i ^ i>>1); // i XOR (i/2)
+        System.out.println(result);
+        return result;
+    }
+}
+```
+
+## [451. Sort Characters By Frequency](https://leetcode.com/problems/sort-characters-by-frequency/description/)
+
+Given a string, sort it in decreasing order based on the frequency of characters.
+```
+Example 1:
+
+Input:
+"tree"
+
+Output:
+"eert"
+
+Explanation:
+'e' appears twice while 'r' and 't' both appear once.
+So 'e' must appear before both 'r' and 't'. Therefore "eetr" is also a valid answer.
+```
+
+Example 2:
+```
+Input:
+"cccaaa"
+
+Output:
+"cccaaa"
+
+Explanation:
+Both 'c' and 'a' appear three times, so "aaaccc" is also a valid answer.
+Note that "cacaca" is incorrect, as the same characters must be together.
+```
+
+Example 3:
+```
+Input:
+"Aabb"
+
+Output:
+"bbAa"
+
+Explanation:
+"bbaA" is also a valid answer, but "Aabb" is incorrect.
+Note that 'A' and 'a' are treated as two different characters.
+```
+
+
+```java
+class Solution {
+    public String frequencySort(String s) {
+        int maxFreq = 0;
+        int[] map = new int[128];
+        //Count frequency O(N)
+        for (char c: s.toCharArray()) {
+            map[c]++;
+        }
+        
+        //Build reverse lookup O(N)
+        Map<Integer, List<Character>> freqToChars = new HashMap<>();
+        for (char c = 0; c < map.length; c++) {
+            int freq = map[c];
+            if (freq > 0) {
+                maxFreq = Math.max(maxFreq, freq);
+                if (!freqToChars.containsKey(freq)) 
+                    freqToChars.put(freq, new ArrayList<Character>());
+                freqToChars.get(freq).add(c);
+            }
+        }
+        
+        //Build return result O(N)
+        StringBuilder sb = new StringBuilder();
+        for (int freq = maxFreq; freq > 0; freq--) {
+            if (freqToChars.containsKey(freq)) {
+                for (char c: freqToChars.get(freq)) {
+                    for (int i = 0; i < freq; i++) {
+                        sb.append(c);
+                    }
+                }
+            }
+        }
+        return sb.toString();
+    }
+}
+```
+## [508. Most Frequent Subtree Sum](https://leetcode.com/problems/most-frequent-subtree-sum/description/)
+
+Given the root of a tree, you are asked to find the most frequent subtree sum. The subtree sum of a node is defined as the sum of all the node values formed by the subtree rooted at that node (including the node itself). So what is the most frequent subtree sum value? If there is a tie, return all the values with the highest frequency in any order.
+
+Examples 1
+```
+Input:
+
+  5
+ /  \
+2   -3
+return [2, -3, 4], since all the values happen only once, return all of them in any order.
+```
+
+Examples 2
+```
+Input:
+
+  5
+ /  \
+2   -5
+return [2], since 2 happens twice, however -5 only occur once.
+```
+
+Note: You may assume the sum of values in any subtree is in the range of 32-bit signed integer.
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    private Map<TreeNode, Integer> treeToSum = new HashMap<>();
+    private Map<Integer, Integer> sumToFreq = new HashMap<>();
+    private Map<Integer, List<Integer>> freqToSums = new HashMap<>();
+    
+    public int[] findFrequentTreeSum(TreeNode root) {
+        if (root == null) return new int[0];
+        
+        //Build treeToSum map
+        getSubTreeSum(root);
+        
+        //Build sumToFreq
+        for (int sum: treeToSum.values()) {
+            if (!sumToFreq.containsKey(sum)) 
+                sumToFreq.put(sum, 0);
+            sumToFreq.put(sum, sumToFreq.get(sum) + 1);
+        }
+                        
+        //Build freqToSums
+        for (int sum: sumToFreq.keySet()) {
+            int freq = sumToFreq.get(sum);
+            if (!freqToSums.containsKey(freq)) 
+                freqToSums.put(freq, new LinkedList<>());
+            freqToSums.get(freq).add(sum);
+        }
+        
+        //Get max freq and Return result as int[]
+        int maxFreq = Collections.max(sumToFreq.values());
+        return freqToSums.get(maxFreq).stream()
+                          .mapToInt(Integer::intValue)
+                          .toArray();
+            
+    }
+    
+    private int getSubTreeSum(TreeNode node) {
+        if (node == null) return 0;
+        if (treeToSum.containsKey(node)) return treeToSum.get(node);
+        int sum = node.val + getSubTreeSum(node.left) + getSubTreeSum(node.right);
+        treeToSum.put(node, sum);
+        return sum;
+    }
+}
+```
+
+
