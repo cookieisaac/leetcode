@@ -4210,3 +4210,374 @@ class Solution {
     }
 }
 ```
+
+## [532. K-diff Pairs in an Array](https://leetcode.com/problems/k-diff-pairs-in-an-array/description/)
+
+Given an array of integers and an integer k, you need to find the number of unique k-diff pairs in the array. Here a k-diff pair is defined as an integer pair (i, j), where i and j are both numbers in the array and their absolute difference is k.
+
+Example 1:
+```
+Input: [3, 1, 4, 1, 5], k = 2
+Output: 2
+Explanation: There are two 2-diff pairs in the array, (1, 3) and (3, 5).
+Although we have two 1s in the input, we should only return the number of unique pairs.
+```
+Example 2:
+```
+Input:[1, 2, 3, 4, 5], k = 1
+Output: 4
+Explanation: There are four 1-diff pairs in the array, (1, 2), (2, 3), (3, 4) and (4, 5).
+```
+Example 3:
+```
+Input: [1, 3, 1, 5, 4], k = 0
+Output: 1
+Explanation: There is one 0-diff pair in the array, (1, 1).
+```
+
+Note:
+
+1. The pairs (i, j) and (j, i) count as the same pair.
+2. The length of the array won't exceed 10,000.
+3. All the integers in the given input belong to the range: [-1e7, 1e7].
+
+```java
+class Solution {
+    public int findPairs(int[] nums, int k) {
+        if (nums == null || nums.length == 0 || k < 0) return 0;
+        
+        //Build a number frequency map
+        Map<Integer, Integer> numFreq = new HashMap<>();
+        for (int num: nums) {
+            numFreq.put(num, numFreq.getOrDefault(num, 0) + 1);
+        }
+        
+        int counts = 0;
+        if (k == 0) { //When k is 0, find the number that appears at least twice
+            for (int value: numFreq.values()) {
+                if (value >= 2)
+                    counts++;
+            }
+        } else { //Otherwise, for each num, see if num+k is also in the table
+            for (int num: numFreq.keySet()) {
+                if (numFreq.containsKey(num+k)) {
+                    counts++;
+                }
+            }
+        }
+        
+        return counts;
+    }
+}
+```
+
+## [119. Pascal's Triangle II](https://leetcode.com/problems/pascals-triangle-ii/description/)
+
+Given an index k, return the kth row of the Pascal's triangle.
+
+For example, given k = 3,
+Return [1,3,3,1].
+
+Note:
+Could you optimize your algorithm to use only O(k) extra space?
+
+```java
+class Solution {
+    //The Nth Row in in Pascal triangle will be
+    //C(N, 0), C(N, 1), C(N, 2) ... C(N, N-1), C(N, N)
+    //Use the Combinatics formula we know that
+    //  - C(N, k) == C(N, N-k);
+    //  - C(N, k) = N! / ((N-i)!*N!)
+    public List<Integer> getRow(int rowIndex) {
+        int N = rowIndex;
+        Integer[] result = new Integer[N+1];
+        
+        for (int i = 0; i < N/2+1; i++) {
+            result[i] = C(N, i);
+            result[N-i] = result[i]; //C(N, k) == C(N, N-k);
+        }
+        return Arrays.asList(result);
+    }
+    
+    //Divide as soon as possible in case of overflow
+    protected int C(int base, int i) {
+        double result = 1;
+        for (int j=0; j<i; j++) {   //C(N, k) = N! / ((N-i)!*N!)
+            result *= (base-j);     //Computes Numerator: N!/(N-k)!
+            result /= (j+1);        //Computes Denominator: k!
+        }
+        return (int)result;
+    }
+
+}
+```
+
+## [536. Construct Binary Tree from String](https://leetcode.com/problems/construct-binary-tree-from-string/description/)
+
+You need to construct a binary tree from a string consisting of parenthesis and integers.
+
+The whole input represents a binary tree. It contains an integer followed by zero, one or two pairs of parenthesis. The integer represents the root's value and a pair of parenthesis contains a child binary tree with the same structure.
+
+You always start to construct the left child node of the parent first if it exists.
+
+Example:
+```
+Input: "4(2(3)(1))(6(5))"
+Output: return the tree root node representing the following tree:
+
+       4
+     /   \
+    2     6
+   / \   / 
+  3   1 5   
+```
+Note:
+There will only be '(', ')', '-' and '0' ~ '9' in the input string.
+An empty tree is represented by "" instead of "()".
+
+**Ike's Comment: Read the [Simple Python Interpreter](https://github.com/cookieisaac/interpreter), especially part 5 and part 7**
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+//A Tree Compiler: Idea from https://github.com/cookieisaac/interpreter
+// - User Lexer to turn char stream to token stream
+// - User parser to evaluate token stream
+public class Solution {
+    protected enum TokenType {
+        INTEGER,
+        LPAREN,     //Left Parenthesis
+        RPAREN,     //Right Rarenthesis
+        EOF
+    }
+    
+    public class Token {
+        TokenType   type;
+        Object      value;
+        
+        public Token(TokenType type, Object value) {
+            this.type = type;
+            this.value = value;
+        }
+    }
+    
+    //Text Stream -> Token Stream
+    protected class Lexer {
+        private String text;
+        private int position;
+        private char currentChar;
+        private static final char END = '#';
+        
+        public Lexer(String text) {
+            this.text = text;
+            position = 0;
+            currentChar = text.charAt(position);
+        }
+    
+        //Advacne the position pointer and set currentChar
+        private void advance() {
+            position += 1;
+            if (position == text.length()) {
+                currentChar = END; //Indicates end of input
+            } else {
+                currentChar = text.charAt(position);
+            }
+        }
+
+        public Integer integer() {
+            StringBuilder sb = new StringBuilder();
+            while (currentChar != END && (currentChar == '-' || Character.isDigit(currentChar))) {
+                sb.append(currentChar);
+                advance();
+            }
+            return Integer.parseInt(sb.toString());
+        }
+        
+        public Token getNextToken() {
+            while (currentChar != END) {
+                if (currentChar == '(') {
+                    advance();
+                    return new Token(TokenType.LPAREN, '(');
+                } else if (currentChar == ')') {
+                    advance();
+                    return new Token(TokenType.RPAREN, ')'); 
+                } else if (Character.isDigit(currentChar) || currentChar == '-'){
+                    return new Token(TokenType.INTEGER, integer());
+                }
+            }
+            return new Token(TokenType.EOF, null);
+        }
+    }
+    
+    //Token Stream -> evaluated result
+    protected class Parser {
+        private Lexer lexer;
+        private Token currentToken;
+        
+        public Parser(Lexer lexer) {
+            this.lexer = lexer;
+        }
+        
+        public TreeNode getTree() {
+            Stack<TreeNode> parentStack = new Stack<>(); //A stack for all parent TreeNode
+            for (Token currentToken = lexer.getNextToken(); 
+                 currentToken.type != TokenType.EOF; 
+                 currentToken = lexer.getNextToken()) {
+                switch (currentToken.type) {
+                    case RPAREN: //No more children for the node sitting at stack top
+                        parentStack.pop();
+                        break;
+                    case INTEGER: //Create TreeNode and attach to parent
+                        TreeNode node = new TreeNode((Integer)currentToken.value);
+                        if (!parentStack.isEmpty()) {
+                            TreeNode parent = parentStack.peek();
+                            if (parent.left != null) parent.right = node;
+                            else parent.left = node;
+                        }
+                        parentStack.push(node);
+                        break;
+                    case LPAREN:
+                        break;
+                }
+            }
+            return parentStack.isEmpty() ? null : parentStack.peek();
+        }
+    }
+    
+    public TreeNode str2tree(String s) {
+        if (s.equals("")) return null;
+        
+        Lexer lexer = new Lexer(s);
+        Parser parser = new Parser(lexer);
+        return parser.getTree();
+    }
+}
+```
+
+## [537. Complex Number Multiplication](https://leetcode.com/problems/complex-number-multiplication/description/)
+
+Given two strings representing two complex numbers.
+
+You need to return a string representing their multiplication. Note i2 = -1 according to the definition.
+
+Example 1:
+```
+Input: "1+1i", "1+1i"
+Output: "0+2i"
+Explanation: (1 + i) * (1 + i) = 1 + i2 + 2 * i = 2i, and you need convert it to the form of 0+2i.
+```
+
+Example 2:
+```
+Input: "1+-1i", "1+-1i"
+Output: "0+-2i"
+Explanation: (1 - i) * (1 - i) = 1 + i2 - 2 * i = -2i, and you need convert it to the form of 0+-2i.
+```
+
+Note:
+* The input strings will not have extra blank.
+* The input strings will be given in the form of a+bi, where the integer a and b will both belong to the range of [-100, 100]. And the output should be also in this form.
+
+```java
+class Solution {
+    protected class ComplexNumber {
+        protected int imag;
+        protected int real;
+        
+        private int parseInt(String str) {
+            if (str.contains("i")) return Integer.parseInt(str.substring(0, str.length()-1));
+            else return Integer.parseInt(str);
+        }
+
+        public ComplexNumber(String str) {
+            String[] splitted = str.split("\\+"); //Split string by plus sign
+            real = parseInt(splitted[0]);
+            imag = parseInt(splitted[1]);  
+        }
+        
+        public ComplexNumber(int real, int imag) {
+            this.imag = imag;
+            this.real = real;
+        }
+
+        public ComplexNumber multiply(ComplexNumber other) {
+            return new ComplexNumber(
+                this.real*other.real - this.imag*other.imag,
+                this.real*other.imag + this.imag*other.real
+            );
+        }
+        
+        public String toString() {
+            return real+"+"+imag+"i";
+        }
+    }
+    
+    public String complexNumberMultiply(String a, String b) {
+        ComplexNumber A = new ComplexNumber(a);
+        ComplexNumber B = new ComplexNumber(b);
+        
+        return A.multiply(B).toString();
+    }
+}
+```
+
+## [553. Optimal Division](https://leetcode.com/problems/optimal-division/description/)
+
+Given a list of positive integers, the adjacent integers will perform the float division. For example, [2,3,4] -> 2 / 3 / 4.
+
+However, you can add any number of parenthesis at any position to change the priority of operations. You should find out how to add parenthesis to get the maximum result, and return the corresponding expression in string format. Your expression should NOT contain redundant parenthesis.
+
+Example:
+```
+Input: [1000,100,10,2]
+Output: "1000/(100/10/2)"
+Explanation:
+1000/(100/10/2) = 1000/((100/10)/2) = 200
+However, the bold parenthesis in "1000/((100/10)/2)" are redundant, 
+since they don't influence the operation priority. So you should return "1000/(100/10/2)". 
+
+Other cases:
+1000/(100/10)/2 = 50
+1000/(100/(10/2)) = 50
+1000/100/10/2 = 0.5
+1000/100/(10/2) = 2
+```
+Note:
+
+1. The length of the input array is [1, 10].
+2. Elements in the given array will be in range [2, 1000].
+3. There is only one optimal division for each test case.
+
+```java
+class Solution {
+    /* 
+         X1/X2/X3/…/Xn will always be equal to (X1/X2) * Y, no matter how you place parentheses. 
+         i.e no matter how you place parentheses, X1 always goes to the numerator and X2 always goes to the denominator. 
+         
+         Hence you just need to maximize Y. 
+         And Y is maximized when it is equal to X3 *…*Xn. 
+         
+         So the answer is always X1/(X2/X3/…/Xn), which is (X1 *X3 *…*Xn)/X2
+    */
+    public String optimalDivision(int[] nums) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(nums[0]);
+        for (int i = 1; i < nums.length; i++) {
+            if (i==1 && nums.length > 2) {
+                builder.append("/(").append(nums[i]);
+            } else {
+                builder.append("/").append(nums[i]);
+            }
+        }
+        return nums.length > 2 ? builder.append(")").toString(): builder.toString();
+    }
+}
+```
+
