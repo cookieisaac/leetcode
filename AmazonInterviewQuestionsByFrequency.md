@@ -3034,3 +3034,405 @@ public class Codec {
 // Codec codec = new Codec();
 // codec.decode(codec.encode(url));
 ```
+
+## [186. Reverse Words in a String II](https://leetcode.com/problems/reverse-words-in-a-string-ii/description/)
+
+Given an input string, reverse the string word by word. A word is defined as a sequence of non-space characters.
+
+The input string does not contain leading or trailing spaces and the words are always separated by a single space.
+
+For example,
+Given s = "the sky is blue",
+return "blue is sky the".
+
+Could you do it in-place without allocating extra space?
+
+Related problem: Rotate Array
+
+```java
+class Solution {
+    //Reverse char[begin...end)
+    public void reverse(char[] str, int begin, int end) {
+        for (int i = begin, j = end - 1; i < j; i++, j--) {
+            char tmp = str[i];
+            str[i] = str[j];
+            str[j] = tmp;
+        }
+    }
+    public void reverseWords(char[] str) {
+        //Reverse entire string
+        reverse(str, 0, str.length);
+        System.out.println(str);
+        
+        //Reverse each word in the string
+        for (int begin = 0, end = 0; end <= str.length; end++) {
+            if (end < str.length && str[end] != ' ') continue;
+            reverse(str, begin, end);
+            begin = end+1;
+        }
+    }
+}
+```
+
+## [529. Minesweeper](https://leetcode.com/problems/minesweeper/description/)
+
+Let's play the minesweeper game (Wikipedia, online game)!
+
+You are given a 2D char matrix representing the game board. 'M' represents an unrevealed mine, 'E' represents an unrevealed empty square, 'B' represents a revealed blank square that has no adjacent (above, below, left, right, and all 4 diagonals) mines, digit ('1' to '8') represents how many mines are adjacent to this revealed square, and finally 'X' represents a revealed mine.
+
+Now given the next click position (row and column indices) among all the unrevealed squares ('M' or 'E'), return the board after revealing this position according to the following rules:
+
+1. If a mine ('M') is revealed, then the game is over - change it to 'X'.
+2. If an empty square ('E') with no adjacent mines is revealed, then change it to revealed blank ('B') and all of its adjacent unrevealed squares should be revealed recursively.
+3. If an empty square ('E') with at least one adjacent mine is revealed, then change it to a digit ('1' to '8') representing the number of adjacent mines.
+4. Return the board when no more squares will be revealed.
+
+Example 1:
+```
+Input: 
+
+[['E', 'E', 'E', 'E', 'E'],
+ ['E', 'E', 'M', 'E', 'E'],
+ ['E', 'E', 'E', 'E', 'E'],
+ ['E', 'E', 'E', 'E', 'E']]
+
+Click : [3,0]
+
+Output: 
+
+[['B', '1', 'E', '1', 'B'],
+ ['B', '1', 'M', '1', 'B'],
+ ['B', '1', '1', '1', 'B'],
+ ['B', 'B', 'B', 'B', 'B']]
+```
+Explanation:
+
+![alt text](https://leetcode.com/static/images/problemset/minesweeper_example_1.png)
+
+Example 2:
+```
+Input: 
+
+[['B', '1', 'E', '1', 'B'],
+ ['B', '1', 'M', '1', 'B'],
+ ['B', '1', '1', '1', 'B'],
+ ['B', 'B', 'B', 'B', 'B']]
+
+Click : [1,2]
+
+Output: 
+
+[['B', '1', 'E', '1', 'B'],
+ ['B', '1', 'X', '1', 'B'],
+ ['B', '1', '1', '1', 'B'],
+ ['B', 'B', 'B', 'B', 'B']]
+```
+Explanation:
+![alt text](https://leetcode.com/static/images/problemset/minesweeper_example_2.png)
+
+Note:
+* The range of the input matrix's height and width is [1,50].
+* The click position will only be an unrevealed square ('M' or 'E'), which also means the input board contains at least one * clickable square.
+* The input board won't be a stage when game is over (some mines have been revealed).
+* For simplicity, not mentioned rules should be ignored in this problem. For example, you don't need to reveal all the unrevealed mines when the game is over, consider any cases that you will win the game or flag any squares.
+
+```java
+class Solution {
+    
+    private char[] int2char = new char[] {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    
+    public char[][] updateBoard(char[][] board, int[] click) {
+        int I = click[0], J = click[1];
+        
+        //Rule 1: If a mine ('M') is revealed, then the game is over - change it to 'X'.
+        if (board[I][J] == 'M') {
+            board[I][J] = 'X';
+            return board;
+        }
+        
+        //Rule 2, 3: DFS
+        boolean[][] marked= new boolean[board.length][board[0].length];
+        if (board[I][J] == 'E') {
+            updateBoard(board, I, J, marked); 
+        }
+        return board;
+    }
+    
+    private void updateBoard(char[][] board, int I, int J, boolean[][] marked) {
+        if (I < 0 || I >= board.length || J < 0 || J >= board[0].length) return;
+        
+        if (marked[I][J] == true) return;
+        else marked[I][J] = true;
+        
+        if (board[I][J] == 'E') {
+            int bombs = peekBombs(board, I, J);
+            if (bombs == 0) {
+                //Rule 2
+                board[I][J] = 'B';
+                updateBoard(board, I-1, J-1, marked);
+                updateBoard(board, I-1, J, marked);
+                updateBoard(board, I-1, J+1, marked);
+                updateBoard(board, I, J-1, marked);
+                updateBoard(board, I, J+1, marked);
+                updateBoard(board, I+1, J-1, marked);
+                updateBoard(board, I+1, J, marked);
+                updateBoard(board, I+1, J+1, marked);
+                
+            } else {
+                //Rule 3
+                board[I][J] = int2char[bombs];
+            }
+        } 
+    }
+    
+    private int peekBombs(char[][] board, int I, int J) {
+        return 
+            bombCountHelper(board, I-1, J-1) + 
+            bombCountHelper(board, I-1, J) + 
+            bombCountHelper(board, I-1, J+1) + 
+            bombCountHelper(board, I, J-1) +
+            bombCountHelper(board, I, J+1) + 
+            bombCountHelper(board, I+1, J-1) + 
+            bombCountHelper(board, I+1, J) + 
+            bombCountHelper(board, I+1, J+1); 
+    }
+    
+    private int bombCountHelper(char[][] board, int I, int J) {
+        if (I < 0 || I >= board.length || J < 0 || J >= board[0].length) return 0;
+        return board[I][J] == 'M' || board[I][J] == 'X' ? 1 : 0;
+    }
+}
+```
+
+725. Split Linked List in Parts
+DescriptionHintsSubmissionsDiscussSolution
+Given a (singly) linked list with head node root, write a function to split the linked list into k consecutive linked list "parts".
+
+The length of each part should be as equal as possible: no two parts should have a size differing by more than 1. This may lead to some parts being null.
+
+The parts should be in order of occurrence in the input list, and parts occurring earlier should always have a size greater than or equal parts occurring later.
+
+Return a List of ListNode's representing the linked list parts that are formed.
+
+Examples 1->2->3->4, k = 5 // 5 equal parts [ [1], [2], [3], [4], null ]
+Example 1:
+```
+Input: 
+root = [1, 2, 3], k = 5
+Output: [[1],[2],[3],[],[]]
+Explanation:
+The input and each element of the output are ListNodes, not arrays.
+For example, the input root has root.val = 1, root.next.val = 2, \root.next.next.val = 3, and root.next.next.next = null.
+The first element output[0] has output[0].val = 1, output[0].next = null.
+The last element output[4] is null, but it's string representation as a ListNode is [].
+```
+
+Example 2:
+```
+Input: 
+root = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], k = 3
+Output: [[1, 2, 3, 4], [5, 6, 7], [8, 9, 10]]
+Explanation:
+The input has been split into consecutive parts with size difference at most 1, and earlier parts are a larger size than the later parts.
+```
+Note:
+
+* The length of root will be in the range [0, 1000].
+* Each value of a node in the input will be an integer in the range [0, 999].
+* k will be an integer in the range [1, 50].
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode[] splitListToParts(ListNode root, int k) {
+        //Step 1: Count total size of list
+        int size = 0;
+        for (ListNode runner = root; runner != null; runner = runner.next) size++;
+        
+        //Step 2: Split the parts based on calculation: 
+        //After split:
+        //  - The first remainder lsit should have size of k+1;
+        //  - The rest should have size of k;
+        int quote = size / k;
+        int remainder = size % k;
+        System.out.println(quote + " " + remainder);
+        ListNode[] result = new ListNode[k];
+        ListNode runner = root;
+        for (int i = 0; i < k; i++) {
+            result[i] = runner;
+            //For Case where k > size of the list
+            if (quote > 0) {
+                //Step 2.1: Advance quote step
+                for (int j = 0; j < quote - 1; j++) {
+                    runner = runner.next;
+                 }
+            
+                //Step 2.2: Advance one step more if [0, remainer) to have size of quote + 1
+                if (i < remainder) {
+                    System.out.println("Remainder ");
+                    runner = runner.next;
+                }
+            }
+            
+            //Step 2.3: Break current list
+            if (runner != null) {
+                ListNode next = runner.next;
+                runner.next = null;
+                runner = next;
+            }
+        }
+        return result;
+    }
+}
+```
+
+## 516. Longest Palindromic Subsequence
+DescriptionHintsSubmissionsDiscussSolution
+Given a string s, find the longest palindromic subsequence's length in s. You may assume that the maximum length of s is 1000.
+
+Example 1:
+```
+Input:
+"bbbab"
+Output:
+4
+```
+One possible longest palindromic subsequence is "bbbb".
+
+Example 2:
+```
+Input:
+"cbbd"
+Output:
+2
+```
+One possible longest palindromic subsequence is "bb".
+
+```java
+class Solution {
+    /*
+    Dynamic Programming
+    
+    For example: for string "abbca", we create the count array as follow
+    
+    //Count[begin][end] counts the longestPalindromeSubseq for string [begin, end)
+    //The underlying string representation looks like below
+        a     ab    abb   abbc  abbca
+        null  b     bb    bbc   bbca
+        null  null  b     bc    bca
+        null  null  null  c     ca
+        null  null  null  null  a     <== start from this corner
+        
+    //BEGIN start from bottom line
+             a b b c a
+          a  0 0 0 0 0       Go Up 
+          b  0 0 0 0 0          ^
+          b  0 0 0 0 0          |
+          c  0 0 0 0 0  
+          a  0 0 0 0 1  <-   begin  
+
+        
+    //Then move one row up, END starts from BEGIN
+             a b b c a
+          a  0 0 0 0 0       Go Up 
+          b  0 0 0 0 0          ^
+          b  0 0 0 0 0          |
+          c  0 0 0 1 0  <===   begin (end -> Go Right)
+          a  0 0 0 0 1   
+          
+    //Finally the matrix will look like this
+             a b b c a
+          a  1 1 2 2 4       Go Up 
+          b  0 1 2 2 2          ^
+          b  0 0 1 1 1          |
+          c  0 0 0 1 1  <===   begin (end -> Go Right)
+          a  0 0 0 0 1   
+        
+    */
+        
+    public int longestPalindromeSubseq(String s) {
+        int[][] dp = new int[s.length()][s.length()];
+        if (s.length() < 2) return s.length();
+        for (int begin = s.length() - 1; begin >= 0; begin--) {
+            dp[begin][begin] = 1;
+            for (int end = begin + 1; end < s.length(); end++) {
+                if (begin > s.length() - 2 || end < 1) continue;
+                
+                if (s.charAt(begin) == s.charAt(end)) {
+                    dp[begin][end] = dp[begin+1][end-1] + 2;
+                } else {
+                    dp[begin][end] = Math.max(dp[begin+1][end], dp[begin][end-1]);
+                }
+            }
+        }
+        return dp[0][s.length()-1];
+    }
+}
+```
+
+## 73. Set Matrix Zeroes
+
+Given a m x n matrix, if an element is 0, set its entire row and column to 0. Do it in place.
+
+
+Follow up:
+* Did you use extra space?
+* A straight forward solution using O(mn) space is probably a bad idea.
+* A simple improvement uses O(m + n) space, but still not the best solution.
+* Could you devise a constant space solution?
+
+```java
+class Solution {
+    public void setZeroes(int[][] matrix) {
+        boolean firstRowContainsZero = false;
+        boolean firstColContainsZero = false;
+        
+        int M = matrix.length;
+        int N = matrix[0].length;
+        
+        //Use First Row and First Col to indicate the row/col to be cleared
+        //Save the original first Row/Col zeroness with a flag
+        for (int i = 0; i < M; i++) {
+            for (int j = 0; j < N; j++) {
+                if (matrix[i][j] == 0) {
+                    if (i == 0) firstRowContainsZero = true;
+                    if (j == 0) firstColContainsZero = true;
+                    matrix[i][0] = 0;
+                    matrix[0][j] = 0;
+                }
+            }
+        }
+        
+        //Clear up the marked Row/Col
+        for (int i = 1; i < M; i++) { //<== Skip First Row
+            for (int j = 1; j < N; j++) { //<=== Skip First Col
+                if (matrix[i][0] == 0 || matrix[0][j] == 0) {
+                    matrix[i][j] = 0;
+                }
+            }
+        } 
+        
+        //If original first Row contains 0 , clear first Row
+        if(firstRowContainsZero) {
+            for(int j = 0; j < N; j++) {
+                matrix[0][j] = 0;
+            }
+        }
+        
+        
+        //If original first Col contains 0 , clear first Col
+        if(firstColContainsZero) {
+            for(int i = 0; i < M; i++) {
+                matrix[i][0] = 0;
+            }
+        }
+    }
+}
+```
