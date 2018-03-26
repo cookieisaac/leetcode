@@ -4581,3 +4581,458 @@ class Solution {
 }
 ```
 
+## [579. Find Cumulative Salary of an Employee](https://leetcode.com/problems/find-cumulative-salary-of-an-employee/description/)
+
+The Employee table holds the salary information in a year.
+
+Write a SQL to get the cumulative sum of an employee's salary over a period of 3 months but exclude the most recent month.
+
+The result should be displayed by 'Id' ascending, and then by 'Month' descending.
+
+Example
+Input
+```
+| Id | Month | Salary |
+|----|-------|--------|
+| 1  | 1     | 20     |
+| 2  | 1     | 20     |
+| 1  | 2     | 30     |
+| 2  | 2     | 30     |
+| 3  | 2     | 40     |
+| 1  | 3     | 40     |
+| 3  | 3     | 60     |
+| 1  | 4     | 60     |
+| 3  | 4     | 70     |
+```
+Output
+```
+| Id | Month | Salary |
+|----|-------|--------|
+| 1  | 3     | 90     |
+| 1  | 2     | 50     |
+| 1  | 1     | 20     |
+| 2  | 1     | 20     |
+| 3  | 3     | 100    |
+| 3  | 2     | 40     |
+```
+Explanation
+
+Employee '1' has 3 salary records for the following 3 months except the most recent month '4': salary 40 for month '3', 30 for month '2' and 20 for month '1'
+So the cumulative sum of salary of this employee over 3 months is 90(40+30+20), 50(30+20) and 20 respectively.
+
+```
+| Id | Month | Salary |
+|----|-------|--------|
+| 1  | 3     | 90     |
+| 1  | 2     | 50     |
+| 1  | 1     | 20     |
+```
+Employee '2' only has one salary record (month '1') except its most recent month '2'.
+```
+| Id | Month | Salary |
+|----|-------|--------|
+| 2  | 1     | 20     |
+```
+Employ '3' has two salary records except its most recent pay month '4': month '3' with 60 and month '2' with 40. So the cumulative salary is as following.
+```
+| Id | Month | Salary |
+|----|-------|--------|
+| 3  | 3     | 100    |
+| 3  | 2     | 40     |
+```
+
+```sql
+/*
+Explanation:
+`FROM Employee A, Employee B WHERE A.Id = B.Id` is self join which would report all possible “month” combinations of records for the same employee.
+
+A.Id    A.Month     A.Salary    B.Id    B.Month     B.Salary
+1       1           20          1       1           20
+1       1           20          1       2           30
+1       1           20          1       3           40
+1       1           20          1       4           60
+1       1           20          1       5           70
+1       2           20          1       1           20
+1       2           20          1       2           30
+etc
+
+We want to aggregate salary over 3 months before the reported month. In the above example for EmployeeId = 0 and month 5 we want aggregate salary for months 2, 3, and 4:
+A.month : 5 => B.month : 4, 3, 2
+A.month : 4 => B.month : 3, 2, 1
+A.month : 3 => B.month : 2, 1
+A.month : 2 => B.month : 1
+
+which is done with
+`SELECT SUM(B.Salary) as Salary
+WHERE B.Month BETWEEN(A.Month - 3) AND (A.Month - 1)` <<< for example months 4, 3 and 2 are between 5-3 and 5-1
+
+Finally, we want to report the last month of those records included in the SUM(B.Salary),
+rather than A.Salary which is done with SELECT MAX(B.Month). <<< for example for A.month = 5 it will select max(4, 3, 2) or 4
+
+*/
+SELECT   A.Id, MAX(B.Month) as Month, SUM(B.Salary) as Salary
+FROM     Employee A, Employee B
+WHERE    A.Id = B.Id AND B.Month BETWEEN (A.Month-3) AND (A.Month-1)
+GROUP BY A.Id, A.Month
+ORDER BY Id, Month DESC
+```
+
+## [606. Construct String from Binary Tree](https://leetcode.com/problems/construct-string-from-binary-tree/description/)
+
+You need to construct a string consists of parenthesis and integers from a binary tree with the preorder traversing way.
+
+The null node needs to be represented by empty parenthesis pair "()". And you need to omit all the empty parenthesis pairs that don't affect the one-to-one mapping relationship between the string and the original binary tree.
+
+Example 1:
+```
+Input: Binary tree: [1,2,3,4]
+       1
+     /   \
+    2     3
+   /    
+  4     
+
+Output: "1(2(4))(3)"
+
+Explanation: Originallay it needs to be "1(2(4)())(3()())", 
+but you need to omit all the unnecessary empty parenthesis pairs. 
+And it will be "1(2(4))(3)".
+```
+Example 2:
+```
+Input: Binary tree: [1,2,3,null,4]
+       1
+     /   \
+    2     3
+     \  
+      4 
+
+Output: "1(2()(4))(3)"
+
+Explanation: Almost the same as the first example, 
+except we can't omit the first parenthesis pair to break the one-to-one mapping relationship between the input and the output.
+```
+```
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    //The parenthsis of around the value is set by the parent only
+    public String tree2str(TreeNode node) {
+        if (node == null) return "";//Empty Node
+        if (node.left == null && node.right == null) return Integer.toString(node.val);//Leaf Node
+        if (node.right == null) return node.val+"("+ tree2str(node.left)+")";//Node without right child
+        if (node.left == null) return node.val+"()"+"(" + tree2str(node.right) + ")";//Node without left child
+        return node.val+ "(" + tree2str(node.left)+")("+tree2str(node.right)+")";//Regular Node
+    }
+}
+```
+
+## [459. Repeated Substring Pattern](https://leetcode.com/problems/repeated-substring-pattern/description/)
+
+Given a non-empty string check if it can be constructed by taking a substring of it and appending multiple copies of the substring together. You may assume the given string consists of lowercase English letters only and its length will not exceed 10000.
+
+Example 1:
+```
+Input: "abab"
+
+Output: True
+
+Explanation: It's the substring "ab" twice.
+```
+Example 2:
+```
+Input: "aba"
+
+Output: False
+```
+Example 3:
+```
+Input: "abcabcabcabc"
+
+Output: True
+
+Explanation: It's the substring "abc" four times. (And the substring "abcabc" twice.)
+```
+
+```java
+class Solution {
+    public boolean repeatedSubstringPattern(String str) {
+        int L = str.length();
+        
+        //String length doesn't have to be even, for example "aaa" will be true  
+        //NOTE: check must be p <= L, not p < L, this will take care the case of "bb"
+        for (int p = 2; p <= L ;p++) { 
+            //Try to break str into p parts
+            //If str can't break into p parts, try p+1 parts
+            if (L % p != 0) continue; 
+            
+            //If str can break into p parts, then each part is of length l
+            //Then repeat this substring p times, and see if it's the same as original string
+            int l = L/p;              
+            String sub = str.substring(0, l);
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < p; i++) sb.append(sub);
+            System.out.println(sb.toString());
+            if (str.equals(sb.toString())) return true;
+        }
+        return false;
+    }
+}
+```
+
+## [640. Solve the Equation](https://leetcode.com/problems/solve-the-equation/description/)
+
+Solve a given equation and return the value of x in the form of string "x=#value". The equation contains only '+', '-' operation, the variable x and its coefficient.
+
+If there is no solution for the equation, return "No solution".
+
+If there are infinite solutions for the equation, return "Infinite solutions".
+
+If there is exactly one solution for the equation, we ensure that the value of x is an integer.
+
+Example 1:
+```
+Input: "x+5-3+x=6+x-2"
+Output: "x=2"
+```
+Example 2:
+```
+Input: "x=x"
+Output: "Infinite solutions"
+```
+Example 3:
+```
+Input: "2x=x"
+Output: "x=0"
+```
+Example 4:
+```
+Input: "2x+3x-6x=x+2"
+Output: "x=-1"
+```
+Example 5:
+```
+Input: "x=x+2"
+Output: "No solution"
+```
+
+```java
+public class Solution {
+    public enum TokenType {
+        PLUS,
+        MINUS,
+        X,
+        COEF, //Coefficient
+        INTEGER, //Integer
+        EOF //End of file   
+    }
+    
+    public class Token {
+        private TokenType   type;
+        private Object      value;
+        
+        public Token(TokenType type, Object value) {
+            this.type = type;
+            this.value = value;
+        }
+        
+        public TokenType type() {return type;}
+        public Object value() {return value;}
+        public void setValue(int value) { this.value = value; }
+        public String toString() { return "("+type+","+value+")"; }
+    }
+    
+    public class Lexer {
+        private String text;
+        private int position;
+        private char currentChar;
+        private static final char END = '#';
+        
+        public Lexer(String text) {
+            this.text = text;
+            position = 0;
+            currentChar = text.length() == 0 ? END: text.charAt(0);
+        }
+        
+        //Parse text stream to token stream
+        public Token getNextToken() {
+            while (currentChar != END) {
+                if (currentChar == '+') {
+                    advance();
+                    return new Token(TokenType.PLUS, '+');
+                } else if (currentChar == '-') {
+                    advance();
+                    return new Token(TokenType.MINUS, '-');
+                } else if (currentChar == 'x') {
+                    advance(); //If the character is x, it will generate a coeff of 1
+                    return new Token(TokenType.COEF, 1);
+                } else if (Character.isDigit(currentChar)) {
+                    int value = integer();
+                    if (peek() == 'x') {
+                        advance(); ////e.g.: x+2x, this will capture 2x but failed to capture 1x, since no digit was ahead of x
+                        return new Token(TokenType.COEF, value);
+                    } else {
+                        return new Token(TokenType.INTEGER, value);
+                    }
+                } 
+            }
+            return new Token(TokenType.EOF, null);
+        }
+        
+        private void advance() {
+            position+=1;
+            if (position >= text.length()) {
+                currentChar = END;
+            } else {
+                currentChar = text.charAt(position);
+            }
+        }
+        
+        private char peek() {
+            return currentChar;
+        }
+        
+        private Integer integer() {
+            StringBuilder sb = new StringBuilder();
+            while (Character.isDigit(currentChar)) {
+                sb.append(currentChar);
+                advance();
+            }
+            return Integer.parseInt(sb.toString());
+        }
+    }
+    
+    public class Parser {
+        private Lexer lex;
+        private ArrayList<Token> coefs;
+        private ArrayList<Token> values;
+        
+        public Parser(Lexer lex) {
+            this.lex = lex;
+            this.coefs = new ArrayList<Token>();
+            this.values = new ArrayList<Token>();
+            parse();
+        }
+        
+        //Understand the syntax of the formula
+        private void parse() {
+            int sign = 1; //Use this to indicate previous token is PLUS/MINUS
+            for (Token token = lex.getNextToken(); token.type != TokenType.EOF; token = lex.getNextToken()) {
+                switch(token.type) {
+                    case PLUS: sign = 1; break;
+                    case MINUS: sign = -1; break;
+                    case COEF://COEF will consume the PLUS and MINUS sign
+                        token.setValue((Integer)token.value()*sign);
+                        coefs.add(token);
+                        sign = 1; //Reset sign after consumption
+                        break;
+                    case INTEGER:
+                        token.setValue((Integer)token.value()*sign);
+                        values.add(token);
+                        sign = 1;//Reset sign since it's consumed already
+                        break;
+                    case X:
+                        break;
+                }
+            }
+            //System.out.println("Coefs:" + coefs);
+            //System.out.println("Values:" + values);
+        }
+        
+        public Integer getCoef() {
+            Integer result = 0;
+            for (Token token: coefs) {
+                result += (Integer)token.value;
+            }
+            return result;
+        }
+        
+        public Integer getValue() {
+            Integer result = 0;
+            for (Token token: values) {
+                result += (Integer)token.value;
+            }
+            return result;
+        }
+    }
+    
+    public String solveEquation(String equation) {
+        String[] sides = equation.split("=");
+        Parser lhs = new Parser(new Lexer(sides[0])); //Left hand side
+        Parser rhs = new Parser(new Lexer(sides[1])); //Right hand side
+        
+        int coef = lhs.getCoef() - rhs.getCoef();
+        int value = rhs.getValue() - lhs.getValue();
+        
+        if (coef == 0 && value == 0) { // e.g.: x=x
+            return "Infinite solutions";
+        } else if (coef == 0) { //e.g.: x=x+1
+            return "No solution";
+        } else { //e.g.: 2x=4
+            return "x="+Integer.toString(value/coef);
+        }
+    }
+}
+```
+
+## [645. Set Mismatch](https://leetcode.com/problems/set-mismatch/description/)
+
+The set S originally contains numbers from 1 to n. But unfortunately, due to the data error, one of the numbers in the set got duplicated to another number in the set, which results in repetition of one number and loss of another number.
+
+Given an array nums representing the data status of this set after the error. Your task is to firstly find the number occurs twice and then find the number that is missing. Return them in the form of an array.
+
+Example 1:
+```
+Input: nums = [1,2,2,4]
+Output: [2,3]
+```
+
+Note:
+The given array size will in the range [2, 10000].
+The given array's numbers won't have any order.
+
+```java
+//O(N) time, O(1) space
+class Solution {
+    /*
+    If you had an extra array, you will visit 1 to N, 
+         and see which one is visited twice, and which one haven't been visited
+    To save space though, we use the original nums[] to mark if we have visited before
+         and check which one never been visited
+    Think nums[] here as a set of index to visit an array, the value's sign works as a boolean visited/!visited
+         Originally if the nums are all correct, we won't see any visited index during visiting
+         Originally if the nums are all correct, we won't see any unvisited index after visiting
+    */
+    public int[] findErrorNums(int[] nums) {
+        int[] result = new int[2]; //result[0]: duplicated value, result[1]: missing value;
+        
+        //Visit an array, with index coming from nums, 
+        //if the cell is visited twice, then its index must be duplicated
+        for (int i: nums) { //Think nums[] here as a set of index to visit, the value's sign works as a boolean visited/!visited
+           if(nums[Math.abs(i) - 1] > 0) {
+               //Flip each unvisited number
+               nums[Math.abs(i) - 1] *= -1;
+           } else {
+               //If a number has been visited before, it must be duplicated
+               result[0] = Math.abs(i);
+           }
+        }
+        
+        //After initial visit, if a number hasn't been visited
+        //Then the index to visit such number must be missing
+        for (int i = 0; i < nums.length; i++){
+            if (nums[i] > 0) {
+                result[1] = i+1;
+            }
+        }
+        return result;
+    }
+}
+```
