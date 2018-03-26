@@ -21,6 +21,9 @@ Review PriorityQueue add and remove algorithm
 TODO 6:
 Review how to implement a HashMap: Hash Function + Address Conflict Resolution
 
+TODO 7:
+Understand Parser/Lexer etc (LeetCode 640, 536, PythonInterpreter)
+
 # Graph Review 
 Four major types of graph
 Representation of the graph and the processing of the graph should be separated
