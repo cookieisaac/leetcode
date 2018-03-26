@@ -5036,3 +5036,525 @@ class Solution {
     }
 }
 ```
+
+## [791. Custom Sort String](https://leetcode.com/problems/custom-sort-string/description/)
+
+S and T are strings composed of lowercase letters. In S, no letter occurs more than once.
+
+S was sorted in some custom order previously. We want to permute the characters of T so that they match the order that S was sorted. More specifically, if x occurs before y in S, then x should occur before y in the returned string.
+
+Return any permutation of T (as a string) that satisfies this property.
+
+Example :
+```
+Input: 
+S = "cba"
+T = "abcd"
+
+Output: "cbad"
+
+Explanation: 
+"a", "b", "c" appear in S, so the order of "a", "b", "c" should be "c", "b", and "a". 
+Since "d" does not appear in S, it can be at any position in T. "dcba", "cdba", "cbda" are also valid outputs.
+ ```
+
+Note:
+
+* S has length at most 26, and no character is repeated in S.
+* T has length at most 200.
+* S and T consist of lowercase letters only.
+
+```java
+class Solution {
+    public String customSortString(String S, String T) {
+        //Process S to mark special character
+        Set<Character> specials = new HashSet(Arrays.asList(S.toCharArray()));
+        for (char c: S.toCharArray()) {
+            specials.add(c);
+        }
+        //Process T to count each character frequency
+        Map<Character, Integer> counts = new HashMap<>();
+        for (char c: T.toCharArray()) {
+            counts.put(c, counts.getOrDefault(c, 0)+1);
+        }
+        //Reconstruct a new string based on S's character order
+        StringBuilder sb = new StringBuilder();
+        for (char c: S.toCharArray()) {
+            for (int i = 0; i < counts.getOrDefault(c, 0); i++) {
+                sb.append(c);
+            }
+        }
+        for (char c: T.toCharArray()) {
+            if (!specials.contains(c))
+                sb.append(c);
+        }
+        return sb.toString();
+    }
+}
+```
+
+## [661. Image Smoother](https://leetcode.com/problems/image-smoother/description/)
+
+Given a 2D integer matrix M representing the gray scale of an image, you need to design a smoother to make the gray scale of each cell becomes the average gray scale (rounding down) of all the 8 surrounding cells and itself. If a cell has less than 8 surrounding cells, then use as many as you can.
+
+Example 1:
+```
+Input:
+[[1,1,1],
+ [1,0,1],
+ [1,1,1]]
+ 
+Output:
+[[0, 0, 0],
+ [0, 0, 0],
+ [0, 0, 0]]
+ 
+Explanation:
+For the point (0,0), (0,2), (2,0), (2,2): floor(3/4) = floor(0.75) = 0
+For the point (0,1), (1,0), (1,2), (2,1): floor(5/6) = floor(0.83333333) = 0
+For the point (1,1): floor(8/9) = floor(0.88888889) = 0
+```
+Note:
+The value in the given matrix is in the range of [0, 255].
+The length and width of the given matrix are in the range of [1, 150].
+
+```java
+class Solution {
+    private int R;
+    private int C;
+    
+    public int[][] imageSmoother(int[][] M) {
+        if (M == null || M.length == 0) return null;
+        this.R = M.length;
+        this.C = M[0].length;
+        int[][] result= new int[M.length][M[0].length];
+        
+        for (int i = 0; i < R; i++) {
+            for (int j = 0; j < C; j++) {
+                result[i][j] = getAverage(i, j, M);
+            }
+        }
+        return result;
+    }
+    
+    protected int getAverage(int i, int j, int[][] M) {
+        float sum = 0; //Total sum of neighbors
+        float counts = 0;//Total number of neighbors
+        int[][] neighborDiffs = new int[][]{
+            {-1,-1},{-1,0},{-1,1},
+            {0,-1},{0,0},{0,1}, //Including self in the average
+            {1,-1},{1,0},{1,1}
+        };
+        
+        for (int[] diff: neighborDiffs) {
+            int x = i+diff[0], y = j+diff[1]; //Neighbor coordinates
+            if (inBound(x,y)) {
+                counts++;
+                sum += M[x][y];
+            }
+        }
+        return (int)Math.floor(sum/counts);
+    }
+    
+    private boolean inBound(int x, int y) {
+        return x >= 0 && x < R && y >= 0 && y < C;
+    }
+}
+```
+
+## [662. Maximum Width of Binary Tree](https://leetcode.com/problems/maximum-width-of-binary-tree/description/)
+
+Given a binary tree, write a function to get the maximum width of the given tree. The width of a tree is the maximum width among all levels. The binary tree has the same structure as a full binary tree, but some nodes are null.
+
+The width of one level is defined as the length between the end-nodes (the leftmost and right most non-null nodes in the level, where the null nodes between the end-nodes are also counted into the length calculation.
+
+Example 1:
+```
+Input: 
+
+           1
+         /   \
+        3     2
+       / \     \  
+      5   3     9 
+
+Output: 4
+Explanation: The maximum width existing in the third level with the length 4 (5,3,null,9).
+```
+
+Example 2:
+```
+Input: 
+
+          1
+         /  
+        3    
+       / \       
+      5   3     
+
+Output: 2
+Explanation: The maximum width existing in the third level with the length 2 (5,3).
+```
+
+Example 3:
+```
+Input: 
+
+          1
+         / \
+        3   2 
+       /        
+      5      
+
+Output: 2
+Explanation: The maximum width existing in the second level with the length 2 (3,2).
+```
+
+Example 4:
+```
+Input: 
+
+          1
+         / \
+        3   2
+       /     \  
+      5       9 
+     /         \
+    6           7
+Output: 8
+Explanation:The maximum width existing in the fourth level with the length 8 (6,null,null,null,null,null,null,7).
+```
+
+Note: Answer will in the range of 32-bit signed integer.
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+
+//For each layer
+//If    parent          has index of    i
+//Then  left child      index is        2*i
+//And   right child     index is        2*i + 1
+class Solution {
+    protected class AnnotatedTreeNode {
+        protected int position;
+        protected TreeNode node;
+        
+        AnnotatedTreeNode(int position, TreeNode node) {
+            this.position = position;
+            this.node = node;
+        }
+    }
+
+    //The width for each level is defined between the first non-null node to the last non-null node
+    //Traversal by level and compute width for each layer
+    public int widthOfBinaryTree(TreeNode root) {
+        if (root == null) return 0;
+        int maxWidth = -1;
+        
+        Queue<AnnotatedTreeNode> queue = new LinkedList<>();
+        queue.offer(new AnnotatedTreeNode(0, root));
+        
+        while(!queue.isEmpty()) {
+            int levelNodes = queue.size();
+            int first = -1; //The index of first non-null child
+            int last = -1; //The index of last non-null child
+            
+            for (int i = 0; i < levelNodes; i++) {
+                AnnotatedTreeNode wrap = queue.poll();
+                //Update width marker
+                if (first == -1) first = wrap.position;
+                last = wrap.position;
+                
+                //Enqueu non-null nodes
+                if (wrap.node.left != null) {
+                    queue.offer(new AnnotatedTreeNode(2*wrap.position, wrap.node.left));
+                } 
+                
+                if (wrap.node.right != null) {
+                    queue.offer(new AnnotatedTreeNode(2*wrap.position + 1, wrap.node.right));
+                }
+            }
+            if (first == -1) break; //All null node in this level, no need to continue
+            maxWidth = Math.max(maxWidth, last - first + 1);
+        }
+        
+        return maxWidth;
+    }
+}
+```
+
+## 663. Equal Tree Partition
+DescriptionHintsSubmissionsDiscussSolution
+Given a binary tree with n nodes, your task is to check if it's possible to partition the tree to two trees which have the equal sum of values after removing exactly one edge on the original tree.
+
+Example 1:
+```
+Input:     
+    5
+   / \
+  10 10
+    /  \
+   2   3
+
+Output: True
+Explanation: 
+    5
+   / 
+  10
+      
+Sum: 15
+
+   10
+  /  \
+ 2    3
+
+Sum: 15
+```
+
+Example 2:
+```
+Input:     
+    1
+   / \
+  2  10
+    /  \
+   2   20
+
+Output: False
+Explanation: You can't split the tree into two trees with equal sum after removing exactly one edge on the tree.
+```
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+
+//Calculate the sum of each subtree
+//Case I: If the total sum is odd, then false
+//Case II: If the total sum is 0, make sure at least two subtree have a 0, such as case [0, -1, 1]
+//Case III: If exists a subtree whose sum is half of the total sum, then true
+class Solution {
+    HashMap<TreeNode, Integer> subtreeSum = new HashMap<>();
+
+    public boolean checkEqualTree(TreeNode root) {
+        TreeNode node = root;
+        buildSubTreeSum(root);
+        int totalSum = subtreeSum.get(root);
+        
+        //Case I
+        if (totalSum % 2 != 0) return false;
+        
+        //Case II
+        if (totalSum == 0) {
+            int count = 0; //How many subtree has a sum of 0? Must exist a subtree other than root for it to be splittable
+            for (Map.Entry<TreeNode, Integer> entry: subtreeSum.entrySet()) {
+                if (entry.getValue() == 0) {
+                    count++;
+                }
+            }
+            //The subTreeSum at root is 0, there have to be a real subtree whose subTreeSum is 0 to split
+            //Think special case [0, -1, 1]
+            return count > 1; 
+        }
+        
+        //Case III
+        int halfSum = totalSum / 2;
+        return subtreeSum.values().contains(halfSum) && halfSum != 0 ;
+    }
+    
+    private int buildSubTreeSum(TreeNode node) {
+        if (node == null) {
+            return 0;
+        } else {
+            subtreeSum.put(node, node.val + buildSubTreeSum(node.left) + buildSubTreeSum(node.right));
+        }
+        return subtreeSum.get(node);
+    }
+    
+}
+```
+
+## [694. Number of Distinct Islands](https://leetcode.com/problems/number-of-distinct-islands/description/)
+
+Given a non-empty 2D array grid of 0's and 1's, an island is a group of 1's (representing land) connected 4-directionally (horizontal or vertical.) You may assume all four edges of the grid are surrounded by water.
+
+Count the number of distinct islands. An island is considered to be the same as another if and only if one island can be translated (and not rotated or reflected) to equal the other.
+
+Example 1:
+```
+11000
+11000
+00011
+00011
+
+Given the above grid map, return 1.
+```
+
+Example 2:
+```
+11011
+10000
+00001
+11011
+
+Given the above grid map, return 3.
+```
+
+Notice that:
+```
+11
+1
+```
+and
+```
+ 1
+11
+```
+are considered different island shapes, because we do not consider reflection / rotation.
+Note: The length of each dimension in the given grid does not exceed 50.
+
+```java
+class Solution {
+    //Get adjacent neighbor of a given coordinate
+    int[][] neighbors={{-1,0}, {1,0}, {0,-1}, {0,1}};
+    
+    public int numDistinctIslands(int[][] grid) {
+        if (grid == null || grid.length == 0 || grid[0].length == 0) return 0;
+        int M = grid.length, N = grid[0].length;
+        Set<String> islands = new HashSet<>();
+        for (int i = 0; i < M; i++) {
+            for (int j = 0; j < N; j++) {
+                if (grid[i][j] == 1) {
+                    List<int[]> island = new ArrayList<>(); //A list of all coordinates
+                    dfs(grid, i, j, island);
+                    //printIsland(island);
+                    String islandKey = normalize(island);
+                    islands.add(islandKey);
+                }
+            }
+        }
+        return islands.size();
+    }
+            
+    private void dfs(int[][] grid, int i, int j, List<int[]> island) {
+        island.add(new int[]{i, j});
+        grid[i][j] = -1; //Mark as visited
+        
+        for (int[] neighbor: neighbors) {
+            int x = i + neighbor[0];
+            int y = j + neighbor[1];
+            if (x >= 0 && x < grid.length && y >= 0 && y < grid[0].length && grid[x][y] == 1) {
+                dfs(grid, x, y, island);
+            }
+        }
+    }
+    
+    private void printIsland(List<int[]> island) {
+        System.out.println("===Island===");
+        for (int[] coordinate: island) {
+            System.out.println(coordinate[0]+","+coordinate[1]);
+        }
+    }
+    
+    private String normalize(List<int[]> island) {
+        return getKey(island);
+    }
+            
+    private String getKey(List<int[]> island) {
+        //sort the cells before generate the key
+        Collections.sort(island, (a, b) -> {
+            return a[0]!=b[0] ? a[0]-b[0] : a[1]-b[1];
+        });
+        
+        StringBuilder sb = new StringBuilder();
+        //Get the first coordinate of sorted island coordinates
+        int x=island.get(0)[0], y = island.get(0)[1];
+        for (int[] coordinate: island) {
+            sb.append((coordinate[0]-x)+":"+(coordinate[1]-y)+":");
+        }
+        return sb.toString();
+    }
+}
+```
+
+## [396. Rotate Function](https://leetcode.com/problems/rotate-function/description/)
+
+Given an array of integers A and let n to be its length.
+
+Assume Bk to be an array obtained by rotating the array A k positions clock-wise, we define a "rotation function" F on A as follow:
+
+F(k) = 0 * Bk[0] + 1 * Bk[1] + ... + (n-1) * Bk[n-1].
+
+Calculate the maximum value of F(0), F(1), ..., F(n-1).
+
+Note:
+n is guaranteed to be less than 105.
+
+Example:
+```
+A = [4, 3, 2, 6]
+
+F(0) = (0 * 4) + (1 * 3) + (2 * 2) + (3 * 6) = 0 + 3 + 4 + 18 = 25
+F(1) = (0 * 6) + (1 * 4) + (2 * 3) + (3 * 2) = 0 + 4 + 6 + 6 = 16
+F(2) = (0 * 2) + (1 * 6) + (2 * 4) + (3 * 3) = 0 + 6 + 8 + 9 = 23
+F(3) = (0 * 3) + (1 * 2) + (2 * 6) + (3 * 4) = 0 + 2 + 12 + 12 = 26
+
+So the maximum value of F(0), F(1), F(2), F(3) is F(3) = 26.
+```
+
+```java
+class Solution {
+    /*
+    Explanation: 
+        F(k) =   0 * Bk[0]   + 1 * Bk[1] + ...   + (n-1) * Bk[n-1]
+        F(k-1) = 0 * Bk-1[0] + 1 * Bk-1[1] + ... + (n-1) * Bk-1[n-1]
+               =               0 * Bk[1] + 1 * Bk[2] + ... + (n-2) * Bk[n-1] + (n-1) * Bk[0]
+        Then,
+
+        F(k) - F(k-1) = Bk[1] + Bk[2] + ... + Bk[n-1] + (1-n)Bk[0]
+                      = (Bk[0] + ... + Bk[n-1]) - nBk[0]
+                      = sum - nBk[0]
+        Thus,
+        F(k) = F(k-1) + sum - nBk[0]
+        
+        ## What is Bk[0]?
+        
+        ```
+        k = 0; B[0] = A[0];
+        k = 1; B[0] = A[len-1];
+        k = 2; B[0] = A[len-2];
+        ...
+        ```
+    */
+    public int maxRotateFunction(int[] A) {
+        int allSum = 0;
+        int len = A.length;
+        int F = 0;
+        for (int i = 0; i < len; i++) {
+            F+= i*A[i];
+            allSum += A[i];
+        }
+        int max = F;
+        for (int i = len - 1; i >= 1; i--) {
+            F = F + allSum - len*A[i];  //F(k) = F(k-1) + sum - nBk[0], whereas B[0] = A[len-k]
+            max = Math.max(F, max);
+        }
+        return max;
+        
+    }
+}
+```
