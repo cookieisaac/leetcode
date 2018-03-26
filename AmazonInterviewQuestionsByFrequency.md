@@ -5558,3 +5558,83 @@ class Solution {
     }
 }
 ```
+
+
+## [738. Monotone Increasing Digits](https://leetcode.com/problems/monotone-increasing-digits/description/)
+
+Given a non-negative integer N, find the largest number that is less than or equal to N with monotone increasing digits.
+
+(Recall that an integer has monotone increasing digits if and only if each pair of adjacent digits x and y satisfy x <= y.)
+
+Example 1:
+```
+Input: N = 10
+Output: 9
+```
+
+Example 2:
+```
+Input: N = 1234
+Output: 1234
+```
+
+Example 3:
+```
+Input: N = 332
+Output: 299
+```
+Note: N is an integer in the range [0, 10^9].
+
+```java
+class Solution {
+    /*
+    The idea is to go from the LSB to MSB and find the last digit, where an inversion happens.
+    There are 2 cases to consider:
+
+    case 1:
+    In 14267 , we see that inversion happens at 4. In this case, then answer is obtained by reducing 4 to 3, and changing all the following digits to 9.
+    => 13999
+
+    case 2:
+    1444267, here eventhough the last inversion happens at the last 4 in 1444, if we reduce it to 3, then that itself breaks the rule. So once we find the last digit where inversion happens, if that digit is repeated, then we have to find the last position of that digit. After that it is same as case1, where we reduce it by 1 and set the remaining digits to 9.
+    => 1399999
+
+    The steps are:
+
+        1. Convert n into num array in reverse order
+        2. Find the leftmost position that is inverted and if the inverted character repeats itself, find the leftmost repeated digit.
+        3. Fill the digits after inversion as 9
+        4. Reduce the digit that caused the inversion by -1
+        5. Reverse back the num array and convert to int
+    */
+    public int monotoneIncreasingDigits(int N) {
+        if (N <= 9) return N;
+        
+        char[] digits = String.valueOf(N).toCharArray();
+        
+        int mark = digits.length; //<=== Marker of flipping bit
+        for (int i = digits.length - 1; i > 0; i--) { //Step 1: visit in reverse order
+            if (digits[i] < digits[i-1]) {
+                mark = i-1; //Step 2: Find the leftmost position where the string begin not to increase
+                digits[i-1]--; //Step 4: Reduce the digit that caused the inversion by -1
+            }
+        }
+        
+        for (int i = mark+1; i < digits.length; i++) {
+            digits[i] = '9'; //Step 3: Fill the digits after inversion as 9
+        }
+        return Integer.parseInt(new String(digits));
+    }
+}
+```
+===TODO===
+## 646
+## 742
+## 746
+## 762
+## 771
+## 775
+## 776
+## 801
+
+
