@@ -1,5 +1,12 @@
 Ordered by frequency as of March 21, 2018
 
+## Random Fun Fact
+
+Group Theory Stuff
+
+* Dihedral Group of Order 8: 711 Number of Island https://www.youtube.com/watch?v=mvmuCPvRoWQ starting at 2:27 ish
+* Matrix Flip: 48 Rotate Matrix https://www.youtube.com/watch?v=mvmuCPvRoWQ starting at 4:16 ish
+
 ## [763 Partition Labels](https://leetcode.com/problems/partition-labels)
 A string S of lowercase letters is given. We want to partition this string into as many parts as possible so that each letter appears in at most one part, and return a list of integers representing the size of these parts.
 ```
