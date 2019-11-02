@@ -1018,7 +1018,6 @@ public int lengthOfLongestSubstring(String s) {
         return length;
     }
 ```
-#### 904. [Fruit into Basket](https://leetcode.com/problems/fruit-into-baskets/)
 #### 159. Longest Substring with At Most Two Distinct Characters
 
 ```java
@@ -1039,6 +1038,53 @@ public class Solution {
             if (end - begin > d) d = end - (head = begin);
         }
         return d;
+    }
+}
+```
+
+#### 904. [Fruit into Basket](https://leetcode.com/problems/fruit-into-baskets/) [Same as 159]
+```java
+class Solution {
+    public int totalFruit(int[] tree) {
+        int[] seenTimes = new int[tree.length]; //How many times you have seen a fruit type
+        int begin = 0, end = 0;
+        int fruitTypes = 0;         //This is the counter
+        int currentMaxLength = 0;   //This is the d
+        
+        while (end < tree.length) {
+            //Step 1: Slide window End to invalidate the window 
+            // [Update map first, then use map, move END]
+            //Update the interanltracker
+            seenTimes[tree[end]]++;
+            //First time seeing a new fruit
+            if (seenTimes[tree[end]] == 1) {
+                //Add new fruitTypes
+                fruitTypes++;
+            }
+            //Move window END   
+            end++;
+            
+            //Step 2: Make window valid by slide window left 
+            // [Update map first, then use map, move BEGIN]
+            //Remove seen fruits from beginning until we only got two fruit types
+            while (fruitTypes > 2) {
+                //Update internal tracker
+                seenTimes[tree[begin]]--;
+                //Last time seeing the fruit
+                if (seenTimes[tree[begin]] == 0) {
+                    //Remove seen fruit types
+                    fruitTypes--;
+                }
+                //Move window BEGIN
+                begin++;
+            }
+            
+            //Step 3: Update the current maximum for valid window
+            if (end - begin > currentMaxLength) {
+                currentMaxLength = end - begin;
+            }
+        }
+        return currentMaxLength;
     }
 }
 ```
