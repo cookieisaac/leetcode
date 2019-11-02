@@ -1018,7 +1018,7 @@ public int lengthOfLongestSubstring(String s) {
         return length;
     }
 ```
-
+#### 904. [Fruit into Basket](https://leetcode.com/problems/fruit-into-baskets/)
 #### 159. Longest Substring with At Most Two Distinct Characters
 
 ```java
