@@ -11,8 +11,15 @@
       - [Review Resources](#review-resources)
       - [Application: Dynamic Connectivity](#application-dynamic-connectivity)
       - [Common Variants](#common-variants)
-    - [Template: Weighted Quick Union UF With Path Compression](#template-weighted-quick-union-uf-with-path-compression)
+    - [Template: Disjoint Set Union using Weighted Quick Union UF With Path Compression](#template-disjoint-set-union-using-weighted-quick-union-uf-with-path-compression)
     - [Practice Problem - Disjoint Set Union](#practice-problem---disjoint-set-union)
+  - [Binary Search](#binary-search)
+    - [Review Notes](#review-notes)
+      - [Detailed Explanation on Implementation](#detailed-explanation-on-implementation)
+        - [Variant 1 - Basic Binary Search - Reference Only](#variant-1---basic-binary-search---reference-only)
+        - [Variant 2 - Reference only](#variant-2---reference-only)
+    - [Template: Binary Search](#template-binary-search)
+    - [Practice Problem - Binary Search](#practice-problem---binary-search)
 - [Hash Table Review](#hash-table-review)
 - [Bit Operation Review](#bit-operation-review)
 - [Graph Review](#graph-review)
@@ -63,6 +70,23 @@
   - [Binary Index Tree (Fenwick Tree)](#binary-index-tree-fenwick-tree)
       - [BIT Template](#bit-template)
   - [Trie](#trie)
+  - [Dynamic Programming Review](#dynamic-programming-review)
+    - [Overview](#overview)
+    - [Pattern 1: Minimum Path to Reach a Target](#pattern-1-minimum-path-to-reach-a-target)
+      - [**Template**](#template-1)
+      - [Practice Questions](#practice-questions)
+    - [Pattern 2: Distinct Ways](#pattern-2-distinct-ways)
+      - [**Template**](#template-2)
+      - [Practice Questions](#practice-questions-1)
+    - [Pattern 3: Merging Intervals](#pattern-3-merging-intervals)
+      - [**Template**](#template-3)
+      - [Practice Questions](#practice-questions-2)
+    - [Pattern 4: DP on Strings](#pattern-4-dp-on-strings)
+      - [**Template**](#template-4)
+      - [Practice Questions](#practice-questions-3)
+    - [Pattern 5: Making Decisions](#pattern-5-making-decisions)
+      - [**Template**](#template-5)
+      - [Practice Questions](#practice-questions-4)
 
 # Road Map
 
@@ -132,15 +156,17 @@ weighted quick-union | $O(N)$ | $O(lg N)$ | $O(lg N)$  | $N + M log N$ | **Key I
 quick-union with path compression | $O(N)$ | $O(lg N)$  | $O(lg N)$  | $N + M log N$| **Key Idea**: Flat out the children to parent
 weighted quick-union with path compression | $O(N)$ | $O(\alpha(N))$  | $O(\alpha(N))$  | $N + M \alpha(N) \approx N + M$  | $\alpha$ is the Inverse-Ackermann function, and $O( \alpha(N)) \approx O(1)$
 
-### Template: Weighted Quick Union UF With Path Compression
+### Template: Disjoint Set Union using Weighted Quick Union UF With Path Compression
 
 ```java
-    public class WeightedQuickUnionPathCompressionUF {
+    //Weighted Quick-Union UF With Path Compression
+    //O(alpha N) - Inverse-Ackermann of N, approximately O(1)
+    public class DSU {
         private int[] parent; // parent[i] = parent of i
         private int[] size; // IMPROVEMENT: use weight, size[i] = number of sites in tree rooted at i
         private int count; //number of components
 
-        public WeightedQuickUnionPathCompressionUF(int N) { 
+        public DSU(int N) { 
             count = N;
             parent = new int[N];
             size = new int[N];
@@ -203,9 +229,121 @@ weighted quick-union with path compression | $O(N)$ | $O(\alpha(N))$  | $O(\alph
 * [LC721 Accounts Merge](https://leetcode.com/problems/accounts-merge/solution/)
 * [LC737 Sentence Similarity II](https://leetcode.com/problems/sentence-similarity-ii/solution/)
 
+## Binary Search
+
+### Review Notes
+* For out-of-box binary search, use Java's `Arrays.binarySearch()`
+  * It returns index of the search key, if it is contained in the array; otherwise, (-(insertion point) – 1). This gurantees that the return value will be >= 0 if and only if the key is found.
+  * If the array is not sorted, the results are undefined. 
+  * If the array contains multiple elements with the specified value, there is no guarantee which one will be found.
+
+* For my binary search implementation below
+  * It returns the *first* occurence of target in the array, or position to be inserted
+  * Keypoint: Maintain `A[low] <= key < A[high]`, check to move `low` and return `low`.
 
 
-Resume from : https://www.bilibili.com/video/av55943680?p=11
+#### Detailed Explanation on Implementation
+
+This section is for reference only. It helps me to memorize all the different boundary condition. 
+
+* Assumption: Array sorted, **might contain duplicate**
+* Invariant: `A[low] <= target < A[high]`
+* Returns: The *first* occurence of target in the array, or position to be inserted
+* This is based on variant 1
+
+```java
+    //Invariant: A[low] <= target < A[high]
+    public static int binarySearch(int[] A, int target) {
+        int low = 0, high = A.length; //NOTE: A.length since invariant is key < A[high]
+        while (low < high) { //NOTE: Not '<=' since the invariant A[low] < A[high]
+            int mid = low + (high - low)/2;
+            if (target > A[mid]) { //NOTE: Check to move low pointer
+                low = mid + 1; //NOTE: must increase mid by 1, compare to Variant 2 
+            } else { //NOTE: merge the equal case and move high pointer case to get first occurence. Can split out the equal case and return early if no duplicate. See variant 1
+                high = mid; //NOTE: do not decrease mid by 1, since the invariant is target < A[high]. 
+                //NOTE: High always decreases, even when high-low==1, in this case, mid = low, so high == low, therefore exit the circle
+            }
+        }
+        return low; // low is position where target would be inserted, or -1 for not found
+    }
+```
+
+##### Variant 1 - Basic Binary Search - Reference Only
+
+* Assumption: Array sorted, **no duplicate**
+* Invariant: `A[low] <= target < A[high]`
+
+```java
+    //Invariant: A[low] <= target < A[high]
+    //Return the index of target, or the position it would be inserted
+    public static int binarySearch(int[] A, int target) {
+        int low = 0, high = A.length; //DIFF1: mid != high, so it must be outside
+        while (low < high) { //DIFF: Not the invariant is different now
+            int mid = low + (high - low)/2;
+            //3-way comparison
+            if (target < A[mid]) {
+                high = mid; //DIFF: don't decrease by 1, since mid != high
+            } else if (target > A[mid]) {
+                low = mid + 1;
+            } else {
+                return mid; //NOTE: Change to high = mid to get the first occurence
+            }
+        }
+        return low;
+    }
+```
+
+* NOTE: to get the first occurence of target for arrays containing duplicates, simply merge the 
+
+##### Variant 2 - Reference only
+
+* Assumption: Array sorted, and **no duplication**
+* Invariant: `A[low] <= target <= A[high]`
+* This is the version in Princeton's algorithm course. Note the invariant is different
+
+ ```java
+    //Invariant: A[low] <= key <= A[high]
+    //Return the index of target, or the position it would be inserted
+    //Assumption
+    public static int binarySearch(int[] A, int target) {
+        int low = 0, high = A.length - 1; //NOTE: high = A.length - 1 to make sure A[high] is valid
+        while (low <= high) { //NOTE: maintain invariant, so it's '<=', not '<'
+            int mid = low + (high - low)/2; //NOTE: avoid overflow, don't do (low+high)/2
+            if (target < A[mid]) {
+                high = mid - 1; //NOTE: must decrease by 1, otherwise will deadloop when high == mid
+            } else if (target > A[mid]) {
+                low = mid + 1; //NOTE:increase by 1
+            } else {
+                return mid; //Set high = mid here instead of returning if A contains duplicate
+            }
+        }
+        return low; //NOTE: return low (insertion pos) or -1 (doesn't exist)
+    }
+```
+
+### Template: Binary Search
+
+```java
+    //Invariant: A[low] <= target < A[high]
+    //Return first occurence of target, or position it should be inserted
+    public static int binarySearch(int[] A, int target) {
+        int low = 0, high = A.length;
+        while (low < high) { //Invariant hold
+            int mid = low + (high - low) / 2;
+            if (target > A[mid]) { //Check to move low
+                low = mid + 1;
+            } else {
+                high = mid;
+            }
+        }
+        return low;
+    }
+```
+
+### Practice Problem - Binary Search
+* [EASY] [LC704 Binary Search](https://leetcode.com/problems/binary-search/)
+* [EASY] [LC35 Search Insert Position](https://leetcode.com/problems/search-insert-position/)
+* [EASY] [LC1150 Check If a Number Is Majority Element in a Sorted Array](https://leetcode.com/problems/check-if-a-number-is-majority-element-in-a-sorted-array/submissions/)
 
 
 # Hash Table Review
@@ -2245,3 +2383,530 @@ public class Solution {
 * 
 
 ## Trie
+
+
+## Dynamic Programming Review
+
+
+### Overview
+
+**Resources**
+* [Leetcode Post: My experience and notes for learning dp](https://leetcode.com/discuss/general-discussion/475924/my-experience-and-notes-for-learning-dp)
+
+**Summary**
+
+Based on [the great summary here](https://leetcode.com/discuss/general-discussion/458695/dynamic-programming-patterns#distinct-ways), there are five patterns in dynamic programming so far.
+
+* 1. Minimum (Maximum) Path to Reach a Target
+* 2. Distinct Ways
+* 3. Merging Intervals
+* 4. DP on Strings
+* 5. Decision Making
+
+**Note** 
+- Pattern 1 and Pattern 2 are very similar
+- Pattern 3 problems is that they usually involve a list/array of numbers, either explicitly or implicity, like in LC1130, LC96 and LC1039.
+
+### Pattern 1: Minimum Path to Reach a Target
+
+* **Problems**: Given a target, find minimum (maximum) cost / path / sum to reach the target. 
+* **Examples**: Coin Change, Min Path Sum and Min Cost Climbing Stairs
+* **Approach**:
+Choose minimum (maximum) path among all possible paths before the current state, then add value for the current state.
+```
+routes[i] = min(routes[i-1], routes[i-2], ... , routes[i-k]) + cost[i]
+```
+#### **Template**
+Generate optimal solutions for all values in the target and return the value for the target.
+```java
+//Build from smaller target
+for (int i = 1; i <= target; ++i) {
+    //Try all different ways
+   for (int j = 0; j < ways.size(); ++j) {
+       if (ways[j] <= i) {
+           dp[i] = min(dp[i], dp[i - ways[j]]) + cost / path / sum;
+       }
+   }
+}
+ 
+return dp[target];
+```
+
+#### Practice Questions
+* [`MEDIUM`][LC322 Coin Change](https://leetcode.com/problems/coin-change/)
+```java
+        int[] dp = new int[amount + 1];
+        int MAX_VALUE = amount+1; //Don't use Integer.MAX_VALUE, otherwise will overflow to negative number when add by 1
+        
+        Arrays.fill(dp, MAX_VALUE);
+        dp[0] = 0;
+
+        for (int i = 1; i <= amount; i++) {
+            for (int j = 0; j < coins.length; j++) {
+                if (coins[j] <= i) {
+                    dp[i] = Math.min(dp[i], dp[i - coins[j]] + 1);
+                }
+            }
+        }
+        return dp[amount] == MAX_VALUE ? -1: dp[amount];
+    }
+```
+
+* [`EASY`] [LC746. Min Cost Climbing Stairs](https://leetcode.com/problems/min-cost-climbing-stairs/submissions/) 
+```java
+        //Init base case
+        dp[0] = cost[0]; dp[1] = cost[1];
+        //Fill DP
+        for (int i = 2; i <= N; i++) {
+            dp[i] = Math.min(dp[i-1], dp[i-2]) + (i == N ? 0 : cost[i]);
+        }
+```
+* [`MEDIUM`] [LC64 Minimum Path Sum](https://leetcode.com/problems/minimum-path-sum/)
+```java
+        //Init base case
+        for(int i = 1; i < M; i++) {
+            grid[i][0] += grid[i-1][0];
+        }
+        for (int j = 1; j < N; j++) {
+            grid[0][j] += grid[0][j-1];
+        }
+        
+        //Fill in DP
+        for (int i = 1; i < M; i++) {
+            for (int j = 1; j < N; j++) {
+                grid[i][j] = Math.min(grid[i-1][j], grid[i][j-1]) + grid[i][j];
+            }
+        }
+        return grid[M-1][N-1];
+```
+
+* TODO: Summarize
+```
+931. Minimum Falling Path Sum Medium
+
+983. Minimum Cost For Tickets Medium
+
+650. 2 Keys Keyboard Medium
+
+279. Perfect Squares Medium
+
+1049. Last Stone Weight II Medium
+
+120. Triangle Medium
+
+474. Ones and Zeroes Medium
+
+221. Maximal Square Medium
+
+322. Coin Change Medium
+
+1240. Tiling a Rectangle with the Fewest Squares Hard
+
+174. Dungeon Game Hard
+
+871. Minimum Number of Refueling Stops Hard
+```
+
+### Pattern 2: Distinct Ways
+
+* **Problems**: Given a target, find the number of distinct ways to reach the target.
+* **Examples**: Climbing Stairs, Unique Paths
+* **Approach**:
+Sum all possible ways to reach the current state.
+```
+routes[i] = routes[i-1] + routes[i-2], ... , + routes[i-k]
+```
+
+#### **Template**
+
+* Note: Just change the `min` operation from previous template to `+` here
+
+Generate sum for all values in the target and return the value for the target.
+```java
+//Build from smaller target
+for (int i = 1; i <= target; ++i) {
+    //Try all different ways
+   for (int j = 0; j < ways.size(); ++j) {
+       if (ways[j] <= i) {
+           dp[i] += dp[i - ways[j]];
+       }
+   }
+}
+ 
+return dp[target];
+```
+
+#### Practice Questions
+
+* [`EASY`] [LC70 Climbing Stairs](https://leetcode.com/problems/climbing-stairs/)
+  * Note: Compare to [LC746 Min Cost Climbing Stairs](https://leetcode.com/problems/min-cost-climbing-stairs/), just change min to plus.
+```java
+    //Init base
+    dp[0] = 1;dp[1] = 1;
+    //Fill DP
+    for (int stair = 2; stair <= n; stair++) {
+        for (int step = 1; step <= 2; step++) {
+            dp[stair] += dp[stair-step];
+        }
+    }
+```
+
+* [`MEDIUM`] [LC62 Unique Paths](https://leetcode.com/problems/unique-paths/)
+  * Note: Compare to [LC64 Minimum Path Sum](https://leetcode.com/problems/minimum-path-sum/), just change min to plus.
+```java
+        //Init base - first row and first col
+        for (int i = 0; i < m; i++) {
+            dp[i][0] = 1;
+        }
+        for (int j = 0; j < n; j++) {
+            dp[0][j] = 1;
+        }
+        
+        //Fill DP
+        for (int i = 1; i < m; i++) {
+            for (int j = 1; j < n; j++) {
+                dp[i][j] = dp[i-1][j] + dp[i][j-1];
+            }
+        }
+```
+
+* [`MEDIUM`] [LC1155 Number of Dice Rolls With Target Sum](https://leetcode.com/problems/number-of-dice-rolls-with-target-sum/)
+  * Note: Add one for loop for repetition of rolling dices. Assuming d is constant, then the problem is reduced to count of distinct ways
+  * If we don't consider the dice dimension, then it is just the climbing stairs problem where we can step at most 6 steps.
+
+```java
+long[][] dp = new long[dice+1][target + 1]; 
+for (int d = 1; d <= dice; d++) {
+    //--Template start from here
+    for (int t = 0; t <= target; t++) {
+        for (int f = 1; f <= face; f++) {
+            if ( f <= t) {
+                dp[d][t] += dp[d-1][t-f];
+                dp[d][t] %= MOD;
+            } else {
+                break;
+            }
+        }
+    }
+    //---Template end here---
+}
+```
+
+* TODO Summarize
+```
+688. Knight Probability in Chessboard Medium
+
+494. Target Sum Medium
+
+377. Combination Sum IV Medium
+
+935. Knight Dialer Medium
+
+1223. Dice Roll Simulation Medium
+
+416. Partition Equal Subset Sum Medium
+
+808. Soup Servings Medium
+
+790. Domino and Tromino Tiling Medium
+
+801. Minimum Swaps To Make Sequences Increasing
+
+673. Number of Longest Increasing Subsequence Medium
+
+63. Unique Paths II Medium
+
+576. Out of Boundary Paths Medium
+
+1269. Number of Ways to Stay in the Same Place After Some Steps Hard
+
+1220. Count Vowels Permutation Hard
+```
+
+### Pattern 3: Merging Intervals
+
+* **Problems**: Given *a set of numbers*, find an optimal solution for a problem considering the current number and the best you can get from the left and right sides.
+* **Examples**: Bursting Balloons, Merge Stones
+* **Approach**:
+Find all optimal solutions for every interval and return the best possible answer.
+
+```
+int j = i + len; // Sub-interval [i, j) is of size len
+dp[i][j] = dp[i][k] + result[k] + dp[k+1][j]
+```
+
+#### **Template**
+
+Get the best from the left and right sides and add a solution for the current position.
+
+```java
+for (int len = 1; len < N; len++) { //Length of interval
+    for (int i = 0; i < N - len; i++) { //Solve for all intervals [i, j) of length len
+        int j = i + len;
+        dp[i][j] = Integer.MAX_VALUE;
+        for (int k = i; k < j; k++) { //Divide to [i, k), [k], [k+1, j)
+            dp[i][j] = min(dp[i][j], dp[i][k] + result[k] + dp[k+1][j]);
+        }
+    }
+}
+return dp[0][N-1];
+```
+
+NOTE: Clearly define whether `dp[i][j] `stores `[i, j]` or `[i, j)`. This has significant impact on the boundary condition.
+
+#### Practice Questions
+
+* [`MEDIUM`] [LC1130 Minimum Cost Tree From Leaf Values](https://leetcode.com/problems/minimum-cost-tree-from-leaf-values/)
+
+```java
+        //DP: merging intervals
+        for (int len = 1; len < N; len++) { //len of interval [i, j), stores in dp[i][j]
+            for (int i = 0; i < N - len; i++) {
+                int j = i + len;
+                dp[i][j] = Integer.MAX_VALUE;
+                for (int k = i; k < j; k++) {
+                    dp[i][j] = Math.min(dp[i][j], 
+                       dp[i][k] + dp[k+1][j] + max[i][k] * max[k+1][j]);
+                }
+            }
+        }
+```
+
+This problem is only a practise for DP. A better solution is O(N) based on stack as explained here.
+
+  * TODO Summarize Stacks
+```java
+More Good Stack Problems
+Here are some problems that impressed me.
+Good luck and have fun.
+
+https://leetcode.com/problems/minimum-cost-tree-from-leaf-values/discuss/339959/One-Pass-O(N)-Time-and-Space
+
+
+Minimum Cost Tree From Leaf Values
+Sum of Subarray Minimums
+Online Stock Span
+Score of Parentheses
+Next Greater Element II
+Next Greater Element I
+Largest Rectangle in Histogram
+Trapping Rain Water
+```
+
+
+* [`MEDIUM`][LC375 Guess Number Higher or Lower II](https://leetcode.com/problems/guess-number-higher-or-lower-ii/) 
+
+```java
+        for (int len = 2; len < n + 1; len++) {
+            for (int i = 1; i <= n - len + 1; i++) { //For [i, j) => store result in dp[i, j]
+                int j = i + len - 1;
+                int minResult = Integer.MAX_VALUE;
+                for(int k = i; k < j; k++) {
+                    int result = k + Math.max(dp[i][k-1], dp[k+1][j]);
+                    minResult = Math.min(minResult, result);
+                }
+                dp[i][j] = minResult;
+            }
+        }
+        return dp[1][n];
+    }
+```
+
+* [`HARD`][LC312 Burst Balloons](https://leetcode.com/problems/burst-balloons/)
+
+See a [good discussion here](https://leetcode.com/problems/remove-boxes/discuss/101310/Java-top-down-and-bottom-up-DP-solutions) that covers both Remove Boxes and Burst Balloons
+
+```java
+        int[][] dp = new int[N][N];
+        
+        for (int len = 1; len <= N; len++) { //length of balloon array
+            for (int start = 0; start <= N - len; start++) { //Interval [start, end] => dp[start][end];
+                int end = start + len - 1;
+                int maxResult = 0;
+                //Note that k is the **last** balloon to burst in interval [start, end], so left is start-1, and right is end+1
+                for (int k = start; k <= end; k++) {
+                    //Don't use k-1 as left and k+1 as right!!!
+                    int left = start-1 < 0 ? 1 : nums[start-1];
+                    int right = end+1 == N ? 1 : nums[end+1];
+                    int result = nums[k] * left * right + 
+                        (k == start? 0 : dp[start][k-1]) + //Ignore the left range if k is the first one
+                        (k == end ? 0 : dp[k+1][end]); //Ignore the right range if k is the last one
+                    maxResult = Math.max(maxResult, result);
+                }
+                dp[start][end] = maxResult;
+                //System.out.println("dp["+start+"]["+end+"] = " +dp[start][end]);
+            }
+        }
+        return dp[0][N-1];
+```
+
+* [`HARD`][LC546 Remove Boxes](https://leetcode.com/problems/remove-boxes/)
+
+```java
+        for (int len = 1; len < N; len++) {
+            for (int i = 0; i < N - len; i++) {
+                int j = i + len;
+                
+                for (int count = 0; count <= i; count++) {
+                    //Choice 1: remove box[i] with all adjacent box to the left
+                    int choice1 = (count+1)*(count+1) + dp[i+1][j][0];
+                    
+                    //Choice 2: attach box[i] to box[k] of same color
+                    int maxChoice2 = 0;
+                    for (int k = i + 1; k <= j; k++) {
+                        if (boxes[k] == boxes[i]) {
+                            int choice2 = dp[i+1][k-1][0] + dp[k][j][count+1];
+                            maxChoice2 = Math.max(maxChoice2, choice2);
+                        }
+                    }
+                    dp[i][j][count] = Math.max(choice1, maxChoice2);
+                }
+            }
+        }
+        return dp[0][N-1][0];
+```
+
+* [`MEDIUM`] [LC96 Unique Binary Search Tree](https://leetcode.com/problems/unique-binary-search-trees/)
+```java
+        for (int len = 2; len <= n; len++) {
+            int result = 0;
+            for (int k = 0; k < i; k++) {
+                //[0..k), k, [k+1, len)
+                result += dp[k] * dp[len-1-k];
+            }
+            dp[i] = result;
+        }
+```
+
+* TODO 
+```
+    
+1039. Minimum Score Triangulation of Polygon Medium
+
+1040. Minimum Cost to Merge Stones Medium
+```
+
+### Pattern 4: DP on Strings
+
+* **Problems**: Given two *strings* s1 and s2, return some result.
+* **Examples**: 
+  * Two Strings: Longest Common Subsequence 
+  * One String: Palindromic Substrings
+
+#### **Template**
+
+Most of the problems on this pattern requires a solution that can be accepted in O(n^2) complexity.
+
+```java
+// i - indexing string s1
+// j - indexing string s2
+for (int i = 1; i <= n; ++i) { 
+   for (int j = 1; j <= m; ++j) {
+       if (s1[i-1] == s2[j-1]) {
+           dp[i][j] = /*code*/;
+       } else {
+           dp[i][j] = /*code*/;
+       }
+   }
+}
+```
+
+Note: 
+* For two strings, `i <= N` since `i` is the length of *string*
+* For one string, `len < N` since len is the length of *interval*, the maximum length of interval for a string of length of N is N-1. 
+
+If you are given one string s the approach may little vary
+```java
+for (int len = 1; len < n; ++len) { //Length of interval, so the max length of intervals is N-1 for string of length of N
+   for (int i = 0; i < n-len; ++i) {
+       int j = i + len; //Str[i, j]
+       if (s[i] == s[j]) {
+           dp[i][j] = /*code*/;
+       } else {
+           dp[i][j] = /*code*/;
+       }
+   }
+}
+```
+
+#### Practice Questions
+
+* [`MEDIUM`] [LC1143 Longest Common Subsequence](https://leetcode.com/problems/longest-common-subsequence/) - Two Strings Template
+
+```java
+        for (int i = 1; i <= M; i++) { //length of text1
+            for (int j = 1; j <= N; j++) { //length of text2
+                if (text1.charAt(i-1) == text2.charAt(j-1)) {
+                    dp[i][j] = dp[i-1][j-1] + 1;
+                } else {
+                    dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+                }
+            }
+        }
+```
+
+* [`MEDIUM`] [LC647 Palindromic Substrings](https://leetcode.com/problems/palindromic-substrings/)
+
+```java
+```
+
+* TODO - Pattern 4
+```
+516. Longest Palindromic Subsequence Medium
+
+1092. Shortest Common Supersequence Medium
+
+72. Edit Distance Hard
+
+115. Distinct Subsequences Hard
+
+712. Minimum ASCII Delete Sum for Two Strings Medium
+
+5. Longest Palindromic Substring Medium
+```
+
+### Pattern 5: Making Decisions
+
+The general problem statement for this pattern is for given situation, decide whether to use or not to use the current state. So, the problem requires you to make a decision at a current state.
+
+* **Problems**: Given a set of values find an answer with an option to choose or ignore the current value.
+* **Examples**: House Robbery, Buying and Selling Stocks
+* **Approach**:
+If you decide to choose the current value, use the previous result where the value was ignored; vice-versa, if you decide to ignore the current value, use previous result where value was used.
+
+
+#### **Template**
+```java
+// i - indexing a set of values
+// j - options to ignore j values
+for (int i = 1; i < n; ++i) {
+   for (int j = 1; j <= k; ++j) {
+       dp[i][j] = max({dp[i][j], dp[i-1][j] + arr[i], dp[i-1][j-1]});
+       dp[i][j-1] = max({dp[i][j-1], dp[i-1][j-1] + arr[i], arr[i]});
+   }
+}
+```
+
+
+#### Practice Questions
+* [`EASY`] [198. House Robber](https://leetcode.com/problems/house-robber/)
+```java
+        for (int i = 1; i < N; i++) {
+            dp[i][ROB] = dp[i-1][NOT_ROB] + nums[i];
+            dp[i][NOT_ROB] = Math.max(dp[i-1][ROB], dp[i-1][NOT_ROB]);
+        }
+```
+
+
+* TODO
+```
+121. Best Time to Buy and Sell Stock Easy
+
+714. Best Time to Buy and Sell Stock with Transaction Fee Medium
+
+309. Best Time to Buy and Sell Stock with Cooldown Medium
+
+123. Best Time to Buy and Sell Stock III Hard
+
+188. Best Time to Buy and Sell Stock IV Hard
+```
