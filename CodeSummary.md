@@ -6,7 +6,7 @@
   - [Table of Content](#table-of-content)
 - [Road Map](#road-map)
 - [TODO](#todo)
-- [Advanced Data Structure Review](#advanced-data-structure-review)
+- [Basic Data Structure and Algorithm Review](#basic-data-structure-and-algorithm-review)
   - [Union-Find Review](#union-find-review)
       - [Review Resources](#review-resources)
       - [Application: Dynamic Connectivity](#application-dynamic-connectivity)
@@ -20,6 +20,28 @@
         - [Variant 2 - Reference only](#variant-2---reference-only)
     - [Template: Binary Search](#template-binary-search)
     - [Practice Problem - Binary Search](#practice-problem---binary-search)
+  - [Sorting](#sorting)
+    - [Overview](#overview)
+      - [Theory](#theory)
+      - [Practice Question](#practice-question)
+    - [Selection Sort](#selection-sort)
+      - [Invariant](#invariant)
+      - [Template](#template)
+    - [Insertion Sort](#insertion-sort)
+      - [Invaiants:](#invaiants)
+      - [Template](#template-1)
+      - [Properties](#properties)
+    - [Shuffle Algorithm](#shuffle-algorithm)
+      - [Template: Knuth Shuffle](#template-knuth-shuffle)
+    - [Merge Sort](#merge-sort)
+      - [Template - MergeSort Top Down with Optimization](#template---mergesort-top-down-with-optimization)
+      - [Template - MergeSort](#template---mergesort)
+      - [Properties](#properties-1)
+      - [Mergesort TopDown: Practical Improvements:](#mergesort-topdown-practical-improvements)
+    - [Quick Sort](#quick-sort)
+      - [Template](#template-2)
+    - [Piority Queue](#piority-queue)
+  - [Searching](#searching)
 - [Hash Table Review](#hash-table-review)
 - [Bit Operation Review](#bit-operation-review)
 - [Graph Review](#graph-review)
@@ -42,7 +64,7 @@
 - [LeetCode Summary](#leetcode-summary)
   - [Calculator I, II, III](#calculator-i-ii-iii)
   - [Sliding Window](#sliding-window)
-    - [Template](#template)
+    - [Template](#template-3)
       - [Template: Find max substring](#template-find-max-substring)
       - [Template: Find min substring](#template-find-min-substring)
     - [Practice](#practice)
@@ -70,22 +92,22 @@
   - [Binary Index Tree (Fenwick Tree)](#binary-index-tree-fenwick-tree)
       - [BIT Template](#bit-template)
   - [Trie](#trie)
-  - [Dynamic Programming Review](#dynamic-programming-review)
-    - [Overview](#overview)
+- [Dynamic Programming Review](#dynamic-programming-review)
+    - [Overview](#overview-1)
     - [Pattern 1: Minimum Path to Reach a Target](#pattern-1-minimum-path-to-reach-a-target)
-      - [**Template**](#template-1)
+      - [**Template**](#template-4)
       - [Practice Questions](#practice-questions)
     - [Pattern 2: Distinct Ways](#pattern-2-distinct-ways)
-      - [**Template**](#template-2)
+      - [**Template**](#template-5)
       - [Practice Questions](#practice-questions-1)
     - [Pattern 3: Merging Intervals](#pattern-3-merging-intervals)
-      - [**Template**](#template-3)
+      - [**Template**](#template-6)
       - [Practice Questions](#practice-questions-2)
     - [Pattern 4: DP on Strings](#pattern-4-dp-on-strings)
-      - [**Template**](#template-4)
+      - [**Template**](#template-7)
       - [Practice Questions](#practice-questions-3)
     - [Pattern 5: Making Decisions](#pattern-5-making-decisions)
-      - [**Template**](#template-5)
+      - [**Template**](#template-8)
       - [Practice Questions](#practice-questions-4)
 
 # Road Map
@@ -102,6 +124,11 @@ Advanced | B-tree, k-d tree, suffix array, maxflow
 # TODO
 
 TODO 1: Add review for trees
+
+* BFS
+* DFS = preorder, inorder, postorder - using iterative approach
+  * Summarize here
+https://leetcode.com/problems/binary-tree-preorder-traversal/solution/
 
 TODO 2: 
 Summarize this: 
@@ -131,7 +158,7 @@ Read Philosophy here: https://leetcode.com/discuss/general-discussion/475924/my-
 Summarize Dynamic Programming Patterns: https://leetcode.com/discuss/general-discussion/458695/dynamic-programming-patterns
 
 
-# Advanced Data Structure Review
+# Basic Data Structure and Algorithm Review
 
 ## Union-Find Review
 
@@ -345,6 +372,347 @@ This section is for reference only. It helps me to memorize all the different bo
 * [EASY] [LC35 Search Insert Position](https://leetcode.com/problems/search-insert-position/)
 * [EASY] [LC1150 Check If a Number Is Majority Element in a Sorted Array](https://leetcode.com/problems/check-if-a-number-is-majority-element-in-a-sorted-array/submissions/)
 
+## Sorting
+
+### Overview
+
+#### Theory
+
+* **Total order**: A total order is a binary relation $\le$ that satisfies:
+  * **Antisymmetry**: if $v \le w$ and  $w \le v$, then $v = w$
+  * **Transitivity**: if both $v \le w$ and  $w \le x$, then $v \le x$. 
+    * e.g.: Rock-Paper-Scissors violates transitivity.
+  * **Totality**: either $v \le w$ or  $w \le v$ or both. 
+    * e.g.: Course prerequisites (topological sort) violates totality.
+* `Comparator` interface requires **total order**. It is used to sort by different field outside the datatype.   
+  ```java
+  public interface Comparator<Key> {
+      int compare(Key v, Key w) //Compare keys v and w
+  }
+
+  public class Point2D {
+      public final Comparator<Point2D> POLAR_ORDER = new PolarOrder;
+
+      privat class PloarOrder implements Comparator<Point2D> {
+          public int compare(Point2D q1, Point2D q2) {
+
+          }
+      }
+  }
+
+  //Driver code
+  Arrays.sort(points, p.POLAR_ORDER);
+  ```
+* TODO - Add `Comparable` interface here
+* **Lower bound** of compare-based sorting is $O(N log N)$. However, it may not hold if the algorithm has information about:
+  * The inital order of the input
+    * e.g.: Insertion sort needs only $O(N)$ compare if array is partially sorted
+  * The distribution of key values
+    * e.g.: Three-way quicksort needs only $O(N)$ compares if there's a constant number of distinct keys
+  * The representation of the keys
+    * e.g.: Radix sort requires no key compares - it accesses the data via character/digit compares
+
+#### Practice Question
+
+* [`MEDIUM`] [LC912 Sort an Array](https://leetcode.com/problems/sort-an-array/)
+
+  https://leetcode.com/problems/sort-an-array/discuss/276463/Java-QuickSort-%2B-SelectionSort-%2B-MergeSort-summary
+
+```java
+    public List<Integer> sortArray(int[] nums) {
+        //Insertion.sort(nums);
+        //Selection.sort(nums);
+        //Merge.sortBU(nums);
+        //Merge.sortTD(nums);
+        return Arrays.stream(nums)
+                    .boxed()
+                    .collect(Collectors.toList());
+    }
+```
+
+### Selection Sort
+#### Invariant
+
+* Entries to the left of `i` (including `i`) are fixed and in ascending order
+* No entries to the right of `i` is smaller than any entry to the left of `i`;
+
+#### Template
+```java
+    public List<Integer> sortArray(int[] nums) {
+        Selection.sort(nums);
+        return Arrays.stream(nums)
+                    .boxed()
+                    .collect(Collectors.toList());
+    }
+    
+    public static class Selection {
+        public static void sort(int[] nums) {
+            int N = nums.length;
+            for (int i = 0; i < N; i++) {
+                int min = i; //index of min element to the right of i
+                for (int j = i + 1; j < N; j++) {
+                    if (nums[j] < nums[min]) { //Note: Use less comparator only
+                        min = j;
+                    }
+                }
+                swap(nums, i, min);
+            }
+        }
+        
+        private static void swap(int[] nums, int i, int j) {
+            int temp = nums[i];
+            nums[i] = nums[j];
+            nums[j] = temp;
+        }
+    }
+```
+
+* $\sim N^2/2$ compares and $N$ exchanges
+* Running time insensitive to input, even if the input is sorted. 
+* Data movement is minimal. Linear number of exchanges.
+
+### Insertion Sort
+
+#### Invaiants:
+* Entries to the left of `i` (including `i`) are in ascending order
+* Entries to the right of `i` have not been seen yet.
+
+#### Template
+```java
+    public static class Insertion {
+        public static void sort(int[] nums) {
+            int N = nums.length;
+            for (int i = 1; i < N; i++) {
+                for (int j = i; j > 0; j--) {
+                    if (nums[j] < nums[j-1]) { //Note: Use less comparator only
+                        swap(nums, j, j-1);
+                     
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+        
+        private static void swap(int[] nums, int i, int j) {
+            int temp = nums[i];
+            nums[i] = nums[j];
+            nums[j] = temp;
+        }
+    }
+```
+
+#### Properties
+* **Average Case**: For randomly-ordered with distinct keys,  $\sim N^2/4$ compares and $\sim N^2/4$ exchanges on average
+* **Best case**: If the array is in ascending order, insertion sort makes $N-1$ compares and $0$ exchange.
+* **Worst case**: If the array is in descending order, insertion sort makes $\sim N^2/2$ compares and $\sim N^2/2$ exchanges 
+* Important Proposition: For **partially-sorted** arrays, insertion sort runs in **linear** time.
+  * Concept
+    * Inversion: A pair of keys that are out of order
+    * Partially sorted array: number of inversions is $\le cN$ (linear)
+  * Proof
+    * Number of inversions equals number of exchanges. 
+    * Number of compares = exchanges + (N - 1)
+
+### Shuffle Algorithm
+
+* **Goal**: Rearrange array so that result is a uniformly random permutation.
+
+* **PracticeQuestion**  [LC384 Shuffle an Array](https://leetcode.com/problems/shuffle-an-array/)
+
+* **Shuffle Sort**: 
+  * Generate a random real number for each array entry, and then sort the array. 
+  * Bounded by $O(N log N)$ sort algorithm.
+
+#### Template: Knuth Shuffle
+* This is a $O(N)$ uniform shuffling algorithm.
+
+```java
+    public int[] shuffle() {
+        for (int i = 0; i < nums.length; i++) {
+            int j = new Random().nextInt(i+1); //Uniformly between [0, i]. Not [0, N]
+            swap(nums, i, j);
+        }
+        return nums;
+    }
+    
+    private void swap(int[] nums, int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+```
+
+NOTE: What happens if interger is chosen between `0` and `N-1` instead of `0` to `i`? It will not be unifromely random.
+
+### Merge Sort
+
+#### Template - MergeSort Top Down with Optimization
+```java
+    public List<Integer> sortArray(int[] nums) {
+        MergeSortTD.mergesort(nums);
+        return Arrays.stream(nums)
+                    .boxed()
+                    .collect(Collectors.toList());
+    }
+    
+    public static class MergeSortTD {
+        public static void mergesort(int[] nums) {
+            int[] aux = new int[nums.length];
+            sort(nums, aux, 0, nums.length-1);
+        }
+    
+        private static void sort(int[] nums, int[] aux, int low, int high) {
+            /* //--Unoptimized---
+            if (low >= high) {
+                //Array of length 1
+                return;
+            }
+            */
+            
+            //OPTIMIZATION 1: insertion for small array
+            int CUTOFF = 7;
+            if (high <= low + CUTOFF - 1) {
+                Insertion.sort(nums, low, high);
+                return;
+            }
+
+            int mid = low + (high - low)/2;
+            sort(nums, aux, low, mid);
+            sort(nums, aux, mid+1, high);
+            
+            //OPTIMIZATION 2: no merge if two arrays are already sorted
+            if (nums[mid] <= nums[mid+1]) {
+                return;
+            }
+            
+            merge(nums, aux, low, mid, high);
+        }
+    
+        //stably merge A1 = nums[low..mid] and A2 = nums[mid+1..high] using aux[low..high]
+        private static void merge(int[] nums, int[] aux, int low, int mid, int high) {
+            //Copy to aux[] - use as readonly copy once initialized
+            for (int k = low; k <= high; k++) {
+                aux[k] = nums[k];
+            }
+
+            // Merge back to nums[]
+            //i iterates in [low..mid], j iterates in [mid+1..high]
+            int i = low, j = mid+1;
+            for (int k = low; k <= high; k++) {
+                if (i > mid) { //A1 is done
+                    nums[k] = aux[j++]; 
+                } else if ( j > high) { //A2 is done
+                    nums[k] = aux[i++]; 
+                } else if (aux[j] < aux[i]) { //NOTE: use values in aux array to compare!!!
+                    nums[k] = aux[j++];
+                } else { //Use A2
+                    nums[k] = aux[i++];
+                }
+            }
+        }
+    }
+```
+
+#### Template - MergeSort 
+
+```java
+    public static class Merge {
+        public static void sortBU(int[] nums) {
+            int N = nums.length;
+            int[] aux = new int[N];
+            for (int size = 1; size < N; size = size * 2) {
+                for (int low = 0; low < N - size; low += size * 2) {
+                    int mid = low + size - 1;
+                    int high = low + size + size - 1;
+                    merge(nums, aux, low, mid, Math.min(high, N-1));
+                }
+            } 
+        }
+        
+        public static void sortTD(int[] nums) {
+            int[] aux = new int[nums.length];
+            sort(nums, aux, 0, nums.length-1);
+        }
+    
+        //Helper function for sortTopDown
+        private static void sort(int[] nums, int[] aux, int low, int high) {
+            /* //--Unoptimized---
+            if (low >= high) {
+                //Array of length 1
+                return;
+            }
+            */
+            
+            //OPTIMIZATION 1: insertion for small array
+            int CUTOFF = 7;
+            if (high <= low + CUTOFF - 1) {
+                Insertion.sort(nums, low, high);
+                return;
+            }
+
+            int mid = low + (high - low)/2;
+            sort(nums, aux, low, mid);
+            sort(nums, aux, mid+1, high);
+            
+            //OPTIMIZATION 2: no merge if two arrays are already sorted
+            if (nums[mid] <= nums[mid+1]) {
+                return;
+            }
+            
+            merge(nums, aux, low, mid, high);
+        }
+    
+        //Shared between TopDown and BottomUp approach
+        //stably merge A1 = nums[low..mid] and A2 = nums[mid+1..high] using aux[low..high]
+        private static void merge(int[] nums, int[] aux, int low, int mid, int high) {
+            //Copy to aux[] - use as readonly copy once initialized
+            for (int k = low; k <= high; k++) {
+                aux[k] = nums[k];
+            }
+
+            // Merge back to nums[]
+            //i iterates in [low..mid], j iterates in [mid+1..high]
+            int i = low, j = mid+1;
+            for (int k = low; k <= high; k++) {
+                if (i > mid) { //A1 is done
+                    nums[k] = aux[j++]; 
+                } else if ( j > high) { //A2 is done
+                    nums[k] = aux[i++]; 
+                } else if (aux[j] < aux[i]) { //NOTE: use values in aux array to compare!!!
+                    nums[k] = aux[j++];
+                } else { //Use A2
+                    nums[k] = aux[i++];
+                }
+            }
+        }
+    }
+```
+
+
+#### Properties
+
+* Time Complexity:  $O(N log N)$
+* Space Complexity: $O(N)$
+* Mergesort is optimal with respect to number of compares.
+* Mergesort is not optimal with respect to space usage.
+
+
+#### Mergesort TopDown: Practical Improvements:
+* [Easy to do] Use insertion sort for small already. Cutoff is usually around 7  
+* [Easy to do] Stop if already sorted.
+* [Tricky to implement] Eliminate the copy to the auxiliary array.
+
+### Quick Sort
+
+#### Template
+```java
+
+```
+
+### Piority Queue
+
+## Searching
 
 # Hash Table Review
 
@@ -2385,7 +2753,7 @@ public class Solution {
 ## Trie
 
 
-## Dynamic Programming Review
+# Dynamic Programming Review
 
 
 ### Overview
