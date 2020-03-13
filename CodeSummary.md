@@ -6,7 +6,8 @@
   - [Table of Content](#table-of-content)
 - [Road Map](#road-map)
 - [TODO](#todo)
-- [Basic Data Structure and Algorithm Review](#basic-data-structure-and-algorithm-review)
+    - [Java API Quick Cheat Sheet](#java-api-quick-cheat-sheet)
+  - [# Basic Data Structure and Algorithm Review](#h1-id%22basic-data-structure-and-algorithm-review-9%22basic-data-structure-and-algorithm-reviewh1)
   - [Union-Find Review](#union-find-review)
       - [Review Resources](#review-resources)
       - [Application: Dynamic Connectivity](#application-dynamic-connectivity)
@@ -21,7 +22,7 @@
     - [Template: Binary Search](#template-binary-search)
     - [Practice Problem - Binary Search](#practice-problem---binary-search)
   - [Sorting](#sorting)
-    - [Overview](#overview)
+    - [Summary](#summary)
       - [Theory](#theory)
       - [Practice Question](#practice-question)
     - [Selection Sort](#selection-sort)
@@ -31,40 +32,111 @@
       - [Invaiants:](#invaiants)
       - [Template](#template-1)
       - [Properties](#properties)
-    - [Shuffle Algorithm](#shuffle-algorithm)
-      - [Template: Knuth Shuffle](#template-knuth-shuffle)
     - [Merge Sort](#merge-sort)
-      - [Template - MergeSort Top Down with Optimization](#template---mergesort-top-down-with-optimization)
       - [Template - MergeSort](#template---mergesort)
       - [Properties](#properties-1)
       - [Mergesort TopDown: Practical Improvements:](#mergesort-topdown-practical-improvements)
+    - [Shuffle Algorithm](#shuffle-algorithm)
+      - [Template: Knuth Shuffle](#template-knuth-shuffle)
     - [Quick Sort](#quick-sort)
-      - [Template](#template-2)
-    - [Piority Queue](#piority-queue)
+      - [Template: Quick Sort](#template-quick-sort)
+      - [Quicksort Practical Improvements](#quicksort-practical-improvements)
+      - [Template: Three-Way Quick Sort](#template-three-way-quick-sort)
+      - [Template: Quick Select](#template-quick-select)
+    - [Heapsort and Piority Queue](#heapsort-and-piority-queue)
+      - [Template: BinaryHeap](#template-binaryheap)
+      - [Template: Heap Sort](#template-heap-sort)
   - [Searching](#searching)
+    - [Summary](#summary-1)
+      - [Equality test](#equality-test)
+  - [Binary Search Tree](#binary-search-tree)
+      - [Questions:](#questions)
+      - [Binary Tree Traversal](#binary-tree-traversal)
+      - [Binary Search Tree (BST) Operations](#binary-search-tree-bst-operations)
+        - [Search](#search)
+        - [Insertion](#insertion)
+        - [Deletion](#deletion)
+  - [Orderded Operation](#orderded-operation)
+    - [BST Case Study: Intersection among geometric objects](#bst-case-study-intersection-among-geometric-objects)
+    - [Range Search](#range-search)
+        - [[TODO] Template: Orthogonal line segment intersection](#todo-template-orthogonal-line-segment-intersection)
+    - [2-d Trees and K-d tree](#2-d-trees-and-k-d-tree)
+    - [Interval Search Tree](#interval-search-tree)
+    - [Rectangle Intersection](#rectangle-intersection)
 - [Hash Table Review](#hash-table-review)
-- [Bit Operation Review](#bit-operation-review)
+      - [Template: Separate Chaning Symbol Table](#template-separate-chaning-symbol-table)
+      - [Template: Linear Probing Hash Symbol Table](#template-linear-probing-hash-symbol-table)
+      - [Set](#set)
+- [Bit Operation Review, Permutation Review](#bit-operation-review-permutation-review)
+  - [Bit Cheatsheet](#bit-cheatsheet)
+    - [Bit Manipulation Questions](#bit-manipulation-questions)
+  - [Permutation Cheatsheet](#permutation-cheatsheet)
 - [Graph Review](#graph-review)
   - [Graph - Undirected Unweighted](#graph---undirected-unweighted)
+    - [Graph Traversal Summary - What BFS and DFS can do](#graph-traversal-summary---what-bfs-and-dfs-can-do)
     - [Representation](#representation)
     - [DFS](#dfs)
       - [DFS Path](#dfs-path)
       - [Connectd Components](#connectd-components)
-      - [Cycle](#cycle)
-      - [Two-Colorability](#two-colorability)
+      - [Template - Undireted Cycle](#template---undireted-cycle)
+      - [Bipartite: Two-Colorability](#bipartite-two-colorability)
     - [BFS](#bfs)
       - [BFS Path - Single Source Shortest Path](#bfs-path---single-source-shortest-path)
     - [SymbolGraph](#symbolgraph)
+  - [Digraph](#digraph)
+    - [Digraph Search](#digraph-search)
+    - [[TODO] Topological Sort](#todo-topological-sort)
+    - [Strong Connected Component](#strong-connected-component)
+  - [Edge-Weighted Graph](#edge-weighted-graph)
+    - [Weighted Edge API](#weighted-edge-api)
+    - [Minimum Spanning Tree](#minimum-spanning-tree)
+      - [Template: Kruskal MST](#template-kruskal-mst)
+      - [Template: Prim MST](#template-prim-mst)
+  - [Edge-Weighted Digraph: Shortest Path](#edge-weighted-digraph-shortest-path)
+    - [Weighted Directed Edge API](#weighted-directed-edge-api)
+    - [Single Source Shortest Paths](#single-source-shortest-paths)
+      - [Template: Dijkstra Shortest Path: No negative weights](#template-dijkstra-shortest-path-no-negative-weights)
+      - [Tempalte: AcyclicSP: Must be DAGs, but allows for negative weights.](#tempalte-acyclicsp-must-be-dags-but-allows-for-negative-weights)
+      - [Shortest paths with negative weights](#shortest-paths-with-negative-weights)
+        - [Template: Bellman-Ford algorithm](#template-bellman-ford-algorithm)
+        - [Template: Bellman-Form Queue Based](#template-bellman-form-queue-based)
+    - [Edge-Weighted Digraph with Flow Edge: Maximum Flow](#edge-weighted-digraph-with-flow-edge-maximum-flow)
+      - [Model](#model)
+      - [Ford-Fulkerson Algorithm](#ford-fulkerson-algorithm)
+      - [Template: Ford Fulkerson Algorithm](#template-ford-fulkerson-algorithm)
+        - [Application](#application)
     - [LeetCode Examples](#leetcode-examples)
       - [DFS](#dfs-1)
         - [200 Number of Islands](#200-number-of-islands)
       - [BFS](#bfs-1)
         - [127 WordLadder](#127-wordladder)
         - [126 Word Ladder II](#126-word-ladder-ii)
+- [String Review](#string-review)
+  - [String Sorts](#string-sorts)
+    - [Key-indexed counting demo](#key-indexed-counting-demo)
+    - [LSD string (radix) sort - Least-significant-digit-first string sort](#lsd-string-radix-sort---least-significant-digit-first-string-sort)
+    - [MSD string sort - Most-significant-digit-first string sort](#msd-string-sort---most-significant-digit-first-string-sort)
+    - [Suffix sort](#suffix-sort)
+    - [Trie](#trie)
+      - [Template: R-way Trie Implementation](#template-r-way-trie-implementation)
+      - [Template: Character based operations](#template-character-based-operations)
+    - [Substring Search](#substring-search)
+      - [Template: Knuth-Morris-Pratt DFA](#template-knuth-morris-pratt-dfa)
+      - [Not Required: Boyer Moore](#not-required-boyer-moore)
+      - [Not Required: Rabin-Karp](#not-required-rabin-karp)
+    - [Regular Expressions](#regular-expressions)
+      - [Template: NFA](#template-nfa)
+      - [Application](#application-1)
+      - [Java: Regular expression](#java-regular-expression)
+    - [Data Compression](#data-compression)
+      - [Huffman codes](#huffman-codes)
+  - [Some Theory Stuff](#some-theory-stuff)
+    - [Reduction](#reduction)
+    - [Linear programming and Intractability](#linear-programming-and-intractability)
+      - [Template: Hamilton Path - NP Complete](#template-hamilton-path---np-complete)
 - [LeetCode Summary](#leetcode-summary)
-  - [Calculator I, II, III](#calculator-i-ii-iii)
   - [Sliding Window](#sliding-window)
-    - [Template](#template-3)
+    - [Template](#template-2)
       - [Template: Find max substring](#template-find-max-substring)
       - [Template: Find min substring](#template-find-min-substring)
     - [Practice](#practice)
@@ -84,30 +156,33 @@
       - [40 Combinaiton Sum II](#40-combinaiton-sum-ii)
       - [216 Combination Sum III](#216-combination-sum-iii)
       - [37 Soduku Solver](#37-soduku-solver)
+      - [425 Word Square](#425-word-square)
+      - [More Questions](#more-questions)
 - [Compiler Template Review](#compiler-template-review)
-  - [Calculator I, II, III](#calculator-i-ii-iii-1)
+  - [Calculator I, II, III](#calculator-i-ii-iii)
     - [High Level Design](#high-level-design)
     - [Chosen Design](#chosen-design)
 - [Tree Review](#tree-review)
   - [Binary Index Tree (Fenwick Tree)](#binary-index-tree-fenwick-tree)
       - [BIT Template](#bit-template)
-  - [Trie](#trie)
+  - [Trie](#trie-1)
 - [Dynamic Programming Review](#dynamic-programming-review)
-    - [Overview](#overview-1)
+    - [Overview](#overview)
     - [Pattern 1: Minimum Path to Reach a Target](#pattern-1-minimum-path-to-reach-a-target)
-      - [**Template**](#template-4)
+      - [**Template**](#template-3)
       - [Practice Questions](#practice-questions)
     - [Pattern 2: Distinct Ways](#pattern-2-distinct-ways)
-      - [**Template**](#template-5)
+      - [**Template**](#template-4)
       - [Practice Questions](#practice-questions-1)
     - [Pattern 3: Merging Intervals](#pattern-3-merging-intervals)
-      - [**Template**](#template-6)
+      - [**Template**](#template-5)
       - [Practice Questions](#practice-questions-2)
+        - [* TODO Summarize Stacks](#ul-litodo-summarize-stacksli-ul)
     - [Pattern 4: DP on Strings](#pattern-4-dp-on-strings)
-      - [**Template**](#template-7)
+      - [**Template**](#template-6)
       - [Practice Questions](#practice-questions-3)
     - [Pattern 5: Making Decisions](#pattern-5-making-decisions)
-      - [**Template**](#template-8)
+      - [**Template**](#template-7)
       - [Practice Questions](#practice-questions-4)
 
 # Road Map
@@ -139,26 +214,213 @@ Review Algorithm:
 Recursion version + Iterative version for pre-order, in-order, post-order traversal, (Leetcode 545) 
 Order-level traversal (Leetcode 102, 199)
 
-TODO 4:
-Review QuickSort, QuickSelect(Leetcode 215), MergeSort
+~~TODO 4: Review QuickSort, QuickSelect(Leetcode 215), MergeSort~~
 
-TODO 5:
-Review PriorityQueue add and remove algorithm
+~~TODO 5:
+Review PriorityQueue add and remove algorithm~~
 
 TODO 6:
 Review how to implement a HashMap: Hash Function + Address Conflict Resolution
 
 Read HashSet Implementation https://leetcode.com/problems/design-hashset/solution/
 
-TODO 7:
-Understand Parser/Lexer etc (LeetCode 640, 536, PythonInterpreter, LeetCode Brace Expansion 1&2)
+~~TODO 7:
+Understand Parser/Lexer etc (LeetCode 640, 536, PythonInterpreter, LeetCode Brace Expansion 1&2)~~
 
-TODO 8:
+~~TODO 8: DP
 Read Philosophy here: https://leetcode.com/discuss/general-discussion/475924/my-experience-and-notes-for-learning-dp 
-Summarize Dynamic Programming Patterns: https://leetcode.com/discuss/general-discussion/458695/dynamic-programming-patterns
+Summarize Dynamic Programming Patterns: https://leetcode.com/discuss/general-discussion/458695/dynamic-programming-patterns~~
+
+TODO 9: More DP
+* Go through Huahua's blog: https://zxi.mytechroad.com/blog/dynamic-programming/leetcode-dp-summary/
 
 
+TODO 10: All Path Generation:
+
+* All BFS paths
+  * [LC1258 Synonymous Sentences](https://leetcode.com/problems/synonymous-sentences/)
+* All DFS paths
+
+TODO 11: Monotonic Stack
+* [LC496 Next Greater Element I](https://leetcode.com/problems/next-greater-element-i/)
+```java
+//Value is monotonically decreasing from bottom to top, store value directly
+public int[] nextGreaterElement(int[] nums1, int[] nums2) {
+    HashMap<Integer, Integer> map = new HashMap<>(); //Element -> Next Greater Element
+    Stack<Integer> stack = new Stack<>();
+    
+    //Build monotonic stack on nums2, only next larger element can evict current number
+    for (int i = 0; i < nums2.length; i++) {
+        int num = nums2[i];
+        while ( !stack.isEmpty() && num > stack.peek()) {
+            map.put(stack.pop(), num);
+        }
+        stack.push(num);
+    }
+    
+    int[] result = new int[nums1.length];
+    for (int i = 0; i < nums1.length; i++) {
+        result[i] = map.getOrDefault(nums1[i], -1);
+    }
+    return result;
+}
+```
+* [LC503 Next Greater Element II](https://leetcode.com/problems/next-greater-element-ii/)
+```java
+    public int[] nextGreaterElements(int[] nums) {
+        Stack<Integer> stack = new Stack(); //Monotonic stack of index
+        int[] result = new int[nums.length];
+        //First pass
+        for (int i = nums.length - 1; i >= 0; i--) {
+            while (!stack.isEmpty() && nums[stack.peek()] <= nums[i]) { //Important to pop when equal to ensure monoticity
+                stack.pop();
+            }
+            if (stack.isEmpty()) {
+                result[i] = -1;
+            } else {
+                result[i] = nums[stack.peek()];
+            }
+            stack.push(i);
+        }
+        //Second pass for circular
+        for (int i = nums.length - 1; i >= 0; i--) {
+            while (!stack.isEmpty() && nums[stack.peek()] <= nums[i]) {
+                stack.pop();
+            }
+            if (stack.isEmpty()) {
+                result[i] = -1;
+            } else {
+                result[i] = nums[stack.peek()];
+            }
+            stack.push(i);
+        }
+        return result;
+    }
+```
+
+[LC84 Largest Rectangle in Histogram](https://leetcode.com/problems/largest-rectangle-in-histogram/solution/) 
+
+```java
+//Value is monotonically increasing from bottom to top, store index
+//Update the square when popping
+class Solution {
+    public int largestRectangleArea(int[] heights) {
+        Stack<Integer> stack = new Stack<>();
+        int maxArea = 0;
+        stack.push(-1); //Mark the end of stack
+        for (int i = 0; i < heights.length; i++) {
+            while (stack.peek() != -1 && heights[stack.peek()] >= heights[i]) {
+                maxArea = Math.max(maxArea, heights[stack.pop()] * (i - stack.peek() - 1));
+            }
+            stack.push(i);
+        }
+        while (stack.peek() != -1) {
+            maxArea = Math.max(maxArea, heights[stack.pop()] * (heights.length - stack.peek() - 1));
+        }
+        return maxArea;
+    }
+}
+```
+
+[LC85 Maximal Rectangle](https://leetcode.com/problems/maximal-rectangle/)
+```java
+class Solution {
+    public int maximalRectangle(char[][] matrix) {
+        if (matrix.length == 0) return 0;
+        
+        int[] histogram = new int[matrix[0].length];
+
+        int maxArea = 0;
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                int num = matrix[i][j] - '0';
+                if (num == 0) {
+                    histogram[j] = 0;
+                } else {
+                    histogram[j] += num;
+                }
+            }
+            maxArea = Math.max(maxArea, largestRectangleArea(histogram));
+            System.out.println("Matrix area: "+maxArea);
+        }
+        return maxArea;
+    }
+
+    private int largestRectangleArea(int[] heights) {
+        
+        Stack<Integer> stack = new Stack<>();
+        int maxArea = 0;
+        stack.push(-1);
+        for (int i = 0; i < heights.length; i++) {
+            while (stack.peek() != -1 && heights[stack.peek()] >= heights[i]) {
+                maxArea = Math.max(maxArea, heights[stack.pop()] * (i - stack.peek() - 1));
+            }
+            stack.push(i);
+        }
+        while (stack.peek() != -1) {
+            maxArea = Math.max(maxArea, heights[stack.pop()] * (heights.length - stack.peek() - 1));
+        }
+        return maxArea;
+    }
+}
+```
+
+
+### Java API Quick Cheat Sheet
+* Initalize list
+  * Immutable: `List<Integer> list=Arrays.asList(1, 2, 3);`
+  * Mutable: `List<Integer> list = new ArrayList<>(Arrays.asList(1, 2, 3));`
+  * Mutable: `List<Integer> list = new ArrayList<>() {{add(1);}};`
+* Array to List: 
+  * Object Types `String[] => List<String>`: 
+    ```
+    List<String> result = Arrays.asList(array);
+    ```
+  * Primitive Types `int[] => List<Integer>`:
+    ```java
+    List<Integer> result = Arrays.stream(nums)
+                            .boxed() //int -> Integer
+                            .collect(Collectors.toList());
+    ```
+* List to Array: 
+  * Object Types `List<String> => String[]`: 
+   ```java
+   String[] result = list.toArray(new String[list.size()])
+   ```
+  * Primitive Types `List<Integer> => int[]`:
+    ```java
+    int[] array = list.stream()
+                        .mapToInt(i->i) //Integer -> int
+                        .toArray();
+    ```
+* Sort array
+   ```java
+   int[] nums;
+   Arrays.sort(nums);
+   ```
+* Sort list of pair
+   ```java
+   List<int[]> events;
+   Collections.sort(events, (a,b) -> a[0] != b[0] ? a[0] - b[0] : a[1] - b[1]);
+   ```
+* Split and rejoin string
+   ```java
+   String[] words = sentence.split(" ");
+   words[i] = synonym;
+   String newSentence = Arrays.stream(words).collect(Collectors.joining(" "));
+   ```
+* 2D index to 1D hash 
+    ```java
+    int[][] maze = new int[rows][cols]
+    // {i, j} => hash
+    int hash = i * cols + j;
+    // hash => {1, j}
+    int x = hash / cols;
+    int y = hash % cols;
+    ```
+---
 # Basic Data Structure and Algorithm Review
+---
 
 ## Union-Find Review
 
@@ -255,6 +517,7 @@ weighted quick-union with path compression | $O(N)$ | $O(\alpha(N))$  | $O(\alph
 * [LC947 Most Stones Removed with Same Row or Column](https://leetcode.com/problems/most-stones-removed-with-same-row-or-column/solution/)
 * [LC721 Accounts Merge](https://leetcode.com/problems/accounts-merge/solution/)
 * [LC737 Sentence Similarity II](https://leetcode.com/problems/sentence-similarity-ii/solution/)
+* [LC959 Regions Cut By Slashes ](https://leetcode.com/problems/regions-cut-by-slashes/)
 
 ## Binary Search
 
@@ -371,10 +634,34 @@ This section is for reference only. It helps me to memorize all the different bo
 * [EASY] [LC704 Binary Search](https://leetcode.com/problems/binary-search/)
 * [EASY] [LC35 Search Insert Position](https://leetcode.com/problems/search-insert-position/)
 * [EASY] [LC1150 Check If a Number Is Majority Element in a Sorted Array](https://leetcode.com/problems/check-if-a-number-is-majority-element-in-a-sorted-array/submissions/)
-
+* [MEDIUM][LC34 Find First and Last Position of Element in Sorted Array](https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/)
 ## Sorting
 
-### Overview
+### Summary
+
+name | inplace? | stable? | best | average | worst | remarks
+--|--|--|--|--|--|--
+selection | Y | | $\frac{1}{2} N^2$ | $\frac{1}{2} N^2$ | $\frac{1}{2} N^2$ | n exchanges
+**insertion** | Y | Y | $N$ | $\frac{1}{4} N^2$ | $\frac{1}{2} N^2$ | Best for small N or partially ordered
+**merge** |  | Y | $\frac{1}{2} N lg N$ | $N lg N$ | $N lg N$ | <li>guarantee $N lg N$<br><li> stable
+**quick** | Y | | $N lg N$ | $2N lg N$ | $\frac{1}{2} N^2$ | <li>probabilistic guarantee $N lg N$ <br><li>fastest in practice (less data movement than mergesort)
+3-way quick | Y | | $N$ | $N lg N$ | $\frac{1}{2} N^2$ | improves quicksort for duplicated keys
+**heap** | Y | | $N$ | $N lg N$ | $N lg N$ | <li>guarantee $N lg N$<br><li> in-place
+
+* Java system sorts
+  * `Arrays.sort()` uses quicksort for primitive sort for high-performance
+    * Can sort differently using `Comparator` interface
+    ```java
+    Arrays.sort(nums);  //Sorted int[] in natural order
+    Arrays.sort(nums, Collections.reverseOrder());
+    ```
+  * `Arrays.sort()` uses tuned mergesort for objects since extra space is likely not a concern.
+    * Object implements `Comparable` interface in order to be sorted
+    * Can be sorted differently with `Comparator` interface
+    ```java
+    Arrays.sort(employee);  //Sorted Employee[] in order implemented `compareTo` in Comparable
+    Arrays.sort(employee, new EmployeeComparator()); //Sorted by `compare` defined in Comparator
+    ```
 
 #### Theory
 
@@ -384,26 +671,75 @@ This section is for reference only. It helps me to memorize all the different bo
     * e.g.: Rock-Paper-Scissors violates transitivity.
   * **Totality**: either $v \le w$ or  $w \le v$ or both. 
     * e.g.: Course prerequisites (topological sort) violates totality.
-* `Comparator` interface requires **total order**. It is used to sort by different field outside the datatype.   
+* `Comparable` interface requires **total order**, its motivation is to decouple the implementation datatype from the sort algorithm. It uses key within datatype to sort.
+
   ```java
-  public interface Comparator<Key> {
-      int compare(Key v, Key w) //Compare keys v and w
-  }
+    //Client.java
+    public class PointSorter {
+        public stativ void main(Point2D[] points) {
+            Insertion.sort(points);
+        }
+    }
 
-  public class Point2D {
-      public final Comparator<Point2D> POLAR_ORDER = new PolarOrder;
 
-      privat class PloarOrder implements Comparator<Point2D> {
-          public int compare(Point2D q1, Point2D q2) {
+    //Interface.java
+    pulic interface Comparable<Object> {
+        public int compareTo(Object that);
+    }
 
-          }
-      }
-  }
+    //Datatype.java
+    public class Point2D implements Comparable<Point2D> {
+        public int compareTo(Point2D b) {
+            return -1; //, or 0, or 1
+        }
+    }
 
-  //Driver code
+    //Sort.java
+    public static class Insertion{
+        public static void sort(Comparable[] a) {
+            for (int i = 1; i < a.length; i++) {
+                for (int j = i; j > 0; j--) {
+                    //Key point: no dependency on DataType
+                    if (a[j].copmareTo(a[j-1]) < 0) {
+                        swap(a, j, j-1);
+                    } else {
+                        break;
+                    }
+                }
+            }
+        } 
+    }
+
+  ```
+* `Comparator` interface requires **total order**. It is used to sort by different field ***outside*** the datatype.   
+  ```java
+    //Client.java
+    public class PointSorter {
+        public stativ void main(Point2D[] points) {
+            Arrays.sort(points, p.POLAR_ORDER);
+        }
+    }
+
+    //Interface.java
+    public interface Comparator<Key> {
+        int compare(Key v, Key w) //Compare keys v and w
+    }
+
+    //Datatype.java
+    public class Point2D {
+        public final Comparator<Point2D> POLAR_ORDER = new PolarOrder;
+        
+        //Builtin Comparator
+        privat class PloarOrder implements Comparator<Point2D> {
+            public int compare(Point2D q1, Point2D q2) {
+                return -1; // or 0, or 1
+            }
+        }
+    }
+
+  //Client.java
   Arrays.sort(points, p.POLAR_ORDER);
   ```
-* TODO - Add `Comparable` interface here
 * **Lower bound** of compare-based sorting is $O(N log N)$. However, it may not hold if the algorithm has information about:
   * The inital order of the input
     * e.g.: Insertion sort needs only $O(N)$ compare if array is partially sorted
@@ -411,6 +747,16 @@ This section is for reference only. It helps me to memorize all the different bo
     * e.g.: Three-way quicksort needs only $O(N)$ compares if there's a constant number of distinct keys
   * The representation of the keys
     * e.g.: Radix sort requires no key compares - it accesses the data via character/digit compares
+
+* **Stability**: preserves the relative order of items with equal keys. 
+  * e.g.: Sort by name first, then sort by time next:
+    *  a stable sort will preserve the order of name as well, 
+    * while an unstable one will mess up the order of name. 
+  * **Selection sort** is NOT stable: long distance exhange can move one equal item past equal item
+  * **Insertion sort** is stable: equal items never move past each other
+    * **Shell sort** is NOT stable: long distance exchange
+  * **Merge sort** is stable: always takes from left subarray if equal keys. (Stability depends on the correct implementation of merge operation) 
+  * **Quick sort** is NOT stable: long distance exchange during in-place partition. Use an extra array can makes partitioning easier and stable, but is not worth the cost.
 
 #### Practice Question
 
@@ -424,6 +770,9 @@ This section is for reference only. It helps me to memorize all the different bo
         //Selection.sort(nums);
         //Merge.sortBU(nums);
         //Merge.sortTD(nums);
+        //Quick.sort(nums);
+        //Quick3Way.sort(nums);
+        //Heap.sort(nums);
         return Arrays.stream(nums)
                     .boxed()
                     .collect(Collectors.toList());
@@ -486,7 +835,6 @@ This section is for reference only. It helps me to memorize all the different bo
                 for (int j = i; j > 0; j--) {
                     if (nums[j] < nums[j-1]) { //Note: Use less comparator only
                         swap(nums, j, j-1);
-                     
                     } else {
                         break;
                     }
@@ -514,105 +862,7 @@ This section is for reference only. It helps me to memorize all the different bo
     * Number of inversions equals number of exchanges. 
     * Number of compares = exchanges + (N - 1)
 
-### Shuffle Algorithm
-
-* **Goal**: Rearrange array so that result is a uniformly random permutation.
-
-* **PracticeQuestion**  [LC384 Shuffle an Array](https://leetcode.com/problems/shuffle-an-array/)
-
-* **Shuffle Sort**: 
-  * Generate a random real number for each array entry, and then sort the array. 
-  * Bounded by $O(N log N)$ sort algorithm.
-
-#### Template: Knuth Shuffle
-* This is a $O(N)$ uniform shuffling algorithm.
-
-```java
-    public int[] shuffle() {
-        for (int i = 0; i < nums.length; i++) {
-            int j = new Random().nextInt(i+1); //Uniformly between [0, i]. Not [0, N]
-            swap(nums, i, j);
-        }
-        return nums;
-    }
-    
-    private void swap(int[] nums, int i, int j) {
-        int temp = nums[i];
-        nums[i] = nums[j];
-        nums[j] = temp;
-    }
-```
-
-NOTE: What happens if interger is chosen between `0` and `N-1` instead of `0` to `i`? It will not be unifromely random.
-
 ### Merge Sort
-
-#### Template - MergeSort Top Down with Optimization
-```java
-    public List<Integer> sortArray(int[] nums) {
-        MergeSortTD.mergesort(nums);
-        return Arrays.stream(nums)
-                    .boxed()
-                    .collect(Collectors.toList());
-    }
-    
-    public static class MergeSortTD {
-        public static void mergesort(int[] nums) {
-            int[] aux = new int[nums.length];
-            sort(nums, aux, 0, nums.length-1);
-        }
-    
-        private static void sort(int[] nums, int[] aux, int low, int high) {
-            /* //--Unoptimized---
-            if (low >= high) {
-                //Array of length 1
-                return;
-            }
-            */
-            
-            //OPTIMIZATION 1: insertion for small array
-            int CUTOFF = 7;
-            if (high <= low + CUTOFF - 1) {
-                Insertion.sort(nums, low, high);
-                return;
-            }
-
-            int mid = low + (high - low)/2;
-            sort(nums, aux, low, mid);
-            sort(nums, aux, mid+1, high);
-            
-            //OPTIMIZATION 2: no merge if two arrays are already sorted
-            if (nums[mid] <= nums[mid+1]) {
-                return;
-            }
-            
-            merge(nums, aux, low, mid, high);
-        }
-    
-        //stably merge A1 = nums[low..mid] and A2 = nums[mid+1..high] using aux[low..high]
-        private static void merge(int[] nums, int[] aux, int low, int mid, int high) {
-            //Copy to aux[] - use as readonly copy once initialized
-            for (int k = low; k <= high; k++) {
-                aux[k] = nums[k];
-            }
-
-            // Merge back to nums[]
-            //i iterates in [low..mid], j iterates in [mid+1..high]
-            int i = low, j = mid+1;
-            for (int k = low; k <= high; k++) {
-                if (i > mid) { //A1 is done
-                    nums[k] = aux[j++]; 
-                } else if ( j > high) { //A2 is done
-                    nums[k] = aux[i++]; 
-                } else if (aux[j] < aux[i]) { //NOTE: use values in aux array to compare!!!
-                    nums[k] = aux[j++];
-                } else { //Use A2
-                    nums[k] = aux[i++];
-                }
-            }
-        }
-    }
-```
 
 #### Template - MergeSort 
 
@@ -638,7 +888,7 @@ NOTE: What happens if interger is chosen between `0` and `N-1` instead of `0` to
         //Helper function for sortTopDown
         private static void sort(int[] nums, int[] aux, int low, int high) {
             /* //--Unoptimized---
-            if (low >= high) {
+            if (high <= low) {
                 //Array of length 1
                 return;
             }
@@ -692,10 +942,9 @@ NOTE: What happens if interger is chosen between `0` and `N-1` instead of `0` to
 
 #### Properties
 
-* Time Complexity:  $O(N log N)$
-* Space Complexity: $O(N)$
-* Mergesort is optimal with respect to number of compares.
-* Mergesort is not optimal with respect to space usage.
+* [GOOD] Time Complexity:  $O(N log N)$
+* [OKAY] Space Complexity: $O(N)$
+* [GOOD] Mergesort is stable
 
 
 #### Mergesort TopDown: Practical Improvements:
@@ -703,16 +952,902 @@ NOTE: What happens if interger is chosen between `0` and `N-1` instead of `0` to
 * [Easy to do] Stop if already sorted.
 * [Tricky to implement] Eliminate the copy to the auxiliary array.
 
-### Quick Sort
 
-#### Template
+### Shuffle Algorithm
+
+* **Goal**: Rearrange array so that result is a uniformly random permutation in $O(N)$ instead of $O(N log N)$
+
+* **PracticeQuestion**  
+  * [LC384 Shuffle an Array](https://leetcode.com/problems/shuffle-an-array/)
+
+* **Shuffle Sort**: Naive approach
+  * Generate a random real number for each array entry, and then sort the array. 
+  * Bounded by $O(N log N)$ sort algorithm.
+
+#### Template: Knuth Shuffle
+* This is a $O(N)$ uniform shuffling algorithm.
+* Note: `j` must be chosen between `[0, i]`. An easy WRONG implementation is to choose between [0, nums.length-1] all the time, but this will not be an uniform distribution anymore.
+
 ```java
-
+    public static class KnuthShuffle {
+        public static void shuffle(int[] nums) {
+            for (int i = 1; i < nums.length; i++) {
+                int j = new Random().nextInt(i+1); //NOTE: between [0, i]. Not [0, N]. Otherwise not uniform
+                swap(nums, i, j);
+            }
+        }
+        
+        private static void swap(int[] nums, int i, int j) {
+            int temp = nums[i];
+            nums[i] = nums[j];
+            nums[j] = temp;
+        }
+    }
 ```
 
-### Piority Queue
+NOTE: What happens if interger is chosen between `0` and `N-1` instead of `0` to `i`? It will not be unifromely random.
+
+### Quick Sort
+
+Important: Partition Strategy with Duplicated Keys
+* [BAD] Don't stop on equal keys. $\sim N^2 / 2$ compares when all keys equal
+  * NOTE: Must stop scans on equal keys, otherwise quicksort will take $O(N^2)$ time, even with random shuffle
+* [GOOD] Stop on equal keys. $\sim N log N$ compares when all keys equal => quicksort
+* [BETTER] Put all equal keys in place. $\sim N$ compares when all keys equal => 3-way quick sort
+
+
+#### Template: Quick Sort 
+```java
+    public static class Quick {
+        public static void sort(int[] nums) {
+            KnuthShuffle.shuffle(nums);
+            sort(nums, 0, nums.length - 1);
+        }
+        
+        //Invariant: low < high
+        private static void sort(int[] nums, int low, int high) {
+            if (low >= high) {
+                //Length <= 1
+                return;
+            }
+            
+            //j is in correct place after partition
+            int j = partition(nums, low, high);
+            sort(nums, low, j-1);
+            sort(nums, j+1, high);
+        } 
+        
+        
+        //VERY TRICKY to implement correctly.
+        //nums[low] is used as pivot
+        //Invariant: low + 1 <= i < j <= high. 
+        private static int partition(int[] nums, int low, int high) {
+            int pivot = nums[low];
+            int i = low, j = high + 1;//Set boundary like this since we are using ++i instead of i++
+            while (true) {
+                //Find first i within bound that's not less than a[low]
+                //NOTE: If not using self-increment here, will not be able to proceed when nums[i] == nums[j] == pivot
+                //NOTE: Use ++i instead of i++ here, otherwise, the index being compared here will not be the one used in swap
+                while (nums[++i] < pivot) { 
+                    if (i == high) { //i is already rightmost
+                        break;
+                    }
+                }
+                
+                //Find first j from right within bound that's not greater than a[low]
+                while (pivot < nums[--j]) {
+                    if (j == low) { //j is already Leftmost 
+                        break;
+                    }
+                }
+                
+                //Swap i, j if not crossed
+                if (i >= j) {
+                    break;
+                }
+                swap(nums, i, j);
+            }
+            //Put pivot elemnt in place, everything to the right of j is greater.
+            swap(nums, low, j);
+            return j;
+        }
+        
+        private static void swap(int[] nums, int i, int j) {
+            int temp = nums[i];
+            nums[i] = nums[j];
+            nums[j] = temp;
+        }
+    }
+```
+
+#### Quicksort Practical Improvements
+* [Easy to do] Use insertion sort for small already. Cutoff is usually around 7  
+* [Easy to do] Use a median-of-3 as the pivot element, instead of always `nums[low]`
+  ```java
+    private static void sort(int[] nums, int low, int high) {
+        //OPTIMIZATION 1: insertion for small array
+        int CUTOFF = 7;
+        if (high <= low + CUTOFF - 1) {
+            Insertion.sort(nums, low, high);
+            return;
+        }
+        //OPTIMIZATION 2: Median of 3
+        int median = medianOf3(nums, low, low + (high-low)/2, high);
+        swap(nums, low, median);
+        //Original
+        int j = partition(nums, low, high);
+        sort(nums, low, j-1);
+        sort(nums, j+1, high);
+    } 
+  ```
+
+#### Template: Three-Way Quick Sort
+
+Practice Question: [75. Sort Colors](https://leetcode.com/problems/sort-colors/)
+
+**Time Complexity**
+* O(N) when constant number of keys 
+* O(N log N) probalistic gurantee after shuffle 
+* O(N^2) worst case if not shuffle
+
+**Invariant** 
+* smaller than pivot: [low, lt)
+* larger than pivot: (gt, high]
+* i examins [lt, gt]
+
+```java
+    //Invariant: 
+    //  * smaller than pivot: [low, lt)
+    //  * larger than pivot: (gt, high]
+    //  * i examins [lt, gt]
+    // O(N) when constant number of keys, O(N log N) probalistic gurantee after shuffle, O(N^2) worst case if not shuffle
+    public static class Quick3Way {
+        public static void sort(int[] nums) {
+            sort(nums, 0, nums.length - 1);
+        }
+        
+        private static void sort(int[] nums, int low, int high) {
+            if (high <= low) {
+                return;
+            }
+            
+            int pivot = nums[low];
+            int lt = low, gt = high;
+            
+            int i = low; 
+            while (i <= gt) {
+                if (nums[i] < pivot) {
+                    swap(nums, i++, lt++);
+                } else if (nums[i] > pivot) {
+                    //Why not use for loop? Because i is not self-increment here
+                    swap(nums, i, gt--); 
+                } else {
+                    //If equal, do nothing
+                    i++;
+                }
+            }
+            
+            sort(nums, low, lt - 1);
+            sort(nums, gt + 1, high);
+        }
+        
+        private static void swap(int[] nums, int i, int j) {
+            int temp = nums[i];
+            nums[i] = nums[j];
+            nums[j] = temp;
+        }
+    }
+```
+
+#### Template: Quick Select
+Average Case: O(N). Worst Case: $O(N^2)$, but this is extremely unlikely after Random Shuffle.
+
+* Practice Question: [LC215 Kth Largest Element in an Array](https://leetcode.com/problems/kth-largest-element-in-an-array)
+
+```java
+    public static class Quick {
+        //Select K-th element: Average O(N)
+        public static int select(int nums[], int K) {
+            //NOTE: very important to probabillistic guarantee performance
+            KnuthShuff.shuffle(nums);
+            //Similar to binary search
+            int low = 0, high = nums.length - 1;
+            while (low < high) {
+                int j = partition(nums, low, high);
+                if (j < K) {
+                    low = j + 1;
+                } else if (j > K) {
+                    high = j -1;
+                } else {
+                    return nums[K];
+                }
+            }
+            return nums[K];
+        }
+        
+        //VERY TRICKY to implement correctly. Exactly the same implementation as quicksort
+        //Invariant: low + 1 <= i < j <= high
+        //j will be in-place after partition
+        private static int partition(int[] nums, int low, int high) {
+            int pivot = nums[low];
+            int i = low, j = high+1; //Init like this since we will pre-increment.
+            while (true) {
+                //Use pre-increment so that comparison and swap index are the same
+                while (nums[++i] < pivot) {
+                    if (i == high) { //i is at rightmost position
+                        break;
+                    }
+                }
+                
+                while (pivot < nums[--j]) {
+                    if (j == low) { //j is leftmost position
+                        break;
+                    }
+                }
+                
+                //swap if i and j haven't crossed
+                if (i >= j) { //Invariant i < j;
+                    break;
+                }             
+                swap(nums, i, j);
+            }
+            //j is the first element that is not greater than pivot
+            //Swap with pivot element
+            swap(nums, low, j);
+            return j;
+        }
+        
+        private static void swap(int[] nums, int i, int j) {
+            int temp = nums[i];
+            nums[i] = nums[j];
+            nums[j] = temp;
+        }
+    }
+```
+
+### Heapsort and Piority Queue
+
+#### Template: BinaryHeap
+
+* PriorityQueue is a data type, hiwch can be implemented as ordered array, or unordered array, or binary heap. 
+
+
+* Binary heap is an array representation of a hep-ordered complete binary tree.
+  * Heap-ordered binary tree
+    * Key in nodes
+    * Parent's key no smaller than children's keys.
+  * Array representation: 
+    * indices start at 1
+    * Takes nodes in **level** order
+    * No explicit links needed. 
+* Properties
+  * Largest key is `a[1]`, which is the root of the binary tree
+  * Parent of node at k is `k/2`
+  * Children of node at k are `2k` and `2k+1` 
+
+
+* NOTE: The key must be immutable! Otherwise how can you tell the order is correct? That's why we can't use PriorityQueue<int[2]> in java, since the content might change.
+
+```java
+PriorityQueue<Integer> minPQ = new PriorityQueue<Integer>();
+PriorityQueue<Integer> maxPQ = new PriorityQueue<Integer>(Collections.reverseOrder());
+```
+
+* Note: The way of initializing minPQ and maxPQ is applicable to any Object implements `Comparable`, not just `Integer` :-D
+
+**Practice Questions**:
+* [MaxHeap] [LC1046 Last Stone Weight](https://leetcode.com/problems/last-stone-weight/)
+* [MinHeap] [LC703 Kth Largest Element in a Stream](https://leetcode.com/problems/kth-largest-element-in-a-stream)
+* [`MEDIUM`][LC378 Kth Smallest Element in a Sorted Matrix](https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix) [`Key Design Point: One Poll should be associated with at most one Offer`]
+* [`MEDIUM`][LC373 Find K Pairs with Smallest Sums](https://leetcode.com/problems/find-k-pairs-with-smallest-sums/) [`Key Design Point: One Poll should be associated with at most one Offer`]
+* [`MEDIUM`][LC313 Super Ugly Number](https://leetcode.com/problems/super-ugly-number/) [`Key Design Point: One Poll should be associated with at most one Offer`]
+* [`MEDIUM`][LC264 Ugly Number II][https://leetcode.com/problems/ugly-number-ii/submissions/]
+* [`MEDIUM`][LC1054 Distance Barcodes](https://leetcode.com/problems/distant-barcodes)
+
+```java
+    public class MaxPQ<Key extends Comparable<Key>> {
+        private Key[] heap;
+        private int n; //Index of last valid Key
+
+        public MaxPQ(int capacity) {
+            //PQ is 1-based index
+            heap = (Key[]) new Comparable[capacity+1];
+        }
+        
+        public void insert(Key key) {
+            n++;
+            heap[n] = key; //Put x at the end of array
+            swim(n); //Swim x up
+        }
+        
+        public Key removeMax() {
+            Key max = heap[1];
+            swap(1, n);
+            heap[n] = null; //Avoid loitering
+            n--; //Must decrease before sink, since sink will use this to check boundary
+            sink(1);
+            return max;
+        }
+
+        private void swim(int i) {
+            //Parent of i is i/2
+            while (i > 1 && less(i/2, i)) {
+                swap(i, i/2);
+                i = i/2;
+            }
+        }
+
+        private void sink(int i) {
+            //Children of i is 2*i and 2*i+1
+            while (2 * i <= n) { //have at least one child
+                int j = 2*i; //j is left child
+                if (j < n && less(j, j+1)) {//if right child exist and is larger
+                    j = j+1; //j is right child
+                }
+                //Heap order holds, then break
+                if (!less(i, j)) {
+                    break;
+                }
+                swap(i, j);
+                i = j;
+            }
+        }
+
+        private void swap(int i, int j) {
+            Key temp = heap[i];
+            heap[i] = heap[j];
+            heap[j] = temp;
+        }
+
+        private boolean less(int i, int j) {
+            return heap[i].compareTo(heap[j]) < 0;
+        }
+    }
+```
+
+#### Template: Heap Sort
+
+* Heap construction is $O(N)$. It uses $\le 2N$ compares and exchanes
+* Heap sort is $O(N lg N)$. It uses $\le 2N lg(N)$ compares and exchanes
+
+Significant: In-place with NlogN **worst** case
+ * Mergesort: No. Linear extra space. (In-place possible, but not practical)
+ * Quicksort: No. Quadratic worst case (N log N worst-case possible, but not practical)
+ * Heapsort: YES.
+
+Property: Heap is optimal for bothe time and space
+  * inner loop longer than quicksort
+  * make poor use of cache
+  * not stable
+
+```java
+    //index-0 is not used during heapsort. nums[1..nums.length-1] will be heapsorted
+    public static class Heap {
+        public static void sort(int[] nums) {
+            int n = nums.length - 1;
+            //Heap construct O(N)
+            for (int k = n/2; k >= 1; k--) {
+                sink(nums, k, n);
+            }
+            //Keep finding the largest and put to back O(N lg N)
+            while (n > 1) {
+                swap(nums, 1, n); //Put largest in place
+                sink(nums, 1, --n); //Recreate heap order
+            }
+
+            //Put a[0] back to place - O(N) - insertion sort 
+            for (int i = 0; i < nums.length - 1; i++) {
+                if (nums[i] > nums[i+1]) {
+                    swap(nums, i+1, i);
+                } else {
+                    break;
+                }
+            }
+        }
+
+        //Sink index i to maintain heap order in [1..n]
+        private static void sink(int[] nums, int i, int n) {
+            while (2 * i <= n) {
+                int child = 2 * i;
+                if (child < n && nums[child] < nums[child+1]) {
+                    child = child + 1;
+                }
+                if (nums[i] >= nums[child]) { //Already in place
+                    break;
+                }
+                swap(nums, i, child);
+                i = child;
+            }
+        }
+        
+        private static void swap(int[] nums, int i, int j) {
+            int temp = nums[i];
+            nums[i] = nums[j];
+            nums[j] = temp;
+        }
+    }
+    
+```
 
 ## Searching
+
+### Summary
+
+name | search | insert | delete | ordered ops? | key interface | comment
+--|--|--|--|--|--|--
+sequential search (unordered list) | $N$ | $N$ | $N$ | | `equals()` | 
+binary search (ordered array) | $lg N$ | $N$ | $N$ | Y | `compareTo()` | 
+BST | guarantee $N$ <br>average $1.39lgN$ | guarantee $N$ <br>average $1.39lgN$ | guarantee $N$ <br>average $\sqrt{N}$ | Y | `compareTo()` |
+Balanced BST | $lgN$ | $lgN$ | $lgN$ | Y | `compareTo()` | <li>2-3 tree<br><li>red-black tree<br><li>b-tree<br><li>Fenwick tree
+Separate Chaning | guarantee N<br>average 3-5 | guarantee N<br>average 3-5  | guarantee N<br>average 3-5  | | `equals()`<br>`compareTo()` | constant under uniform hashing assumption
+Linear Probing | guarantee N<br>average 3-5 | guarantee N<br>average 3-5  | guarantee N<br>average 3-5  | | `equals()`<br>`compareTo()` | constant under uniform hashing assumption
+
+Ordered operations:
+* search, insert/delete, min/max, floor/ceiling, select, ordered iteration
+
+SymbolTable[KEY] = VALUE
+
+VALUE: Any generic type
+KEY: type
+* Assume kesy are `Comparable`, use `compareTo()`
+* Asume keys are any generic type, use `equals()` to test equality
+* Assume keys are any generic type, use `equals()` to test equality; use `hashCode()` to scramble key.
+
+#### Equality test
+
+Java requirement: For any reference x, y, and z
+* Equivalence relation must hold
+    * Reflexive: `x.equals(x)` is `true`
+    * Symmetric: `x.equals(y)` if and only if `y.equals(x)`
+    * Transitive: if `x.equals(y)` and `y.equals(z)`, then `x.equals(z)`
+* Not-null: `x.equals(null)` is `false`
+
+
+All java cleasses inherit a method `equals()`
+* Default implementation: `x == y`, whether x and y refer to the same object
+* User-defined implementation
+  * Typical Wrong Way: Only checking all significant fields are the same.
+    ```java
+    public class Date implements Comparable<Date> {
+        private final int month;
+        private final int day;
+        private final int year;
+
+        public boolean equals(Date that) {
+            //Checking all significant fields are the same.
+            if (this.day != that.day) return false;
+            if (this.month != that.month) return false;
+            if (this.year != that.year) return false;
+            return true;
+        }
+    }
+    ```
+  * Good Template for implementing equals
+  ```java
+  //NOTE1: use final keyword. Typically unsafe to use equal with inheritance (would violates symmetry)
+  public final class Date implements Comparable<Date> {
+        private final int month;
+        private final int day;
+        private final int year;
+
+        //NOTE2: compare with Object, not Date. Why? Experts still debate
+        public boolean equals(Object y) {
+            //NOTE3: Optimize for true object equality 
+            if (y == this) return true;
+            //NOTE4: Not-null requirements
+            if (y == null) return false;
+            //NOTE5: Objects must be in the same class. Religion: getClass() vs instanceof()
+            if (y.getClass() != this.getClass()) return false;
+
+            //NOTE6: cast is guarantee to succeed
+            Date that = (Date) y;
+
+            //Checking all significant fields are the same.
+            if (this.day != that.day) return false;
+            if (this.month != that.month) return false;
+            if (this.year != that.year) return false;
+            return true;
+        }
+    }
+  ```
+  
+Recipe for comparing fields
+* if field is primitive, use `==`
+  * Unless if it's `double`, use `Double.compare()`, otherwise need to deal with `-0.0` and `NaN`
+* if field is an object, use `equals()`
+  * e.g.: `String`
+* If field is an array, apply to each entry, or `Arrays.deepEquals(a,b)`. Don't use `a.equals(b)`
+
+## Binary Search Tree
+
+A Binary Search Tree(BST) is a binary tree in **symmetric order**.
+
+* **Symmetric order**: each node has a key, and every node's key is
+  * Larger than all keys in its left subtree
+  * Smaller than all keys in its right subtree
+
+NOTE: where as binary heap is a binary tree in **heap order**
+
+* Assume no duplicate key, there is a 1-1 correspondence between a BST and quicksort. Think root of BST as the partition element for quicksort
+
+* Tree Traversal
+  * BFS: level
+  * DFS: preorder, postorder, inorder
+    * Implementation: Recursion, Iterative with Stack, Morris Traversal using O(1) space
+
+#### Questions:
+
+#### Binary Tree Traversal
+* [LC94 Binary Tree Inorder Traversal](https://leetcode.com/problems/binary-tree-inorder-traversal)
+* [LC144 Binary Tree Preorder Traversal](https://leetcode.com/problems/binary-tree-preorder-traversal)
+  * [LC589 N-ary Tree Preorder Traversal](https://leetcode.com/problems/n-ary-tree-preorder-traversal/)
+* [LC145 Binary Tree Postorder Traversal](https://leetcode.com/problems/binary-tree-postorder-traversal)
+  * [LC590 N-ary Tree Postorder Traversal](https://leetcode.com/problems/n-ary-tree-postorder-traversal/)
+  * [LC114 Flatten Binary Tree to Linked List](https://leetcode.com/problems/flatten-binary-tree-to-linked-list/) - Postorder (Right, Left, Root)
+* [LC102 Binary Tree Level Order Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal)
+  * [LC103 Binary Tree Zigzag Level Order Traversal](https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal)
+  * [LC107 Binary Tree Level Order Traversal II](https://leetcode.com/problems/binary-tree-level-order-traversal-ii/)
+  * [LC116 Populating Next Right Pointers in Each Node](https://leetcode.com/problems/populating-next-right-pointers-in-each-node/)
+* [LC105 Construct Binary Tree from Preorder and Inorder Traversal](https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/)
+* [LC106 Construct Binary Tree from Inorder and Postorder Traversal](https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/)
+* [LC889 Construct Binary Tree from Preorder and Postorder Traversal](https://leetcode.com/problems/construct-binary-tree-from-preorder-and-postorder-traversal)
+
+#### Binary Search Tree (BST) Operations
+##### Search
+* [LC700 Search in a Binary Search Tree](https://leetcode.com/problems/search-in-a-binary-search-tree)
+```java
+class Solution {
+    //Recursiont
+    public TreeNode searchBST(TreeNode root, int val) {
+        if (root == null || root.val == val) {
+            return root;
+        } 
+        return val < root.val ?
+           searchBST(root.left, val):
+           searchBST(root.right, val);
+    }
+}
+```
+```java
+class Solution {
+    //Iterative
+    public TreeNode searchBST(TreeNode root, int val) {
+        while (root != null) {
+            if (val < root.val) {
+                root = root.left;
+            } else if (val > root.val) {
+                root = root.right;
+            } else {
+                return root;
+            }
+        }
+        return null;
+    }
+}
+```
+
+##### Insertion
+* [LC701 Insert into a Binary Search Tree](https://leetcode.com/problems/insert-into-a-binary-search-tree)
+```java
+    //Recursion
+    public TreeNode insertIntoBST(TreeNode root, int val) {
+        if (root == null) {
+            return new TreeNode(val);
+        }        
+        if (root.val < val) {
+            root.left = insertIntoBST(root.left, val);
+        } else {
+            root.right = insertIntoBST(root.right, val);
+        }
+        return root;
+    }
+```
+
+##### Deletion
+* [LC450 Delete Node in a BST](https://leetcode.com/problems/delete-node-in-a-bst)
+```java
+    private int successor(TreeNode root) {
+        root = root.right;
+        while (root.left != null) {
+            root = root.left;
+        }
+        return root.val;
+    }
+    
+    private int predecessor(TreeNode root) {
+        root = root.left;
+        while (root.right != null) {
+            root = root.right;
+        }
+        return root.val;
+    }
+    
+    public TreeNode deleteNode(TreeNode root, int key) {
+        if (root == null) {
+            return null;
+        }
+        
+        //delte from the right subtree
+        if (key > root.val) {
+            root.right = deleteNode(root.right, key);
+        } else if (key < root.val) {
+            root.left = deleteNode(root.left, key);
+        } else {
+            //Base Case 1: leaf, then delete by setting null
+            if (root.left == null && root.right == null) {
+                root = null;
+            } else if (root.right != null) {
+                //Case 2: Has a right child, put successor value here, and delete successor in right tree
+                root.val = successor(root);
+                root.right = deleteNode(root.right, root.val);
+            } else {
+                //Case 3: Has a left child, put predecessor value here, and delete predecessor in right tree
+                root.val = predecessor(root);
+                root.left = deleteNode(root.left, root.val);
+            }
+            
+        }
+        return root;
+    }
+```
+* [LC270 Closest Binary Search Tree Value](https://leetcode.com/problems/closest-binary-search-tree-value)
+```java
+    public int closestValue(TreeNode root, double target) {
+        int closestVal = root.val;
+        TreeNode node = root;
+        while (node != null) {
+            if (Math.abs(node.val - target) < Math.abs(closestVal - target)) {
+                closestVal = node.val;
+            }
+            node = target < node.val ? node.left : node.right;
+        }
+        return closestVal;
+    }
+```
+* [LC272 Closest Binary Search Tree Value II](https://leetcode.com/problems/closest-binary-search-tree-value-ii)
+* [LC230 Kth Smallest Element in a BST](https://leetcode.com/problems/kth-smallest-element-in-a-bst/)
+  * Recursive Inorder - O(N)
+```java
+    public int kthSmallest(TreeNode root, int k) {
+        List<Integer> nums = inorder(root, new ArrayList<Integer>());
+        return nums.get(k-1);
+    }
+    
+    private List<Integer> inorder(TreeNode node, List<Integer> list) {
+        if (node == null) {
+            return list;
+        }
+        
+        inorder(node.left, list);
+        list.add(node.val);
+        inorder(node.right, list);
+        return list;
+    }
+```
+  * Iterative Inorder - O(H)
+```java
+    public int kthSmallest(TreeNode root, int k) {
+        Stack<TreeNode> stack = new Stack<TreeNode>();
+        
+        while (true) {
+            while (root != null) {
+                stack.push(root);
+                root = root.left;
+            }
+            root = stack.pop();
+            k--;
+            if ( k == 0) {
+                return root.val;
+            }
+            root = root.right;
+        }
+    }
+```
+
+## Orderded Operation
+
+* min: leftmost node
+* max: rightmost node
+* ceiling: smallest key $\ge$ given key
+* floor: largest value $\le$ given key
+```java
+private TreeNode floor(TreeNode root, key) {
+    if (x == null) {
+        return null;
+    }
+
+    if (key == root.key) {
+        return root;
+    } else if(key < root.key) {
+        return floor(root.left, key);
+    }
+
+    //If floor is not in right tree, then it is current root
+    TreeNode node = floor(root.right, key);
+    if (node != null) {
+        return node;
+    } else {
+        return root;
+    }
+}
+```
+* size:
+
+```java
+//Add count field to TreeNode
+private class Node {
+    private Key key;
+    private Value val;
+    private TreeNode left;
+    private TreeNode right;
+    private int count; //This field will help with `size`, `rank` and `select`
+}
+//Update count everytime during put
+private TreeNode put(Node root, Key key, Value val) {
+    if (x == null) {
+        return new Node(key, val, 1);
+    }
+
+    if (key < root.key) {
+        root.left = put(root.left, key, val);
+    } else if (key > 0) {
+        key.right = put(root.right, key, val);
+    } else {
+        root.val = val;
+    }
+    root.count = 1 + size(root.left) + size(root.right);
+    return root;
+}
+//Return size
+private int size() {
+    return root == null ? 0 : root.count;
+}
+```
+* rank: How many keys < k?
+```java
+public int rank(TreeNode root, Key key) {
+    if (x == null) {
+        return 0;
+    }
+
+    if (key < root.key) {
+        return rank(root.left, key);
+    } else if (key > root.key) {
+        return 1 + size(root.left) + rank(root.right, key);
+    } else {
+        return size(root.left);
+    }
+}
+```
+* Iteration/Traversal:
+   * Inorder, preorder, postorder
+ 
+
+NOTES:
+
+* 2-3 tree 
+  * allows 2-node (one key, two children) and 3-node (two keys, three children)
+  * Properties:
+    * Symmetric order: Inorder traversal yields keys in ascending order
+    * Perfectly balanced: every path from root to null lnk has same length
+  * Tree hight:
+    * Worst case: lg N (all 2-nodes)
+    * Height = 12 ~ 20 for million nodes
+    * Height = 18 ~ 30 for billion nodes
+* Left-learning red black BST is a concise implmentation to 2-3 tree
+  * Model: Hard to maitain 2-3 node, so we use a RED link to glue two 2-nodes to one 3-nodes, where the larger key is the root
+    * Trivia: Why call it Red-black tree? Sedgewick first discovered algorithm, laser color printing was pretty new, and RED seems to popout among all colors.
+  * Properties: 1-1 correspondence between 2-3 tree and LLRB
+    * No node has two red links (No 4-node)
+    * Equal number of black links from root to null (Black are real links, red are internal glue of 3-node)
+    * Red links lean left (visualize red link as horizontal to see as 2-3 node)
+  * Implementation:
+    * Search: exact the same as regular BST, since no color information is required 
+    * Basic Util for LLRB
+        * Left rotaion: orient a (temprorily) right-learning red link to lean left. Useful for `node.right = RED` [Not left leaning]
+        * Right rotation: Orient a left-learning red link to (temproraily) lean right. Useful for `node.left = RED` and `node.left.left = RED` [Two left RED links in a row.]
+        * Color flip: recolor to split a (temporary) 4 node. Useful for `node.left = RED` and `node.right = RED` [ 4-node]
+    * Insertion:
+      * Always insert with a RED link, then restore the properties by left rotate, right rotate and color flip
+      ```java
+      private Node put(Node h, Key key, Value val) {
+        //LLBR: create RED by default
+        if (h == null) return new Node(key, val, RED);
+
+        //Regular BST put
+        if (key < root.key) {
+            h.left = put(h.left, key, val);
+        } else if (key > root.key) {
+            h.right = put(h.right, key, val);
+        } else {
+            h.val = val;
+        }
+
+        //LLBR: order matters here
+        if (isRed(h.right) && !isRed(h.left)) {
+            h = rotateLeft(h);
+        } 
+        if (isRed(h.left) && isRed(h.left.left)) {
+            h = rotateRight(h);
+        }
+        if (isRed(h.left) && isRed(h.right)) {
+            flipColors(h);
+        }
+
+        return h;
+      }
+
+      ```
+* B-tree is a generalization of 2-3 tree
+  * Properties:
+    * Root have at least 2 links
+    * All other nodes have at least M/2 links (half full), and at most M-1 links (ful)
+ * B tree of order M with N keys requires $log_{M-1}N$ and $log_{M/2}N$ probes. 
+   * `In practise, the number of probes is at most 4`. (e.g.: When N = 62 billion and M = 1024 $log_{M-1}N \lt 4$)
+   * Optimization: always keep root page in memory
+
+### BST Case Study: Intersection among geometric objects
+
+### Range Search
+* Application: Database find all keys between k1 an k2
+
+* Geometric Interpretation: keys are point on a line. Find/count points in a given 1d interval
+
+##### [TODO] Template: Orthogonal line segment intersection
+  * Sweep-line algorithm:
+  Sweep vertical line from left to right
+    * x-coordinate define events
+    * horizontal-segment (left endpoint): insert y-coordinate into BST
+    * horizontal-segment (right endpoint): delete y-coordinate from BST
+    * vertical-segment: range search for interval of y-endpoint
+  * Significance: Reduce 2d orthogonal line segment intersection search to 1 d range search
+
+TODO: add leetcode questions
+* [986 Interval List Intersections](https://leetcode.com/problems/interval-list-intersections/)
+* [56 Merge Intervals](https://leetcode.com/problems/merge-intervals/)
+* [218 The Skyline Problem](https://leetcode.com/problems/the-skyline-problem/)
+*  [`Hard`][LC759 Employee Free Time](https://leetcode.com/problems/employee-free-time/)
+### 2-d Trees and K-d tree
+
+* 2d tree is an extension of BST allow us to process set of points in space. Keys are 2d now  
+* Naive Implementation: using grid
+  * Choose $\sqrt N$ as M for good time-space trade off
+  * Space: $M^2 + N$
+  * Time: $1 + N/M^2$
+  * Problem: Clustering
+  * How to addres? Adapt to density
+* Sapce-partition trees: 
+ * 2d tree: tree represents horizontal or vertial separation
+ * quadtree
+* Use Case:
+  * Seach point lies in a rectangle
+  * Nearest neighbor search
+* K-d tree: represents points in k-dimension
+  * Use Case: N-body simulation
+  
+ TODO:
+ * [558 Quad Tree Intersection](https://leetcode.com/problems/quad-tree-intersection/)
+ 
+### Interval Search Tree
+Interval search tree
+ * Use left endpoint as BST key
+ * Store max endpoint in subtree rooted at node 
+
+To insert an interval (lo, hi)
+  * Insert into BST, using lo as the key
+  * Update max in each node on search path
+
+To search for any one interval that intersects query interval (lo, hi)
+  * If interval in node intersects query interval, return it
+  * Else if left subtree is null, go right
+  * Else if max endpoint in left subtree is less than lo, go right
+  * Else go left
+
+### Rectangle Intersection
+* Driving Motivation: Early 1970, microprocessor design became a geometric problem. O(NlogN) algorithm is required to maintain Moore's law
+* Algorithm: Sweep line algorithm => reduce to interval search problem
+  * Left endpoint: interval search for y-interval of rectangle; insert y-interval
+
 
 # Hash Table Review
 
@@ -739,8 +1874,108 @@ There are two key questions that one should address, in order to implement the H
   * **All-At-Once Rehashing**: Automatically trigger a complete resizing when the load factor exceeds some threshold
 
 
-# Bit Operation Review
+#### Template: Separate Chaning Symbol Table
+```java
+public class SeparateChaningHashST<Key, Value> {
+    private int M = 97;
+    private Node[] st = new Node[M];
 
+    private static class Node {
+        private Object key;
+        private Object val;
+        private Node next;
+    }
+
+    private int hash(Key key) {
+        //Hashcode is between -2^31 to 2^31-1, we need positive array index
+        //Need to and with 0x7ffffff instead of Math.abs(hashCode),
+        //otherwise Math.abs(-2^31) will still be -2^31. 
+        return (key.hashCode() & 0x7fffffff) % M);
+    }
+
+    public Value get(Key key) {
+        int i = hash(key);
+        for (Node x = st[i]; x != null; x = x.next) {
+            if (key.equals(x.key)) {
+                return (Value) x.val;
+            }
+        }
+        return null;
+    }
+
+    public void put(Key key, Value val) {
+        int i = hash(key);
+        for (Node x = st[i]; x != null; x = x.next) {
+            if (key.equals(x.key)) {
+                x.val = val;
+                return;
+            }
+        }
+        st[i] = new Node(key, val, st[i]);
+    }
+}
+```
+
+#### Template: Linear Probing Hash Symbol Table
+```java
+public class LinearProbingHashST<Key, Value> {
+    private int M = 30001;
+    private Value[] vals = (Value[]) new Object[M];
+    private key[] key = (Key[]) new Object[M];
+
+    private int hash(Key key) {
+        return (key.hashCode() & 0x7fffffff) % M;
+    }
+
+    public void put(Key key, Value val) {
+        int i;
+        for (i = hash(key); keys[i] != null; i = (i+1) % M) {
+            if (keys[i].equals(key)) {
+                break;
+            }
+        }
+        keys[i] = key;
+        vals[i] = val;
+    }
+
+    public int get(Key key) {
+        for (int i = hash(key); keys[i] != null; i = (i+1) % M) {
+            if (key.equals(keys[i])) {
+                return vals[i];
+            }
+        }
+        return null;
+    }
+}
+```
+
+* Separate Chaining - typical key size:  M ~ N/4
+  * Easier to implement delete
+  * Performance degrades gracefully
+  * Clustering less sensitive to poorly designed hash function
+* Linear Probing - typical key size: M ~ N/2
+  * Less Wasted space
+  * Better cache performance
+
+* Two-probe hashing (Separate-chaining variant)
+  * Hash to two positions, insert key in shorter of the two chains
+  * Reduces expceted length of longest chain to $log log N$
+* Double hashing (linear probing variant)
+  * Use linear probing, but skip a variable amount, not just 1
+  * Effectively elimnates clustring, can allo table to become nearly full
+  * More difficult to implement delete;
+* Cuckoo hashing (linear probing variant): 
+  * Hash key to two positions; insert key to either position; if occupied, reinsert displaced key into its alternative position (and recur)
+  * Constant worst case time for search
+
+#### Set
+[TreeSet API][LC220 Contains Duplicate III](https://leetcode.com/problems/contains-duplicate-iii/)
+
+
+
+# Bit Operation Review, Permutation Review
+
+## Bit Cheatsheet
 Bitwise note
 
 * `num | (1<<k)`: set num's k-th bit as 1
@@ -748,31 +1983,45 @@ Bitwise note
 * `num ^ (1<<k)`: flip num's k-th bit
   * See Leetcode 1066 Campus Bike II
 * `index & (-index)`: get lowest set bit (useful for Fenwick Tree)
+* `x &= (x-1)`: Set Last set bit(rightmost set bit) to 0. 
+  * See LC338 Counting Bits Solution 4
+  * See LC191 Number of 1 bits
+* `i & 1`: same as `i % 2`, but faster
+  * See LC338 Counting Bits Solution 3
+
+
+### Bit Manipulation Questions
+* [`MEDIUM`][LC751 IP to CIDR](https://leetcode.com/problems/ip-to-cidr/)
+
+## Permutation Cheatsheet
+* Read this: https://leetcode.com/problems/permutation-sequence/solution/
+
 
 # Graph Review 
 Four major types of graph
 Representation of the graph and the processing of the graph should be separated
 
 * Graph - Undirected Unweighted 
-  * DFS - Connectivity 
+  * DFS - Connectivity - O(V+E)
     * DFS Path - Single Source Path
     * CC - Connected Components
     * Cycle Detection - acyclic
     * Two Colorability - bipartite
-  * BFS - Shortest
+  * BFS - Shortest - O(V+E)
     * BFS Path - Single Source Shortest Path
   * SymbolGraph
 * DiGraph - Directed Unweighted
-  * DirectedDFS 
+  * DirectedDFS - O(V+E)
   * Topological Sort - Reverse Post DFS Order on a DAG
     * DirectedCycle
     * DepthFirstOrder
-  * Strong Connected Digragh - Kosaraju's SCC - DFS of DG in reverse post order of the DG reverse
+      * Preorder, postorder, reverseposorder
+  * Strong Connected Digragh - Kosaraju's SCC - DFS of Digraph in reverse post order of the Digraph reverse
   * All Pair Reachability - TransitiveClosure - Run DirectedDFS on all vertex
 * EdgeWeightedGraph - Undirected Weighted
-  * Minimum Spanning Trees
-    * Prim's algorithm: keep one connected piece, till all nodes reached
-    * Kruskal's algorithm: keep adding small edges, till all nodes reached
+  * Minimum Spanning Trees - O(E log E)
+    * Prim's algorithm: keep one connected piece, till all nodes reached - DFS + PQ of edge
+    * Kruskal's algorithm: keep adding small edges, till all nodes reached - UF + PQ of edge
 * EdgeWeightedDigraph - Directed Digraph
   * Shortest Path
     * Dijkstra's algorithm: inviting the closest person among all club members into the club
@@ -782,6 +2031,21 @@ Representation of the graph and the processing of the graph should be separated
     * Ford Fulkerson shortest-augmenting path maxflow algorithm
 
 ## Graph - Undirected Unweighted
+
+### Graph Traversal Summary - What BFS and DFS can do
+
+Problem | Description | BFS | DFS | time 
+--|--|--|--|--
+s-t path | Is there a path between s and t? | Y | Y | $E + V$ 
+shortest s-t path | What is the shortest path between s and t? | Y |  | $E + V$ 
+connected component | are any of two nodes connected | Y | Y | $E + V$
+biconnected component  | two-color |   | Y | $E + V$ 
+cycle | Is there a cycle in the graph? | Y | Y | $E + V$ 
+Euler cycle | Is there a cycle that uses each edge exactly once? [Yes. If all even degree] | | Y | $E + V$ 
+Hamilton cycle (Traveling Salesman Problem) | Is there a cycle that uses each vertex exactly once? (Intractable problem) |  |  | $2^V$ 
+biconnectivity | Is there vertext whose removal disconnects the graph? |
+planarity | can the graph be drawn in the plane with no corssing edges? (Hire an expert) | | Y | $E + V$
+graph isomorphism | Do two adjacency lists represent the same graph? (No one knows) |  |  | $2^{\sqrt{N log N}}$ 
 
 ### Representation
 ```java
@@ -826,6 +2090,8 @@ public class Graph {
 ### DFS
 
 DFS is mainly used to check connectivity
+
+Goal: Find all vertices connected to v
 
 * To search a graph, invoke a recursive method that visits vertices
 * To visit a vertex
@@ -903,8 +2169,13 @@ public class DepthFirstPaths {
 ```
 
 #### Connectd Components
-Find the connected components of a graph.
+* Find the connected components of a graph.
 a.k.a: Divide vertices into equivalence class
+
+* Compare to Union-Find:
+  * Union-Find is more interactive, whereas graph is processing all the unions, then ask for find.
+  * Union-Find is $O(\alpha(N))$ whereas Connected Component is O(1)
+
 
 ```java
 public class CC {
@@ -947,7 +2218,7 @@ public class CC {
 }
 ```
 
-#### Cycle
+#### Template - [Undireted Cycle](https://algs4.cs.princeton.edu/41graph/Cycle.java.html)
 Is G acyclic? (assumes no self-loops or parallel edges) 
 
 ```java
@@ -967,20 +2238,24 @@ public class Cycle {
     
     //v is the vertext to run dfs on
     //u is the source vertext leading to v
-    private void dfs(Graph G, int v, int u) {
+    private void dfs(Graph G, int v, int parent) {
         marked[v] = true;
         for (int w: G.adj(v)) {
             if (!marked[w]) {
                 dfs(G, w, v);
-            } else if (w != u) {
-                hasCycle = true; 
+            } else if (w != parent) {
+               // The (marked[w] && parent != w) means, the node w has been visited, but not because it's the parent that's passed in from the previous recursion, so that it means it has a cycle.
+               hasCycle = true; 
             }
         }
     }
 }
 ```
 
-#### Two-Colorability
+* [`MEDIUM`][LC261 Graph Valid Tree](https://leetcode.com/problems/graph-valid-tree/)
+
+
+#### Bipartite: Two-Colorability
 Is G bi-partite? 
 Can the vertices of a given graph be assigned in such a way that no edge connects vertices of the same color?
 
@@ -1018,11 +2293,13 @@ public class TwoColor {
 }
 ```
 
+* [`MEDIUM`][LC785 Is Graph Bipartite?](https://leetcode.com/problems/is-graph-bipartite/)
+
 ### BFS
-* **Idea** 
+* **Idea** :
     Maitainig a queue of all vertices that are *marked* but whose *adjacency lists haven not been checked*
         => Mark first, then put in the queue
-* **Algorithm**
+* **Algorithm** :
   * Put the source vertext on the queue, then perform the following step until queue is empty
     * Take the next vertext v from teh queue and mark it
     * Put onto the queue all unmarked vertices that are adjacent to v
@@ -1116,6 +2393,761 @@ public class SymbolGraph {
 ```
 
 You can construct a SymbolGraph from a data source (say dictionary: word will be vertices, and character difference by one will be edges), then run regular Graph algorithm on the return result of SymbolGraph.G(). For example: Word Ladder
+
+## Digraph
+Problem:
+* Path: Is there a directed path form s to t?
+* Shortest Path: What is the shorted directed path form s to t?
+* Topological Sort: Can you draw a digraph that all points upward?
+* Strong Connected Component: Is there a directed path between all pairs of vertices?
+
+### Digraph Search
+
+* ***Reachability**: Find all vertices reachable form s along a directed path
+  * Solution: Directed DFS
+    * Same methods as for undirected graphs. 
+    * DFS is a **digraph** algorithm,
+    * Every undirected graph is a digraph (with edges in both directions)
+  * Use Case
+    * Program Control-flow analysis. Remove dead code block.
+    * Mark-sweep garbage collector in java
+* **Shorted Path**
+ * Solution: Directed BFS
+    * Same methods as for undirected graphs. 
+    * BFS is a **digraph** algorithm,
+    * Every undirected graph is a digraph (with edges in both directions)
+  *  **Multiple-source shorted Path**: Put the set of source vertices in the queue, and do BFS. 
+
+
+### [TODO] Topological Sort
+TODO-Summarize both BFS and DFS approach
+
+* DFS Order: 
+  * **Preorder**: Put the vertex on a `queue` **before** the recursive calls.
+  * **Postorder**: Put the vertex on a `queue` **after** the recursive calls.
+  * **Reverse postorder**: Put the vertex on a `stack` **after** the recursive calls.
+
+* Reverse DFS postoder of a DAG is a topological order
+* Note: need to check for Cycle first
+```java
+public class DepthFirstOrder {
+    private boolean[] marked;
+    private Queue<Integer> preorder = new Queue<Integer>();
+    private Queue<Integer> postorder = new Queue<Integer>();
+    private Stack<Integer> reversePost; 
+
+    public DepthFirstOrder(Digraph G) {
+        reversePost = new Stack<Integer>();
+        marked = new boolean[G.V()];
+        for (int v = 0; v < G.V(); v++) {
+            if (!makred[v]) {
+                dfs(G, v);
+            }
+        }
+    }
+
+    private void dfs(Digraph G, int v) {
+        marked[v] = true;
+        preorer.enqueue(v);
+        for (int w: G.adj(v)) {
+            if (!makred[w]) {
+                dfs(G, w);
+            }
+        }
+        postorder.enqueue(v);
+        reversePost.push(v);
+    }
+
+    public Iterable<Integer> topologicalOrder {
+        return reversePostorder;
+    }
+    
+    public Iterable<Integer> reversePostorder() {
+        return reversePostorder;
+    }
+}
+```
+
+```java
+public class DirectedCycle {
+    private boolean[] marked;        // marked[v] = has vertex v been marked?
+    private int[] edgeTo;            // edgeTo[v] = previous vertex on path to v
+    private boolean[] onStack;       // onStack[v] = is vertex on the stack?
+    private Stack<Integer> cycle;    // directed cycle (or null if no such cycle)
+
+
+    public DirectedCycle(Digraph G) {
+        marked  = new boolean[G.V()];
+        onStack = new boolean[G.V()];
+        edgeTo  = new int[G.V()];
+        for (int v = 0; v < G.V(); v++)
+            if (!marked[v] && cycle == null) {
+                dfs(G, v);
+            }
+    }
+
+    // check that algorithm computes either the topological order or finds a directed cycle
+    private void dfs(Digraph G, int v) {
+        onStack[v] = true;
+        marked[v] = true;
+        for (int w : G.adj(v)) {
+
+            // short circuit if directed cycle found
+            if (cycle != null) return;
+
+            // found new vertex, so recur
+            else if (!marked[w]) {
+                edgeTo[w] = v;
+                dfs(G, w);
+            }
+
+            // trace back directed cycle
+            else if (onStack[w]) {
+                cycle = new Stack<Integer>();
+                for (int x = v; x != w; x = edgeTo[x]) {
+                    cycle.push(x);
+                }
+                cycle.push(w);
+                cycle.push(v);
+                assert check();
+            }
+        }
+        onStack[v] = false;
+    }
+
+    public boolean hasCycle() {
+        return cycle != null;
+    }
+
+    public Iterable<Integer> cycle() {
+        return cycle;
+    }
+}
+```
+
+* [`MEDIUM`][LC207 Course Schedule](https://leetcode.com/problems/course-schedule/)
+* [`MEDIUM`][LC210 Course Schedule II](https://leetcode.com/problems/course-schedule-ii/)
+
+### Strong Connected Component
+* Problem: Is there a directed path between all paris of vertices.
+  * Preprocess in linear time, and query in constant time.
+* Idea: Run DFS on the graph, consider unvisited vertex using the topological order of its reverse Graph. (instead of vertex number in regular DFS)
+  * Only two line differences 
+  * Reverse Graph: Strong components in $G$ are the same as in its reverse Graph $G^R$
+  * Kernel: Contract each strong component into a single vertex
+
+```java
+public class KosarajuSharirSCC {
+    private boolean[] marked;     // marked[v] = has vertex v been visited?
+    private int[] id;             // id[v] = id of strong component containing v
+    private int count;            // number of strongly-connected components
+
+    /**
+     * Computes the strong components of the digraph {@code G}.
+     * @param G the digraph
+     */
+    public KosarajuSharirSCC(Digraph G) {
+
+        // run DFS on G, using reverse postorder to guide calculation
+        marked = new boolean[G.V()];
+        id = new int[G.V()];
+
+        // compute reverse postorder of reverse graph
+        DepthFirstOrder dfs = new DepthFirstOrder(G.reverse()); //DIFF 1: Compute reversePostorder of reverse graph
+        for (int v : dfs.reversePost()) { //DIFF 2: Visit in reverPostorder
+            if (!marked[v]) {
+                dfs(G, v);
+                count++;
+            }
+        }
+    }
+
+    // DFS on graph G
+    private void dfs(Digraph G, int v) { 
+        marked[v] = true;
+        id[v] = count;
+        for (int w : G.adj(v)) {
+            if (!marked[w]) dfs(G, w);
+        }
+    }
+
+    //Number of strong component
+    public int count() {
+        return count;
+    }
+
+    public boolean stronglyConnected(int v, int w) {
+        return id[v] == id[w];
+    }
+}
+```
+
+
+## Edge-Weighted Graph
+
+### Weighted Edge API
+```java
+public class Edge implements Comparable<Edge> {
+    private final int v, w;
+    private final double weight;
+
+    public Edge(int v, int w, double weight) {
+        this.v = v;
+        this.w =w;
+        this.weight = weight;
+    }
+
+    public int either() {
+        return v;
+    }
+
+    public int other(int vertex) {
+        return vertex == v? w : v;
+    }
+
+    public int compareTo(Edge that) {
+        if (this.weight < that.weight) {
+            return -1;
+        } else if (this.weight > that.weight) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+}
+
+public class EdgeWeighedGraph {
+    private final int V;
+    privatee final Bag<Edge>[] adj;
+
+    public EdgeWeightedGraph(int V) {
+        this.V = V;
+        adj = (Bag<Edge>[]) new Bag[V];
+        for (int v = 0; v < V; v++>) {
+            adj[v] = new Bag<Edge>();
+        } 
+    }
+
+    public void addEdge(Edge e) {
+        int v = e.either(), w = e.other(v);
+        adj[v].add(e);
+        adj[w].add(e);
+    }
+
+    public Iterable<Edge> adj(int v) {
+        return adj[v];
+    }
+}
+
+```
+
+### Minimum Spanning Tree
+
+Given: Undirected graph G with **positive** edge weights (connected)
+
+#### Template: Kruskal MST
+
+Time Complexity: $O(ElogE)$ (building PQ takes $O(E)$, and delMin takes $O(logE)$)
+```java
+public class KruskalMST {
+    private Queue<Edge> mst = new Queue<Edge>();
+
+    public KruskalMST(EdgeWeightedGraph G) {
+        MinPQ<Edge> pq = new MinPQ<Edge>();
+        for (Edge e: G.edges()){
+            pq.insert(e);
+        }
+
+        UF uf = new UF(G.V());
+        while (!pq.isEmpty() && mst.size() < G.V() - 1) {
+            Edge e = pq.delMin();
+            int v = e.either(), w = e.other(v);
+            if ( !uf.connected(v, w)) {
+                uf.union(v, w);
+                mst.enqueue(e);
+            }
+        }
+    }
+
+    public Iterable<Edge> edges() {
+        return mst;
+    }
+}
+```
+
+#### Template: Prim MST
+Time Complexity: $O(ElogE)$ (building PQ takes $O(E)$, and delMin takes $O(logE)$)
+```java
+public class LazyPrimMST {
+    private boolean[] marked;
+    privaet Queue<Edge> mst; //MST edges
+    private MinPQ<Edge> pq; //PQ of edges
+
+    public LazyPrimMST(WeightedEdgeGraph G) {
+        pq = new MinPQ<Edge>();
+        mst = new Queue<Edge>();
+        marked = new boolean[G.V()];
+        visit(G, 0);
+
+        while ( !pq.isEmpty() && mst.size() < G.V() - 1) {
+            Edge e = pq.delMin();
+            int v = e.either();
+            int w = e.other(v);
+            if (marked[v] && marked[w]) { //Both endpoints already in T
+                continue;
+            }
+            mst.enqueue(e);
+            if ( !marked[v] ) visit(G, v);
+            if ( !marked[w] ) visit(G, w);
+        }
+    } 
+
+    private void visit(WeightedGraph G, int v) {
+        marked[v] = true;
+        for (Edgge e: G.adj(v)) {
+            if (!marked[e.other(v)]) {
+                pq.insert(e);
+            }
+        }
+    }
+
+    public Iterable<Edge> mst() {
+        return mst;
+    }
+}
+```
+
+## Edge-Weighted Digraph: Shortest Path 
+
+
+algorithm | restriction | typical case | worst case | extra space
+--|--|--|--|--
+topological sort | no directed cycles | E + V | E + V | V
+Dijkstra (binary heap) | no negative weight | E log V | E log V | V
+Bellman-Form (naive) | no negative cycles | EV | EV | V
+Bellman-Ford (queue-based) | no negative cycles | E + V | EV | V
+
+Note: 
+* Directed cycles make the problem harder
+* Negative weights make the problem harder
+* Negative cycles makes the problem intractable
+
+
+Problems
+* [`MEDIUM`][787. Cheapest Flights Within K Stops](https://leetcode.com/problems/cheapest-flights-within-k-stops/)
+
+### Weighted Directed Edge API
+```java
+public class DirectedEdge implements Comparable<Edge> {
+    private final int v, w;
+    private final double weight;
+
+    public Edge(int v, int w, double weight) {
+        this.v = v;
+        this.w =w;
+        this.weight = weight;
+    }
+
+    public int from() {
+        return v;
+    }
+
+    public int to() {
+        return w;
+    }
+
+    public int compareTo(Edge that) {
+        if (this.weight < that.weight) {
+            return -1;
+        } else if (this.weight > that.weight) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+}
+
+public class EdgeWeighedDigraph {
+    private final int V;
+    privatee final Bag<DirectedEdge>[] adj;
+
+    public EdgeWeightedGraph(int V) {
+        this.V = V;
+        adj = (Bag<Edge>[]) new Bag[V];
+        for (int v = 0; v < V; v++>) {
+            adj[v] = new Bag<DirectedEdge>();
+        } 
+    }
+
+    public void addEdge(DirectedEdge e) {
+        int v = e.from();
+        adj[v].add(e);
+    }
+
+    public Iterable<DirectedEdge> adj(int v) {
+        return adj[v];
+    }
+}
+```
+
+### Single Source Shortest Paths
+
+* Generic algorithm 
+  * Initialize distTo[s] = 0 and distTo[v] = INF for all other vertices
+  * Repeat until optimality condition are satisfied
+    * Relax any edge
+    ```java
+    private void relax(DirectedEdge e) {
+        int v = e.from(), w = e.to();
+        if (distTo[w] > distTo[v] + e.weight()) { //Cheaper to go to w from v, then update
+            distTo[w] = distTo[v] + e.weight();
+            edgeTo[w] = e;
+        }
+    }
+    ```
+
+* Efficient implementation: How to choose which edge to relax?
+  * Dijkstra's algorithm (nonnegative weights): 
+    * consider vertices by distance to source
+  * Topological sort algorithm (no directed cycles): 
+    * consider vertices in topological order
+    * holds true even if there is negative cycle
+  * Bellman-Ford algorithm (no negative cycle)
+
+#### Template: Dijkstra Shortest Path: No negative weights
+```java
+public class DijkstraSP {
+    private DirectedEdge[] edgeTo;
+    priate double[] distTo;
+    private IndexMinPQ<Duble> pq;
+
+    public DijkstraSP(EdgeWeightedDigraph G, int s) {
+        edgeTo = new DirectedEdge[G.V()];
+        distTo = new double[G.V()];
+
+        pq = new IndexMinPQ<Double>(G.V());
+
+        for (int v = 0; v < G.V(); v++) {
+            distTo[v] = Double.POSITIVE_INFINITY;
+        }
+        distTo[s] = 0.0;
+
+        pq.insert(s, 0.0); 
+        while (!pq.isEmpty()) {
+            int v = pq.delMin();
+            for (DirectedEdge e: G.adj(v)) {
+                relax(e);
+            }
+        }
+    }
+
+    private void relax(DirectedEdge e) {
+        int v = e.from(), w = e.to();
+        if (distTo[w] > distTo[v] + e.weight()) { //Cheaper to go to w from v, then update
+            distTo[w] = distTo[v] + e.weight();
+            edgeTo[w] = e;
+            //Update PQ
+            if (pq.contains(w)) {
+                pq.decreaseKey(w, distTo[w]); //Decrease the value associated with w to distTo[w]
+            } else {
+                pq.insert(w, distTo[w]);
+            }
+        }
+    }
+}
+```
+
+Note: Dijkstra's is essentially the same as Prim's algorithm, both computing a graph's **spanning tree**
+  * Prim's: Closest vertex to the **tree** (via an undirected edge)
+  * Dijkstra's: Closest vertex to the **source** (via a directed path)
+
+
+* Problems
+  * [`MEDIUM`][LC505 The Maze II](https://leetcode.com/problems/the-maze-ii/) 
+  ```java
+      
+    private boolean isValid(int x, int y) {
+        return x >= 0 && x < rows && y >= 0 && y < cols && maze[x][y] == 0;
+    }
+    
+    public int shortestDistance(int[][] maze, int[] start, int[] destination) {
+        this.maze = maze;
+        this.rows = maze.length;
+        this.cols = maze[0].length;
+        //We mark a node as settled after dequeue, instead of mark as visited when enqueue
+        boolean[] settled = new boolean[rows * cols];
+        
+        int source = hash(start);
+        int target = hash(destination);
+        
+        // (1D coordinate, cost) pair
+        int POS = 0, COST = 1;
+        PriorityQueue<int[]> minPQ = new PriorityQueue<>((o1, o2) -> Integer.compare(o1[COST], o2[COST]));
+        minPQ.offer(new int[] {source, 0});
+        
+        while (!minPQ.isEmpty()) {
+            //Dijkstra algorithm: the time we pop some element from the PQ, we are guaranteed to find the minimum path cost to it
+            //Trick: We mark a node as visited only when we dequeue, instead of enqueue, therefore, there is same cell associated with different cost in the heap. Alternatively, we could use Indexed PQ
+            int[] current = minPQ.poll();
+            settled[current[POS]] = true;
+            if (current[POS] == target) {
+                return current[COST];
+            }
+            
+            //For all directed weighted edge, relax and put on queue
+            int row = current[POS] / cols, col = current[POS] % cols;
+            for (int[] dir: DIRS) {
+                //Compute neighbor (x, y, cost)
+                int x = row, y = col, cost = 0;
+                while (isValid(x + dir[DX], y + dir[DY])) {
+                    x += dir[DX];
+                    y += dir[DY];
+                    cost++;
+                }
+                // Didn't move at all, invalid neighbor
+                if (cost == 0) {
+                    continue;
+                } 
+                int neighbor = hash(x, y);
+                if (!settled[neighbor]) {
+                    minPQ.offer(new int[]{neighbor, current[COST] + cost});
+                }
+            }  
+        }
+        return -1;
+    }
+  ```
+
+#### Tempalte: AcyclicSP: Must be DAGs, but allows for negative weights.
+
+```java
+    public AcyclicSP(EdgeWeightedDigraph G, int s) {
+        edgeTo = new DirectedEdge[G.V()];
+        distTo = new double[G.V()];
+
+        for (int v = 0; v < G.V(); v++) {
+            distTo[v] = Double.POSITIVE_INFINITY;
+        }
+        distTo[s] = 0.0;
+
+        Topological topological = new Topological(G); //Topological order
+        for (int v: topological.order()) {
+            for (DirectedEdge e: G.adj(v)) {
+                relax(e);
+            }
+        }
+    }
+```
+
+Applications:  
+* Context-aware resizing
+* Longest Paths in edg-weighted DAG <=> equivalent: reverse sens of equality in relax()
+  * Negate all weights
+  * Find shortest paths
+  * Negate weights in result
+* Parallel Job scheduling: 
+  * Model each job as START, END node with DURATION as edge
+  * Model job dependency as 0 weight edge
+  * Find the longest path form the source to schedule each job
+
+#### Shortest paths with negative weights
+
+* Dijkstra: doesn't work with negative edge weights. Re-weighting doesn't work either, because you penalize the path for being too long
+* Acyclic assume there is no directed cycle.
+
+##### Template: Bellman-Ford algorithm
+* Note: We relax the edge **V times**. Compare to Dijkstra that only relax the edge **once**, that's why Dijkstra cannot find shortest path that's longer (but with negative weight). 
+* Note: Bellman-Form assumes no negative cycle, otherwise you just keep looping in the negative cycle, and make the path however short you want.
+
+```java
+for (int i = 0; i < G.V(); i++> {
+    for (int v = 0; v < G.V(); v++) {
+        for (DirectedEdge e: G.adj(v)) {
+            relax(e);
+        }
+    }
+})
+```
+* If some vertex still updates, it means v is part of negative cycle.
+  * Application: Arbitrage oppurunity for foreign currency exchange rates
+    * Vertex = currency
+    * Edge = transaction, with weight equal to exchange to rate
+    * Find a directed cycle whose product of edge weights is > 1 
+    *    => take `-ln(x)` to make `product > 1` to `sum < 0`
+
+##### Template: Bellman-Form Queue Based
+
+TODO
+
+### Edge-Weighted Digraph with Flow Edge: Maximum Flow
+
+#### Model 
+* Input: A weighted diagram, source vertex s, and target vertex t
+* Mincut: Find a cut of minimum capacity (how do we cut the graph efficiently, with a minimal amount fo work)
+* Maxflow: Find a flow of maximum value (what's the maximum amount of stuff that we can get through a graph)
+
+#### Ford-Fulkerson Algorithm
+ ```
+ start with 0 flow
+ while there exists an augmenting path:
+   - find an augmenting path
+   - compute bottleneck capacity
+   - increase flow on that path by bottleneck capacity
+ ```
+
+ Questions:
+ * How to compute a mincut: Easy
+ * How to find an augmenting path: BFS works well
+ * If FF terminates, does it always compute a maxflow: Yes, see theorem
+ * Does FF always terminate? Yes, if capacities are intergers (or augmenting paths are chosen carefully) 
+ * If so, after how many augmentations? requires clever analysis
+
+ Theorem
+  * Augmenting path theorem: A flow f is a maxflow if and only if no augmenting paths
+  * Maxflow-mincut theorem: value of the maxflow = capacity of mincut
+
+FF Performance depends on choice of augmenting paths
+
+augmenting path | number of paths | implementation
+--|--|--
+shortest path | <= 1/2 EV | queue (BFS)
+fattest path | <= E ln(EU) | priority queue
+randome path | <= EU | randomized queue
+DFS path | <= EU | stack (DFS)
+
+U is the max integer capacity
+
+#### Template: Ford Fulkerson Algorithm
+* Concept
+  * Residual (spare) capacity:
+    * Forward edge: residual capcity = `c - f`
+    * Backward edge: redidual capcity = `f`
+  * Augment flow
+    * Forward edge: add delta
+    * Backward edge: subtract delta
+
+```java
+public class FlowEdge {
+    private final int v, w; //From and to
+    private final double capacity; //maximum capacity
+    private double flow; //NOTE: it is mutable
+
+    public FlowEdge(int v, int w, double capacity) {
+        this.v = v;
+        this.w = w;
+        this.capacity = capacity;
+    }
+
+    public int from() { return v; }
+    public int to() {return w;}
+    public double capacity() {return capacity;}
+    public double flow() {return flow;}
+    public int other(int vertex) {
+        if (vertext == v) {return w;}
+        else if (vertext == w) {return v;}
+        else throw new RuntimeException("Illegal Endpoint");
+    }
+
+    public double residualCapacityTo(int vertex) {
+        if (vertext == v) {return flow;} //backward edge: w -> v
+        else if (vertext == w) {return capacity - flow;} //forward edge: v -> w
+        else throw new RuntimeException("Illegal Endpoint");
+    } 
+
+    public void addResidualFlowTo(int vertex, double delta) {
+        if (vertext == v) {return flow -= delta;} //backward edge: w -> v
+        else if (vertext == w) {return flow += delta;} //forward edge: v -> w
+        else throw new RuntimeException("Illegal Endpoint");
+    }
+}
+
+public class FlowNetwork {
+    private final int V;
+    private Bag<FlowEdge>[] adj;
+
+    public FlowNetwork(int V) {
+        this.V = V;
+        adj = (Bag<FlowEdge>[]) new Bag[V];
+        for (int v = 0; v < V; v++) {
+            adj[v] = new Bag<FlowEdge>();
+        }
+    }
+
+    public void addEdge(FlowEdge e) {
+        int v = e.from();
+        int w = e.to();
+        adj[v].add(e);
+        adj[w].add(e);
+    }
+
+    public Iterable<FloEdge> adj(int v) {
+        return adj[v];
+    }
+}
+
+public class FordFulkerson {
+    private boolean[] marked; //true if s->v path in residual network
+    private FlowEdge[] edgeTo; //Last edge on s-> v path
+    private double value; //value of flow
+    public FordFulkerson(FlowNetwork G, int s, int t) {
+        value = 0.0;
+        while (hasAugmentingPath(G, s, t)) {
+            double bottleneck = Double.POSITIVE_INFINITY;
+            //Compute bottleneck capcity
+            for (int v = t; v != s; v = edgeTo[v].other(v)) {
+                bottleneck = Math.min(bottleneck, edgeTo[v].redidualCapcityTo(v));
+            }
+            //Augmentflow
+            for (int v = t; v != s; v = edgeTo[v].other(v)) {
+                edgeTo[v].addResidualFlowTo(v, bottleneck);
+            }
+            value += bottleneck;
+        }
+    }
+
+    //Finding a shortest augmenting path (BFS)
+    private boolean hasAugmentingPath(FlowNetwork G, int s, int t) {
+        edgeTo = new FlowEge[G.V()];
+        marked = new boolean[G.V()];
+
+        Queue<Integer> = new Queue<Integer>();
+        queue.enqueue(s);
+        marked[s] = true;
+        while (!queue.isEmpty()) {
+            int v = queue.dequeue();
+            for (FlowEdge e: G.adj(v)) {
+                int w = e.other(v);
+                if (!marked[w] && (e.residualCapacityTo(w) > 0)) {
+                    edgeTo[w] = e;
+                    marked[w] = true;
+                    queue.enqueu(w);
+                }
+            }
+        }
+        return marked[t];
+    }
+
+    //Max flow / Min Cut value
+    public double value() {
+        return value;
+    }
+
+    //Is v reachable from s in residual network
+    public boolean inCut(int v) {
+        return marked[v];
+    }
+}
+
+```
+
+##### Application
+
+* Bipartite matching problem
+    * Each student has several offer, and each company sends offer to different student
+    * Q: can each student get a job?
+* Baseball elimination
+    * Which teams have a chance of finishing the season with most wins?
+
 
 ### LeetCode Examples
 #### DFS
@@ -1485,9 +3517,7 @@ public class Solution {
             return paths.size() != 0;
         }
         
-    }
-    
-    
+    } 
     
     public class BreadthFirstPaths {
         private boolean[] onPath;
@@ -1609,200 +3639,599 @@ public class Solution {
 }
 ```
 
-# LeetCode Summary
+# String Review
+## String Sorts
+### Key-indexed counting demo
 
-## Calculator I, II, III
+* Goal: Sort an array a[] of N integers between 0 to R-1
+* Solution: Four steps [Why not just count and recompute? Because we might want to move associated information as well, so key-indexed counting is more general]
 
-Here's a generic calculator using context free grammar
+* NOTE: this is a stable sort
+```java
+int N = a.length;
+int[] count = new int[R+1];
+
+//Step 1: count frequenceis of each ltter using key as index 
+for (int i = 0; i < N; i++) {
+    count[a[i] + 1]++; //IMPORTANT: offset by 1, computing the rightside bound of a[i]
+}
+
+//Step 2: compute frequency cumulates which specify desitnations
+for (int r = 0; r < R; r++) {
+    count[r+1] += count[r];
+}
+
+//Step 3: access cumulte using key as index to move items
+for (int i = 0; i < N; i++) {
+    aux[count[a[i]]++] = a[i];
+}
+
+//Step 4: move back to original array
+for (int i = 0; i < N; i++) {
+    a[i] = aux[i];
+}
+```
+
+### LSD string (radix) sort - Least-significant-digit-first string sort
+NOTE: String must be same length. Sort from right to left
+
+### MSD string sort - Most-significant-digit-first string sort
+NOTE: support different length, similar to quicksort
+
+### Suffix sort
+
+Application: keyword-in-context searrch: suffix-sorting solution
+* Preprocess: suffix sort the text
+* Query: binary search for query; scan until mismatch
+
+Application: longest repeasted substring
+* Q: Given a string of N characters, find the longest repeated substring
+
+### Trie
+* Trie is faster than Hash for String key, since it does not need to examine the entire key
+* Random Fact: Trie is the middle part of "retrieval", but we pronounce as "try" to distinguish from "tree"
+
+#### Template: R-way Trie Implementation
 
 ```java
-/*
-https://ruslanspivak.com/lsbasi-part8/
 
-New Case:
-"7 + 3 * (10 / (12 / (3 + 1) - 1))" ==> 22
+public class TrieST<Value> {
+    private static final int R = 256; //Extended ASCII
+    private Node root = new Node();
 
-Parser / Interpreter
-
-expr -> term ((PLUS|MINUS) term)*
-term -> factor ((MUL|DIV) factor)*
-factor -> （PLUS|MINUS）FACTOR | INTEGER | LPAREN expr RPAREN
-
-*/
-class Solution {
-    public enum Type {
-            PLUS, MINUS,
-            MUL, DIV,
-            LPAREN, RPAREN,
-            INTEGER,
-            EOF //End of file  
+    private static class Node {
+        private Object value;
+        private Node[] next = new Node[R];
     }
-    
-    class Token {
-        private Type type;
-        private int value;
-        
-        Token(Type type, int value) {
-            this.type = type;
-            this.value = value;
-        }
-        
-        public String toString() { 
-            return "("+type+","+value+")"; 
-        }
-    }
-    
-    class Lexer {
-        private String text;
-        private int pos;
-        private char currentChar;
-        private static final char NONE = '$';
-        
-        Lexer(String text) {
-            this.text = text;
-            this.pos = 0; //Current position to be consumed
-            this.currentChar = text.charAt(pos);
-        }
-        
-        private void advance() {
-            pos++;
-            if (pos == text.length()) {
-                currentChar = NONE;
-            } else {
-                currentChar = text.charAt(pos);
-            }
-        }
-        
-                
-        private void skipWhitespace() {
-            while (currentChar != NONE && Character.isSpace(currentChar)) {
-                advance();
-            }
-        }
-        
-        private int integer() {
-            int result = 0;
-            while (currentChar != NONE && Character.isDigit(currentChar)) {
-                result = result * 10 + (currentChar - '0');
-                advance();
-            }
-            return result;
-        }
-        
-        public Token getNextToken() {
-            while (currentChar != NONE) {
-                if (Character.isSpace(currentChar)) {
-                    skipWhitespace();
-                    continue;
-                } else if (Character.isDigit(currentChar)) {
-                    return new Token(Type.INTEGER, integer());
-                } else if (currentChar == '+') {
-                    advance();
-                    return new Token(Type.PLUS, 0);
-                } else if (currentChar == '-') {
-                    advance();
-                    return new Token(Type.MINUS, 0);
-                } else if (currentChar == '*') {
-                    advance();
-                    return new Token(Type.MUL, 0);
-                } else if (currentChar == '/') {
-                    advance();
-                    return new Token(Type.DIV, 0);
-                } else if (currentChar == '(') {
-                    advance();
-                    return new Token(Type.LPAREN, 0);
-                } else if (currentChar == ')') {
-                    advance();
-                    return new Token(Type.RPAREN, 0);
-                } else {
-                    System.out.println("LEXER: Invalid Character: " + currentChar);
-                }
-                
-            }
-            return new Token(Type.EOF, 0);
-        }
-    }
-    
-    class Interpreter {
-        private Lexer lexer;
-        private Token currentToken;
-        
-        Interpreter(Lexer lexer) {
-            this.lexer = lexer;
-            this.currentToken = lexer.getNextToken();
-        }
-        
-        private void eat(Type tokenType) {
-            //System.out.println(currentToken);
-            if (currentToken.type != tokenType) {
-               System.out.println("Invalid Syntax: Expected token: " + tokenType + ", actual token " + currentToken.type);
-            }
-            currentToken = lexer.getNextToken();
-        }
-        
-        private int expr() {
-            //set current token to the first token taken from the input
-            int result = term();
 
-            while (currentToken.type == Type.PLUS || currentToken.type == Type.MINUS) {
-                Token token = currentToken;
-                if (token.type == Type.PLUS) {
-                    eat(Type.PLUS);
-                    result =  result + term();
-                } else if (token.type == Type.MINUS) {
-                    eat(Type.MINUS);
-                    result =  result - term();
-                }
-            }
-            return result;
-        }
-
-        private int term() {
-            int result = factor();
-            while (currentToken.type == Type.MUL || currentToken.type == Type.DIV) {
-                Token token = currentToken;
-                if (token.type == Type.MUL) {
-                    eat(Type.MUL);
-                    result = result * factor();
-                } else if (token.type == Type.DIV) {
-                    eat(Type.DIV);
-                    result = result / factor();
-                } 
-            }
-            return result;
-        }
-
-        private int factor() {
-            Token token = currentToken;
-            if (token.type == Type.PLUS) {
-                eat(Type.PLUS);
-                return factor();
-            } else if (token.type == Type.MINUS) {
-                eat(Type.MINUS);
-                return -1 * factor();
-            } else if (token.type == Type.INTEGER) {
-                eat(Type.INTEGER);
-                return token.value;
-            } else if (token.type == Type.LPAREN) {
-                eat(Type.LPAREN);
-                int result = expr();
-                eat(Type.RPAREN);
-                return result;
-            }
-            System.out.println("Invalid Syntax in factor()");
-            return -1; //Should never reach here
-        }
+    public void put(String key, Value val) {
+        root = put(root, key, val, 0);
     }
-    
-    public int calculate(String text) {
-        Lexer lexer = new Lexer(text);
-        Interpreter interpreter = new Interpreter(lexer);
-        int result = interpreter.expr();
-        return result;
+
+    private Node put(Node x, String key, Value val, int d) {
+        if (x ==  null) {
+            x = new Node();
+        }
+        if (d == key.length()) {
+            x.val = val;
+            return x;
+        }
+        char c = key.charAt(d);
+        x.next[c] = put(x.next[c], key, val, d+1);
+        return x;
+    }
+
+    public boolean contains(String key) {
+        return get(key) != null;
+    }
+
+    public Value get(String key) {
+        Node x = get(root, key, 0);
+        if (x == null) {
+            return null;
+        }
+        return (Value) x.val;
+    }
+
+    private Node get(Node x, String key, int d) {
+        if (x == null) {
+            return null;
+        }
+        if (d == key.length()) {
+            return x;
+        }
+        char c = key.charAt(d);
+        return get(x.next[c], key, d+1);
     }
 }
 ```
 
+* Improvement:
+  * Ternary Search Trie: instead of having R children, only have three children: left, middle, right
+  * TST with R2: first 2 level with 26 ways, lower levels do TST
+
+#### Template: Character based operations
+
+```java
+public class TrieST<Value> {
+    //API: All keys: inorder traversal
+    Iterable<String> keys() {
+        Queue<String> queue = new Queue<String>();
+        inorder(root, "", queue);
+        return queue;
+    }
+
+    private void collect(Node x, String prefix, Queue<String> q) {
+        if (x == null) {
+            return;
+        }
+        if (x.val != null) {
+            q.enqueue(prefix);
+        }
+        for (char c = 0; c < R; c++) {
+            inorder(x.next[c], prefix + c, q);
+        }
+    }
+
+    //API: Prefix Match: autocomplete
+    public Iterable<String> keysWithPrefix(String prefix) {
+        Queue<String> queue = new Queue<String>();
+        Node x = get(root, prefix, 0); //root of subtrie for all strings begining with given prefix
+        collect(x, prefix, queue);
+        return queue;
+    }
+
+    //API: Find longest key insymbol table that is a preix of query string
+    public String longestPrefixOf(String query) {
+        int length = search(root, query, 0, 0);
+        return query.substring(0, length);
+    }
+
+    // keep track of longest key encountered so far
+    private int search(Node x, String query, int d, int length) {
+        if (x == null) {
+            return length;
+        }
+        if (x.val != null) {
+            length = d;
+        }
+        if (d == query.length()) {
+            return length;
+        }
+        char c = query.charAt(d);
+        return search(x.next[c], query, d+1, length);
+    }
+}
+```
+
+### Substring Search
+
+#### Template: Knuth-Morris-Pratt DFA
+
+Q: What's the interpretation of DFA state after reading in `txt[i]`?
+A: State = number of characters in pattern that have been matched.
+
+```java
+//i is text[i] to look at, and j is the state
+public int search(String txt) {
+    int i, j, N = text.length(); 
+    for (i = 0, j = 0; i < N && j < M; i++) {
+        j = dfa[txt.charAt(i)][j];
+    }
+    if (j == M) {
+        return i - M;
+    } else {
+        return N;
+    }
+}
+```
+
+How to build DFA?
+* For each state j:
+    * Copy `dfa[][X]` to `dfa[][j]` for mismatch case
+    * Set `dfa[pat.charAt(j)][j]` to `j+1` for match case
+    * Update X
+
+```java
+public KMP(String pat) {
+    this.pat = pat;
+    M = pat.length();
+    dfa = new int[R][M];
+    dfa[pat.charAt(0)][0] = 1;
+
+    int X = 0;
+    for (int j = 1; j < M; j++) {
+        for (int c = 0; c < R; c++) { //Copy mismatch case from restart state
+            dfa[c][j] = dfa[c][X];
+        }
+        dfa[pat.charAt(j)][j] = j+1; //Set match case
+        X = dfa[pat.charAt(j)][X]; //Update restart state
+    }
+}
+```
+
+Analysis
+* Proposition: KMP substring search accesses no more than M + N chars to search for a pattern of length M in a text of length N
+* Proposition: KMP constructs dfa[][] in time and space proportional to RM
+
+#### Not Required: Boyer Moore
+
+KMP needs O(MN) space, we want to reduce the space complexity to O(M)
+
+How about let's match the pattern from the right to left?
+Then we can skip lots of characters.
+
+Q: How much to skip?
+A: Precompute index of rightmost occurence of character c in pattern (-1 if character not in pattern)
+
+```java
+right = new int[R];
+for (int c = 0; c < R; c++) {
+    right[c] = -1;
+}
+for (int j = 0; j < M; j++) {
+    right[pat.charAt(j)] = j;
+}
+```
+
+```java
+public int search(String txt) {
+    int N = txt.length();
+    int M = pat.length();
+    int skip;
+    for (int i = 0; i <= N-M; i+= skip) {
+        skip = 0;
+        for (int j = M-1; j >= 0; j--) {
+            if (pat.charAt(j) != txt.charAt(i+j)) {
+                skip = Math.max(1, //in case other term is nonpositive
+                        j - right[txt.charAt(i+j)]); //compute skip value
+                break;
+            }
+        }
+        if (skip == 0) {
+            return i; //match
+        }
+    }
+} 
+```
+
+* Property: Mismatched heuristics takes about ~N/M character compares
+* Worst Case: Can be as bad as MN
+
+#### Not Required: Rabin-Karp
+
+* Basic Idea = modular hashing
+  * Compute a hash of pat[0..M-1];
+  * For each i, compute a hash of txt[i..M+i-1]
+  * If pattern hash = text substring hash, check for a match
+
+```
+(a + b) mod Q = ( (a mod Q) + (b mod Q) )mod Q
+(a * b) mod Q = ( (a mod Q) * (b mod Q) )mod Q
+```
+
+### Regular Expressions
+
+* Note:
+  * Kleen Theorem: there is a one to one mapping between Regular Expression and DFA
+  * However, to implement DFA for RE for guaranteed linear time, we might have exponential state. Therefore, we will use NFA instead, which runs in quandrantic time for worst case, and linear for average case.
+
+* Q: How to determine whether a string is matched by an automaton?
+  * DFA: Deterministic => easy because exactly one applicable transition
+  * NFA: Nondeterministic => can be several applicable transition; need to select the right one.
+* Q: How to simulate NFA?
+  * Systematically consider all possible transition sequnces
+
+* NFA representation:
+  * State names: Integer from 0 to M, where M is number of symbols in RE
+  * Match-transition: keep regular expression in array `re[]`
+  * epsilon-transition: store in a diagraph G
+* Q: How to efficiently simulate NFA?
+  * Maintaining set of **all** possible transition that NFA could be in after reading in the firs i text characers.
+* Diagraph reachability: final all vertices reahbale from a given source or **set** of vertices
+  * solution: run DFS from each source, without unmarking vertices
+* How to build an NFA?
+  * `CLOSURE`: three epsilon transition edges for each `*` operator
+  * `OR`: Add two epsilon transition edges for each `|`
+* Goal: Write a program to build the epsilon transition digarph.    
+  * Challenges: 
+     * remeber left parenthese `(` to implement CLOSURE and OR; 
+     * remember `|` to implement
+  * Solution:
+    * `(`: push onto stack
+    * `|`: push onto stacck
+    * `)`: pop corresponding `(` and possibly intervening `|`, add epsilon transition edge for CLOSURE/OR
+
+#### Template: NFA
+* NFA simulation: N-character text is recognized by the NFA corresponding to an M-character pattern takes time proporationl to MN in worst case.
+
+```java
+public class NFA {
+    private cahr[] re; //match transitions
+    private Digraph G; //epsilon transition diagraph
+    private int M;     //number of states
+
+    public NFA(String regexp) {
+        M = regexp.length();
+        re = regexp.toCharArray();
+        G = buildEpsilonTransitionDigraph();
+    }
+
+    //O(MN) for worst case
+    public boolean recogize(String txt) {
+        Bag<Integer> pc = new Bag<Integer>(); //Program Counter: set of all interger that NFA could be in
+        DirectedDFS dfs = new DirectedDFS(G, 0); //Compute states reachable from start by epsilon transtion
+        for (int v = 0; v < G.V(); v++) { 
+            if (dfs.marked(v)) {
+                pc.add(v);
+            }
+        }
+
+        for (int i = 0; i < txt.length(); i++) {
+            //compute state reachable after sanning past txt.charAt(i);
+            Bag<Integer> match = new Bag<Integer>();
+            for (int v: pc) {
+                if (v == M) {
+                    continue;  //Nothing to do if in final state
+                }
+                if ((re[v] == txt.charAt(i)) || re[v] == '.') {
+                    match.add(v+1);
+                }
+            }
+
+            //follow epsilon transiton
+            dfs = new DirectedDFS(G, match);
+            pc = new Bag<Integer>();
+            for (int v = 0; v < G.V(); v++) {
+                if (dfs.marked(v)) {
+                    pc.add(v);
+                }
+            }
+        }
+
+        //After scanning, accept if can end in state M
+        for (int v: pc) {
+            if (v == M) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //Parsing the regex
+    public Digraph buildEpsilonTranstionDigraph() {
+        Digraph G = new Digraph(M+1);
+        Stack<Integer> ops = new Stack<Integer>(); //Index of ops
+        for (int i = 0; i < M; i++) {
+            int lp = i; //left parentheses
+
+            //Handle OR
+            if (re[i] == '(' || re[i] == '|') {
+                ops.push(i);
+            } else if (re[i] == ')') {
+                int or = ops.pop();
+                if (re[or] == '|') {
+                    lp = ops.pop();
+                    G.addEdge(lp, or+1);
+                    G.addEdge(or, i);
+                } else {
+                    lp = or;
+                }
+            }
+
+            //Handle CLOSURE, look 1 char ahead
+            if (i < M-1 && re[i+1] == '*') { 
+                G.addEdge(lp, i+1);
+                G.addEdge(i+1, lp);
+            }
+
+            //Add next transition
+            if (re[i] == '(' || re[i] == '*' || re[i] == ')') {
+                G.addEdge(i, i+1);
+            }
+        }
+        return G;
+    }
+
+
+}
+```
+
+#### Application
+
+* Grep
+
+Time Complexity: Worst case O(MN), which is the same as brute force substring match
+```java
+public class GREP  {
+    public static void main(String[] args) {
+        String regexp = "(.*" + args[0] + ".*)";
+        NFA nfa = new NFA(regex);
+        while (StdIn.hasNextLine()) {
+            String line = StdIn.readLine();
+            if (nfa.recognizes(line)) {
+                StdOut.println(line);
+            }
+        }
+    }
+}
+```
+
+#### Java: Regular expression
+
+* Pattern 1 - Validate Check
+
+Q: Does the iput match the regex?
+
+```java
+String regex = args[0];
+String input = args[1];
+System.out.println(input.matches(re));
+```
+
+Pattern 2 - Havesting information
+
+Goal: Print all substrings of input that match a RE
+
+```java
+String input = in.readAll();
+Pattern pattern = Pattern.compile(regex); //compile() creates a NFA
+Matcher matcher = pattern.matcher(input); //matcher() creates a NFA simulator
+while (matcher.find()) { //find() looks for the next match
+    StdOut.println(matcher.group()); //group() gives substring most recently found by find()
+}
+```
+
+WARNING: Typical ipmlementation, including java, grep, python, do **NOT** guarantee performance like we did.
+
+e.g.: regex = `(a|aa)*b` and input=`aaaaaaaaaaaaaaac`, add few more `a` and observe the exponential growth.
+
+### Data Compression
+
+* Motivation: 
+  * Save **space** when storiing
+  * Save **time** when transmitting it
+* Algorithm:
+  * Run Length Encoding
+  * Huffman compression: fixed-length symbol with variable-length code
+    * How to avoid ambiguity? Ensure that no codeword is a prefix of another.
+      * e.g.: Fixed Length Code; Append special stop char; Use prefix-free code
+  * LZW compression: variable-length symbol with fixed-length code
+    * Progressively learn and update model as you read character
+
+#### Huffman codes
+* Q: How to find best prefix-free code? 
+* A: Huffman algorithm:
+  * Count frequency for each char in input
+  * Stat with one node corresponding to each char i (with weigth freq[i])
+  * Repeat until single trie formed:
+    - select two tries with min weight freq[i] and freq[j]
+    - merge into single trie with weigth freq[i] and frq[j]
+
+```java
+private static Node buildTrie(int[] freq) {
+    MinPQ<Node> pq = new MinPQ<Node>();
+    for (char i = 0; i < R; i++) {
+        if(freq[i] > 0) {
+            pq.insert(new Node(i, freq[i], null, null));
+        }
+    }
+
+    while(pq.size() > 1) {
+        Node x = pq.delMin();
+        Node y = pq.delMin();
+        Node parent = new Node('\0', x.freq+y.freq, x, y);
+        pq.insert(parent);
+    }
+    return pq.delMin();
+}
+```
+
+## Some Theory Stuff
+
+* Topics
+  * Reduction: Design algorithms, establish lower bounds, classify problems
+  * Linear programming: the ultimate practical problem solving model
+  * Intractability: problems beyond our reach
+
+### Reduction
+
+* Definition: Problem X reduces to probem Y if you can use an algorithm that solves Y to help solve X
+* Design Algorithm: given algorithm for Y, can also solve X.
+* Classify Problems
+  complexity | order of growth | example
+  --|--|--
+  linear | N | min, max, median
+  linearithmic | N log N | sorting, convex hull
+  M(N) | ? | integer multiplication, division, square root...
+  MM(N) | ? | matrix multiplication, Ax = b, least suare ,determinant
+  ... | .. | ...
+  NP-complete | probably not N^b | SAT, IND-SET, ILP
+
+### Linear programming and Intractability
+
+* Q: Which alogrihtm are usfeful in practice? 
+   * A: Those with poly-time algorithm O(aN^b), instead of O(2^N), O(N!)
+   * Intractable: A problem is intractable if it can't be solved in polynomial time
+* Q: which algorithm have polytime?
+   * : Hard to tell
+* Q: Four fundamental problems - do they have polytime solution
+  * LSOLVE: given a system of **linear equations**, find a solution (variables are real)
+    * Yes, Gaussian eliination
+  * LP: given a system of **linear inequalities**, find a solution (variables are real)
+    * Yes, ellipsoid algorithm can help solve it, but it was open question for years.
+  * ILP: given a system of **linear inequalities**, find a 0-1 solution (variables are 0,1)
+    * No polytime alogirthm known, or believed to exist
+  * SAT: given a set of **boolean equations**, find a binary solution (variables are true, false)
+    * No polytime alogirthm known, or believed to exist
+* NP vs P
+  * Definition
+    * NP is the class of all search problems
+    * P is the class of search problems solvable in poly-time
+  * Search problem: given an instance of a problem, **find** a solution S
+     * Requirement: must be able to efficiently **check** that S is a solution
+  * Nondeteministic machine can **guess** the desired solution, 
+    * NP is a class of search problems that are solvable in polynomial time on a **non-determinstic** Turing maching
+* SAT: satisfiability
+  * Q: how to solve an instance of SAT with n variables?
+    * A: exhaustive search: try all 2^n truth assignment
+  * Q: Can we do anything substantially more clever?
+    * A: Conjecture: No polytime algorithm for SAT.
+  * Q: Which search problems are in P?
+    * A: No easy answers (we don't even know wether P = NP), but we can use reduction to identify some intractable ones
+  * SAT reduces to ILP, TravelSalesMan, HamiltonPath etc
+* NP-completeness
+  * An NP problem is NP-complete if all problem in NP poly-time reduce to it
+  * SAT is NP-complete
+    * Implication: Polytime algorithm for SAT if and only if P = NP
+* Exploiting intracatbility: crypotography
+  * FACTOR: Given an m-bit integer x, find a nontrivial factor
+  * Q: What is complexity of FACTOR?
+    * A: In NP, but not known (or believed) to be in P or NP-complete
+  * Q: What if P = NP?
+    * A: Poly-time algorithm for factoring; modern e-conomy collapse
+  * Cop
+* Coping with intractability
+  * Solve arbitrry instance of the problem: e.g.: 2-SAT
+  * Solve the problem to optimality
+  * Solve the problem in poly-time
+* Hamilton Path: find a simple path that visits every vertex exactly once.
+  * This is NP-complete
+  * Longest path problem is also NP-complete
+
+#### Template: Hamilton Path - NP Complete
+```java
+public class HamiltonPath {
+    private boolean[] marked; //vertices on current path
+    private int count = 0; //number of hamiltonian paths;
+
+    public HamiltonPath(Graph G) {
+        marked = new boolean[G.V()];
+        for (int v = 0; v < G.V(); v++) {
+            dfs(G, v, 1);
+        }
+    }
+
+    private void dfs(Graph G, int v, int depth) {
+        marked[v] = true;
+        if (depth == G.V()) { //found one
+            count++;
+        }
+
+        for (int w: G.adj(v)) {
+            if (!marked[w]) {
+                dfs(G, w, depth+1); //backtrak if w is already part of path
+            }
+        }
+
+        marked[v] = false; //ONLY DIFFERENCE from regular dfs, and this is 2^N
+    }
+
+}
+```
+
+
+# LeetCode Summary
 
 ## Sliding Window
 
@@ -2056,6 +4485,31 @@ public class Solution {
 ## Backtrack
 
 Here's a general approach to attack most of the [backtracking problems](https://discuss.leetcode.com/topic/46162/a-general-approach-to-backtracking-questions-in-java-subsets-permutations-combination-sum-palindrome-partioning)
+
+Wiki on Backtracking: https://leetcode.com/explore/learn/card/recursion-ii/472/backtracking/2793/
+
+```python
+def backtrack(candidate):
+    if find_solution(candidate):
+        output(candidate)
+        return
+    
+    # iterate all possible candidates.
+    for next_candidate in list_of_candidates:
+        if is_valid(next_candidate):
+            # try this partial candidate solution
+            place(next_candidate)
+            # given the candidate, explore further.
+            backtrack(next_candidate)
+            # backtrack
+            remove(next_candidate)
+```
+
+```java
+backtrack(int[] input, List<List<String>> solutions, List<String> solution, int startIndex ) {
+
+}
+```
 
 #### 78 Subset
 
@@ -2400,6 +4854,63 @@ class Solution {
 }
 ```
 
+
+#### 425 Word Square 
+```java
+/*
+Use Trie: Prefix -> List of Word
+*/
+class Solution {
+    public List<List<String>> wordSquares(String[] words) {
+        Map<String, Set<String>> prefix = new HashMap();
+        for (String word: words) {
+            for (int i = 1; i <= word.length(); i++) {
+                String str = word.substring(0, i);
+                if (!prefix.containsKey(str)) {
+                    prefix.put(str, new HashSet());
+                }
+                prefix.get(str).add(word);
+            }
+        }
+        
+        List<List<String>> result = new ArrayList();
+        List<String> candidate = null;
+        
+        for (String word: words) {
+            candidate = new ArrayList();
+            candidate.add(word);
+            backtrack(candidate, result, 1, words[0].length(), prefix);
+        }
+        return result;
+    }
+    
+    private void backtrack(List<String> candidate, List<List<String>> result, int wordCount, int squareSize, Map<String, Set<String>> prefix) {
+        if (wordCount == squareSize) {
+            result.add(new ArrayList(candidate));
+            return;
+        }
+        
+        StringBuilder sb = new StringBuilder();
+        for (String cand: candidate) {
+            sb.append(cand.charAt(wordCount));
+        }
+        
+        if (!prefix.containsKey(sb.toString())) {
+            return;
+        }
+        
+        for (String next: prefix.get(sb.toString())) {
+            candidate.add(next);
+            backtrack(candidate, result, wordCount + 1, squareSize, prefix);
+            candidate.remove(candidate.size() - 1);
+        }
+    }
+}
+```
+
+#### More Questions
+* [`MEDIUM`][LC93 Restore IP Addresses](https://leetcode.com/problems/restore-ip-addresses/)
+* [`HARD`][LC425 Word Squares](https://leetcode.com/problems/word-squares/)
 # Compiler Template Review
 
 ## Calculator I, II, III
@@ -2848,6 +5359,20 @@ return dp[target];
         return grid[M-1][N-1];
 ```
 
+* [`MEDIUM`][Partition Array for Maximum Sum](https://leetcode.com/problems/partition-array-for-maximum-sum/)
+```java
+        int[] dp = new int[N]; //dp[i] is the maximum sum parition in K ways from 0..i
+        
+        for (int i = 0; i < N; i++) {
+            int currentMax = 0;
+            for (int k = 1; k <= K && i - k + 1 >= 0; k++) {
+                curMax = Math.max(curMax, A[i-k+1]);
+                dp[i] = Math.max(dp[i], (i >= k? dp[i - k] : 0) + curMax * k));
+            }
+        }
+        return dp[N-1];
+```
+
 * TODO: Summarize
 ```
 931. Minimum Falling Path Sum Medium
@@ -3042,7 +5567,7 @@ NOTE: Clearly define whether `dp[i][j] `stores `[i, j]` or `[i, j)`. This has si
 
 This problem is only a practise for DP. A better solution is O(N) based on stack as explained here.
 
-  * TODO Summarize Stacks
+#####  * TODO Summarize Stacks
 ```java
 More Good Stack Problems
 Here are some problems that impressed me.
@@ -3060,6 +5585,8 @@ Next Greater Element I
 Largest Rectangle in Histogram
 Trapping Rain Water
 ```
+* [`MEDIUM`][LC649 Dota2 Senate](https://leetcode.com/problems/dota2-senate)
+* [`HARD`][316 Remove Duplicate Letters](https://leetcode.com/problems/remove-duplicate-letters/)
 
 
 * [`MEDIUM`][LC375 Guess Number Higher or Lower II](https://leetcode.com/problems/guess-number-higher-or-lower-ii/) 
